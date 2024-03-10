@@ -1,0 +1,330 @@
+View Components in Razor Pages/MVC:
+---------------------------------------------------------
+View Components perform a similar role to Tag Helpers and Partial Pages. They generate HTML and are designed to represent reusable snippets of UI that can help break up and simplify complex layouts, or they can be used in multiple pages. View Components are recommended instead of partial pages or tag helpers whenever any form of logic is required to obtain data for inclusion in the resulting HTML snippet, specifically calls to an external resource such as a file, database or web services. View Components also lend themeselves to unit testing.
+
+View Components are particularly useful for data-driven features in a layout page where there is no related page model or controller class. Examples of use cases for view components include data-driven menus and shopping basket widgets etc.
+
+Elements of a View Component:
+---------------------------------------------
+View Components consists of a class file and a .cshtml view file. The class file contains the logic for generating the model. It can be thought of as a mini-controller, just as the Razor PageModel file is considered to be a controller. The view file contains the template used to generate the HTML to plugged in to the page that hosts the view component.
+
+The class file must conform to the following rules:
+
+	-> It must derive from the ViewComonent cass
+
+	-> It must have "ViewComponent" as a suffix to the class name or it must be decorated with the [ViewComponent] attribute (or derive from a class that's decorated with [ViewComponent] attribute)
+
+	-> It must implement a method named Invoke() with a return type of IViewComponentResult (or InvokeAsync() returning Task<IViewComponentResult> if you need to call asynchronous methods). Typically, this is satisfied by a return View(....) statement in the method.
+
+By default, the view file is named default.cshtml. You can specify an alternative name for the view file by passing it to the return View(.....) statement. The view file's placement within the application's file structure is important, because the framework searches pre-defined locations for it:
+
+In Razor Pages:
+
+	/Pages/Components/component-name/Default.cshtml
+	/Pages/Shared/Components/component-name/Default.cshtml
+
+In MVC:
+
+	Views/<ControllerName>/Components/<ComponentName>/Default.cshtml
+	Views/Shared/Components/<ComponentName>/Default.cshtml
+
+The component name is the name of the view component class without the ViewComponent suffix (if it is applied). For a razor pages only site, the recommended location for view component views is the /Pages/Components/ directory. The path that begins with /Views should only really be used if you are creating MVC application.
+
+The following walkthrough will result in two example view components being created. One will call into an external web service to obtain a list of people, and will display their names. The other will take a parameter representing the ID of one person whose details will be obtained from an external web service and then displayed in a widget.
+
+The service API used in this example are hosted at JSONPlaceholder (jsonplaceholder.typicode.com) which provides free JSON APIs for development and testing purposes.
+
+The view components will not be responsible for making call to external API. This task will be performed in a separate service class which will be injected into the view components via the built-in Dependency Injection framework.
+
+1. Create a new 'Razor Pages'/'MVC' site named 'ASPNETCoreWebApp1'/'ASPNETCoreMVCWebApp1' using Visual Studio or the command line.
+2. Add a new C# class file named Domain.cs to the root folder of the application and replace any existing content with the following code:
+
+Domain.cs:
+----------------
+namespace ASP.NETCoreWebApp1
+{
+    public class User
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string Website { get; set; }
+        public Address Address { get; set; }
+        public Company Company { get; set; }
+    }
+
+    public class Address
+    {
+        public string Street { get; set; }
+        public string Suite { get; set; }
+        public string City { get; set; }
+        public string Zipcode { get; set; }
+        public Geo Geo { get; set; }
+    }
+
+    public class Geo
+    {
+        public float Lat { get; set; }
+        public float Lng { get; set; }
+    }
+
+    public class Company
+    {
+        public string Name { get; set; }
+        public string Catchphrase { get; set; }
+        public string Bs { get; set; }
+    }
+}
+
+These above classes map to the structure of the objects represented by the JSON provided by the API being used for this example.
+
+3. Add a new folder named "Services" to the root folder of the application
+
+4. Add a new C# interface file named IUserService.cs to the Services folder. Replace any existing content with the following code:
+
+IUserService.cs
+----------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASP.NETCoreWebApp1.Services
+{
+    public interface IUserService
+    {
+        Task<List<User>> GetUsersAsync();
+        Task<User> GetUserAsync(int id);
+    }
+}
+
+This is the interface that specifies the operations offered by the service
+
+5. Add another new C# class file named UserService.cs to the Services folder and replace any existing content with the following:
+
+UserService.cs:
+----------------------
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Net.Http;
+using Newtonsoft.Json;
+
+namespace ASP.NETCoreWebApp1.Services
+{
+    public class UserService : IUserService
+    {
+        public async Task<List<User>> GetUsersAsync()
+        {
+            using(var client = new HttpClient())
+            {
+                var url = "http://jsonplaceholder.typicode.com/users";
+                var json = await client.GetStringAsync(url);
+                return JsonConvert.DeserializeObject<List<User>>(json);
+            }
+        }
+
+        public async Task<User> GetUserAsync(int id)
+        {
+            using(var client = new HttpClient())
+            {
+                var url = $"http://jsonplaceholder.typicode.com/users/{id}";
+                var json = await client.GetStringAsync(url);
+                return JsonConvert.DeserializeObject<User>(json);
+            }
+        }
+    }
+}
+
+This class represents an implementation of the IUserService interface.
+
+6. Add a folder named ViewComponents to the root of the application. Then add a new file to that folder, name it UsersViewComponent.cs and replace any existing content with the following code:
+
+using ASP.NETCoreWebApp1.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASP.NETCoreWebApp1.ViewComponents
+{
+    public class UsersViewComponent : ViewComponent
+    {
+        private IUserService _userService;
+
+        public UsersViewComponent(IUserService userService)
+        {
+            this._userService = userService;
+        }
+
+        public async Task<IViewComponentResult> InvokeAsync()
+        {
+            var users = await _userService.GetUsersAsync();
+            return View(users);
+        }
+    }
+}
+
+This is the code part of View Component. It makes use of the built-in dependency injection system to resolve the implementation of IUserService which is injected into the constructor of the view component class. The InvokeAsync() method obtains a List<User> from the service and passes it to the view.
+
+7. Create a folder named 'Components' in the Pages folder and then add another folder named Users to the newly created Components folder. Add a new razor file (Razor View -Empty) named 'default.cshtml' to the Users folder. The resulting folder and file hierarchy should look like this:
+
+Pages
+	Components
+			Users
+
+				default.cshtml
+
+8. Replace the code in default.cshtml with the following:
+
+@model IEnumerable<ASP.NETCoreWebApp1.User>
+<h3>List of Users</h3>
+<table border="1">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+    </tr>
+    @foreach(var user in Model)
+    {
+        <tr>
+            <td>@user.Id</td>
+            <td>@user.Name</td>
+        </tr>
+    }
+</table>
+
+This is the View, and completes the view component, Notice that the view accepts a model of type List<User> via the @model directive, which is type passed to the view from the InvokeAsync() method.
+
+9. Open the Startup.cs file and add 'ASP.NETCoreWebApp1.Services' namespace to the using directives at the top of the file. Then amend the ConfigureServices method so that the code looks like this:
+
+public void ConfigureServices(IServiceCollection services)
+{
+            services.AddRazorPages();
+
+            services.AddTransient<IUserService, UserService>();
+}
+
+This step registers the IUserService with the dependency injection system, and specifies that UserService is the actual implementation to use.
+
+10. Open the _Layout.cshtml file and locate @RenderBody() method place and then change the content as following:
+
+<div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                @RenderBody()
+            </div>
+            <div class="col-md-3">
+                @await Component.InvokeAsync("Users")
+            </div>
+        </div>
+ </div>
+
+This converts the layout for the site to 2 columns, with page content displayed in left hand column and a Users view (widget) displayed in the right hand column. It uses the Component.InvokeAsync() method to rendere the output of the view component to the page. The string which is passed to the method parameter represents the name of the view component (the class name without the "ViewComponent" suffix).
+
+11. Run the application (site) to ensure that all is working. The list of users should appear on the right hand side of every content page whichever is applied with above layout page i.e. _Layout.cshtml.
+
+Taghelper and passing parameters:
+---------------------------------------------------
+The second example will demonstrate the use of tag helper instead of calling the Component.InvokeAsync method. It will also demonstrate passing parameters to the view component.
+
+1. Add a new C# class file to ViewComponents folder and name it 'UserViewComponent.cs'. Replace any existing content with the following code:
+
+UserViewComponent.cs:
+-----------------------------------
+
+using ASP.NETCoreWebApp1.Services;
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASP.NETCoreWebApp1.ViewComponents
+{
+    public class UserViewComponent: ViewComponent
+    {
+        private IUserService _userService;
+
+        public UserViewComponent(IUserService userService)
+        {
+            this._userService = userService;
+        }
+
+        public async Task<IViewComponentResult> InvokeAsync(int id)
+        {
+            var user = await _userService.GetUserAsync(id);
+            return View(user);
+        }
+    }
+}
+
+This is the code part of the view component. The only difference between this component and the previous one is that the InvokeAsync() method expects a parameter of type int to be passed, which is then passed to service method.
+
+2. Add a new folder to the Pages/Components folder named 'User'. Add a Razor file (Razor View - Empty) to the folder named 'default.cshtml'. The structure of components folder should now look like this:
+
+Pages
+	Components
+			User
+				default.cshtml
+			Users
+				default.cshtml
+
+3. Replace any existing content in the new default.cshtml file with the following code:
+
+@model ASP.NETCoreWebApp1.User
+<h3>User Details</h3>
+<div style="width:350px;border:5px solid red;padding:10px">
+    <b>Id</b><br />
+    @Model.Id
+    <hr />
+    <b>Name</b><br />
+    @Model.Name
+    <hr />
+    <b>Email</b><br />
+    @Model.Email
+    <hr />
+    <b>Address</b><br />
+    @Model.Address.Street, @Model.Address.City - @Model.Address.Zipcode
+</div>
+
+4. Open the _ViewImports.cshtml file and add the following line to the existing code:
+
+@using ASP.NETCoreWebApp1
+@namespace ASP.NETCoreWebApp1.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@addTagHelper *, ASP.NETCoreWebApp1
+
+This registers the view component tag.
+
+5. Replace the call to @await Component.InvokeAsync("Users") in the layout file with following code:
+
+_Layout.cshtml:
+-----------------------
+<div class="container">
+        <div class="row">
+            <div class="col-md-9">
+                @RenderBody()
+            </div>
+            <div class="col-md-3">
+                <vc:user id="new Random().Next(1,10)"></vc:user>
+            </div>
+        </div>
+    </div>
+
+The name of the view component is specified  in the tag helper, along with the parameter for the InvokeAsync() method. In this case, the Random class is used to return any number from 1-10 each time the component is invoked, resulting in a user being selected randomly each time the page is refreshed (displayed).
+
+Important Note:
+---------------------
+The name of the component and its parameters must be specified in kebab case in the tag helper. Kebab case takes uppercase characters and replaces them with their lowercase version, prefixing those that appear within the word with a hyphon. So a MenuNavigation view component becomes menu-navigation in the tag helper. A userId parameter name becomes user-id.
+
+6. Finallly run the application to test that the component is working, and refresh a few times to see different user's details being displayed.
+
+If you prefer to use the Component.InvokeAsync() method, parameters are passed as a second argument as following:
+
+@await Component.InvokeAsync("User", new Random().Next(1,10))

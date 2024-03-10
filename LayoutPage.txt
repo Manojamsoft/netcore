@@ -1,0 +1,239 @@
+Layout Page/View:
+--------------------------
+Layouts help to maintain a consistent look and feel across multiple pages/views within your ASP.NET Core Razor Pages/MVC application. It is similar to Master Page in ASP.NET Web Forms, but Layout comes with simple syntax and greater flexibility. Layout avoid developers adding duplicate code placed in multiple pages/views.
+
+Most of the web sites feature the same content on every page, or within a large number of pages. Headers, footers, and navigations are just some examples. Site-wide scripts and style sheets also fall into this category. Adding same headers, footers, and navigations to every page in your web site breaks the DRY principal (Don't Repeat Yourself). If you need to change the appearance of the header, you need to edit every page. The same applies to other common content too. So this will make a problem into maintainance of the project. The solution to this problem is the Layout Page/View.
+
+The layout page acts as a template for all pages that reference it. The pages that reference the layout pages are called content pages. Content pages are full web pages. They contain only the content that varies from one page to the next.
+
+The code example below describes a very simple layout page:
+
+To Create a Layout Page: Right Click on Shared Folder -> Add -> New Item -> Razor Layout -> Specify the Name of Layout
+
+_DemoLayout.cshtml:
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+</head>
+<body>
+    <div>
+        @RenderBody()
+    </div>
+</body>
+</html>
+
+What makes this a layout page is the call to the @RenderBody() method. That is where the result from proceesing the content page will be placed. Content pages reference their layout page via the Layout property of the page. Standard practice is to specify the location of the layout page in a _ViewStart.cshtml file, which affects all content pages in the folder in which it is placed; and all subfolders.
+
+By default, the layout file is placed in the Pages/Shared or Views/Shared folder, but it can be placed anywhere in the application folder structure. Use of the _ViewStart.cshtml file to centralise the location of the layout makes updating to new location easy:
+
+@{
+    Layout = "_Layout";
+}
+
+You can also specify the location of the layout in the Razor Page itself. This will override the instruction set in the _ViewStart.cshtml file. If you don't want page to use the layout specified in the _ViewStart.cshtml file, you can pass null to the Layout property as follows:
+
+@{
+	Layout = null;
+}
+
+Locating a Layout:
+--------------------------
+You do not need to provide a full file path for the layout file. The Razor Pages framework searches a set of predefined locations if you only provide the file name to Layout property:
+
+@{
+	Layout = "_Layout";
+}
+
+The framework searches by walking up the directory tree from the location of the calling page looking for the file name that you pass in as long as you do not include the file extension, until it reaches the root Pages folder. Once this has been exhausted, the formally registered locations are searched. The default registered search paths are Pages/Shared (from ASP.NET Core 2.1 onwards) and Views/Shared (The default location for layout pages in an MVC application).
+
+If the calling page is located in Pages/Customers the search for a layout named _Layout.cshtml will include the following locations:
+
+	Pages/Customers/_Layout.cshtml
+	Pages/_Layout.cshtml
+	Pages/Shared/_Layout.cshtml
+	Views/Shared/_Layout.cshtml
+
+If the page calling the layout is located in an area, the search will also start in the currently executing page's folder, and then walk up the directory tree within the area. Once the area folder structure has been exhausted, registered layout locations are searched relative to the area's folder location (i.e. Pages/Shared and Views/Shared within the area). Finally, the registered locations themselves are searched.
+
+The following search locations assume the the calling page is located at Areas/Orders/Pages/Archive/Index.cshtml:
+
+Areas/Orders/Pages/Archive/_Layout.cshtml
+Areas/Orders/Pages/_Layout.cshtml
+Areas/Orders/Pages/Shared/_Layout.cshtml
+Areas/Orders/Views/Shared/_Layout.cshtml
+Pages/Shared/_Layout.cshtml
+Views/Shared/_Layout.cshtml
+
+Sections:
+-------------
+The RenderBody() method placement within the layout page determines where the content page will be rendered, but it is also possible to render other content supplied by the content page within a layout page. This is controlled by the placement of calls to RenderSection() method.
+
+The following example of a call to this method is taken from the layout page that forms part of the default template Razor Pages website:
+
+@RenderSection("Scripts", required: true/false)
+
+This call defines a section named "Scripts" - it is for page-specific script file references or blocks of JavaScript code so that they can be located just before the closing </body> tag. The second argument, required determines whether the content page must provide content for the named section. If required is set to false, resulting in the section being optional. If the section is not optional, every content page that references the layout page must use @section syntax to provide content for the section as follows:
+	@section Scripts{
+		//Content Goes Here ...
+	}
+
+Note: If a required section isn't found, an exception is thrown.
+
+In some cases, you might want to make a section optional, but you want to provide some default content in the event that the content page didn't provide anything for the section. You can use the IsSectionDefined() method for this:
+
+@if(IsSectionDefined("Scripts"))
+{
+	@RenderSection("Scripts")
+}
+else
+{
+	//Default Content Goes Here
+}
+
+Example1: Create an example of Layout Page and apply to the Razor content pages:
+
+Pages/Views -> Shared -> _DemoLayout.cshtml
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Title"] - Razor Pages Application</title>
+</head>
+<body>
+    <div style="margin:0px;border:2px solid blue">
+        <img src="~/Images/RSN-Banner.png" style="width:100%;height:200px" />
+        <hr />
+        <marquee direction="right" style="border:2px solid green;background-color:red;color:white">
+            <h1>Welcome to ASP.NET Core Razor Page Application</h1>
+        </marquee>
+    </div>
+    <div>
+        <table style="width:100%">
+            <tr>
+                <td width="80%" style="vertical-align:top">
+                    @RenderBody()
+                </td>
+                <td width="20%" style="vertical-align:top;border-left:1px dotted gray">
+                    @RenderSection("RightBar", required:false)
+                </td>
+            </tr>
+        </table>
+    </div>
+    <hr />
+    <div style="text-align:center">
+         <h3>Copyright &copy; 2017 - 2021 RakeshSoftNet Technologies</h3>
+         <p>
+             <b>Website: </b><a href="http://www.rakeshsoftnet.com" target="_blank">http://www.rakeshsoftnet.com</a>
+         </p>
+        <p>
+            <b>Email: </b><a href="mailto:info@rakeshsoftnet.com">info@rakeshsoftnet.com</a>
+            &nbsp;&nbsp;
+            <b>Mobile No/WhatsApp: </b> +91 8919136822
+        </p>
+    </div>
+</body>
+</html>
+
+Now Create a Razor Content Page to Apply with Layout Page:
+
+Home.cshtml:
+
+@page
+@model ASP.NETCoreWebApp1.Pages.HomeModel
+@{
+    ViewData["Title"] = "Home Page";
+
+    Layout = "_DemoLayout";
+}
+
+@*Main Body Content*@
+<h1>
+    Welcome to Home Page
+</h1>
+
+About.cshtml (with Section):
+
+@page
+@model ASP.NETCoreWebApp1.Pages.AboutModel
+@{
+    ViewData["Title"] = "About Page";
+
+    Layout = "_DemoLayout";
+}
+
+@*Main Body Content*@
+<h1>
+    Welcome to About Page
+</h1>
+
+@section RightBar{ 
+    <p>Right Menu 1</p>
+    <p>Right Menu 2</p>
+    <p>Right Menu 3</p>
+}
+
+Specify the Layout Property in _ViewStart.cshtml:
+@{
+    Layout = "_DemoLayout";
+}
+
+After that any Razor content page is not required to specify the Layout property as it will take automatically from _ViewStart.cshtml file.
+
+Home.cshtml:
+
+@page
+@model ASP.NETCoreWebApp1.Pages.HomeModel
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+@*Main Body Content*@
+<h1>
+    Welcome to Home Page
+</h1>
+
+About.cshtml (with Section):
+
+@page
+@model ASP.NETCoreWebApp1.Pages.AboutModel
+@{
+    ViewData["Title"] = "About Page";
+}
+
+@*Main Body Content*@
+<h1>
+    Welcome to About Page
+</h1>
+
+@section RightBar{ 
+    <p>Right Menu 1</p>
+    <p>Right Menu 2</p>
+    <p>Right Menu 3</p>
+}
+
+----------------
+@IgnoreBody()
+@IgnoreSection(string sectionName)
+
+Allow you to specify that you do not want to render the body or the section
+
+@if (isAdmin) {
+     <div>Admin layout <a href="#">sign out</a></div>
+     <div>
+         @RenderSection("adminSection")
+         @IgnoreBody()
+     </div>
+ } 
+else {
+     <div>normal layout</div>
+     <div>
+         @IgnoreSection("adminSection")
+         @RenderBody()
+     </div>
+ }

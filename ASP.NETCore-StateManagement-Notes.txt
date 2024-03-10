@@ -1,0 +1,1733 @@
+State Management in ASP.NET Core Razor Pages:
+-------------------------------------------------------------------------
+Managing state in Razor Pages is the process of retaining user or application-related data over the duration of a number of requests.
+
+HTTP is a stateless protocol. Being stateless, there is no requirement placed on HTTP (Web) Servers to retain information about each request or user. By default, multiple requests from the same user are treated as a series of individual unconnected requests. In fact, the server has no concept of a 'user' as such. If you want to retain user or application-related data over a number of requests, you have to implement stratgies for managing that yourself.
+
+Razor Pages, along with its underlying MVC framework provides a number of mechanisms of retaining information (or state) across requests, each with its benefits and drawbacks:
+
+-> Hidden Form Fields
+
+-> Query Strings
+
+-> Route Data
+
+-> Cookies
+
+-> TempData
+
+-> Session Variables
+
+-> Application Variables
+
+-> Caching
+
+Hidden Form Fields:
+----------------------------
+A hidden form field is a form field that is not visible to the user. However, its value is included in the collection passed back to server when the form is submitted. You use the <input type="hidden" /> html element or input taghelper to add a hidden field to a form, or you can use the Html.Hidden() or Html.HiddenFor() helper methods.
+
+Hidden field values are typically set from client-side or server-side code. While a hidden field is not visible to the user, that does not make it secure. Values are stotred and transmitted in plain text and are accessible in the HTTP request as well as the HTML source that your browser makes available to you. You should not use hidden field to store sensitive data. Since they form part of the DOM, hidden fields are not tamper-proof, and their values should really be validated just like any other user input. As with any form field, if the POST method is used, there is no limit to the number of characters that can be stored in a hidden field.
+
+Query Strings:
+---------------------
+A query string is a collection of name/value pairs which are appended to a URL. They are separated from the location of the resource by a question mark ?. An example might look like this:
+
+http://www.abc.com?name=Peter&age=25&city=Pune
+
+Each name/value pair is separated from the others by the & sign. The values are obtained from the Query property of the HttpRequest object, which is exposed in a Razor Page via the Request property. For example, Request.Query["name"] will return a value i.e. 'Peter'
+
+Values are passed from one page to another page as query string values automatically when you navigate using anchor tag helper. The Razor Pages framework will pass values as query strings if you add route values that aren't included in the template for the route on the traget page.
+
+For Example:
+
+Ex1:
+
+Example.cshtml: (With One Route Value)
+
+<a asp-page="/About" asp-route-name="Peter">About Page</a>
+
+The above will generate the following URL when you navigate:
+
+http://localhost:55672/About?name=Peter 
+
+In About.cshtml: You can access the query string value using Request.Query as following:
+
+<h3>Name: @Request.Query["name"]</h3>
+
+Ex2:
+
+Example.cshtml: (With Multiple Route Value)
+
+@{ 
+    var obj1 = new Dictionary<string, string>
+    {
+        {"name","Smith" },
+        {"age","25" },
+        {"city","Pune" }
+    };
+}
+
+<a asp-page="/About" asp-all-route-data="obj1">About Page</a>
+
+The above will generate the following URL when you navigate:
+
+http://localhost:55672/About?name=Smith&age=25&city=Pune
+
+In About.cshtml: You can access the query string value using Request.Query as following:
+
+<h3>Name: @Request.Query["name"]</h3>
+<h3>Age: @Request.Query["age"]</h3>
+<h3>City: @Request.Query["city"]</h3>
+
+In the following code, the user is redirected to the About Page with one route value provided:
+
+Example.cshtml.cs:
+
+public IActionResult OnGet()
+{
+            return RedirectToPage("About", new { name = "Peter" });
+}
+
+Whenever you make a request to Example page it redirects to About page with one route value which is appended as a query string name/value pair if you add route value that is not included in the template for the route on the traget page.
+
+The above code will generate the following URL when you navigate:
+
+http://localhost:55672/About?name=Peter 
+
+In About.cshtml: You can access the query string value using Request.Query as following:
+
+<h3>Name: @Request.Query["name"]</h3>
+
+In the next following code, the user is redirected to the About Page with multiple route values provided:
+
+Example.cshtml.cs:
+
+public IActionResult OnGet()
+{
+            return RedirectToPage("About", new { name = "Peter", age = 25, city = "Pune" });
+}
+
+Whenever you make a request to Example page it redirects to About page with multiple route values which are appended as a query string name/value pair if you add route values that aren't not included in the template for the route on the traget page.
+
+The above code will generate the following URL when you navigate:
+
+http://localhost:55672/About?name=Peter&age=25&city=Pune
+
+In About.cshtml: You can access the query string values using Request.Query as following:
+
+<h3>Name: @Request.Query["name"]</h3>
+<h3>Age: @Request.Query["age"]</h3>
+<h3>City: @Request.Query["city"]</h3>
+
+-> Values are passed (submitted) from a page as query string values automatically if you have a form that uses the GET method.
+
+For Example:
+
+Example.cshtml:
+
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<h1>Welcome to Example Page</h1>
+
+<form method="get">
+    <b>Name</b><br />
+    <input type="text" name="name" />
+    <br /><br />
+    <b>Age</b><br />
+    <input type="text" name="age" />
+    <br /><br />
+    <b>City</b><br />
+    <input type="text" name="city" />
+    <br /><br />
+    <input type="hidden" name="handler" value="Submit" />
+    <button type="submit">Submit</button>
+</form>
+
+Example.cshtml.cs:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public void OnGet()
+        {
+           
+        }
+
+        public void OnGetSubmit()
+        {
+            // Fetching the submited query strings values:
+
+            var name = Request.Query["name"];
+            var age = Request.Query["age"];
+            var city = Request.Query["city"];
+        }
+    }
+}
+
+Note: Like hidden fields, query strings should not used for sensitive data and it is even easier for a user to manipulate query string values so input validation is really important. Just because you generated the query string from your code, that doesn't mean that a malicious users can't generate their own or alter yours in their browser address bar. Unvalidated query string values are the primary route to attacks on web sites. Most browsers limit the query strings to approxmate 2000 charcaters so they are not suitable for managing the large amount of data.
+ 
+Route Data:
+----------------
+Route Data is also passed from one page to another via the URL.
+
+Let's say you have created a blog website. You have a page called Post.cshtml in your root pages folder in which you display the content of specific posts. You provide a series of links on your home page to individual posts, and each one includes a value in the URL to identify the specific post to retrieve from the database. You could supply this value as a query string value (www.rakeshsoftnetblog.com/post?topic=aspnetcore-routedata), or you could add it as Route Data - a segment in the URL that plays no part in matching files on disk e.g. /aspnetcore-routedata in www.rakeshsoftnetblog.com/post/aspnetcore-routedata. The last segment, or parameter is an arbitary piece of data passed in URL. The route data approach is preferred for a number of reasons, among which it is more redable - especially if you have a number of paramatere values - and it is more search engine-friendly.
+
+Route Templates:
+-------------------------
+Route Data parameters are defined in a Route Template as part of the @page directive in the .cshtml file. To cater for the 'topic' value in the example above, the declaration at the top of the Post.cshtml file will look like this :
+
+@page "{topic}"
+
+The template created for this route is "Post/{topic}". The {topic} part of the template is a placeholder that represents any value added to the URL after "post/". The template definition must appear in double quotes, and the parameter must be enclosed in curly brackets or braces.
+
+In this example, the value is required, so you cannot browse to /post. You must provide a value in the URL to match this "topic" segment, otherwise you will get a status code of 404 - Not Found. However, you can make the parameter optional by adding a ? after it as follows:
+
+@page "{topic?}"
+
+Or you can provide a default value for the parameter:
+
+@page "{topic=aspnetcore-viewdata}"
+
+There is no limit to the number of parameters you can add to a route. It is common to see blog post URLs include the year, month and day of publication as well as the 'topic'. A route definition that accomplishes this might appear as following:
+
+@page "{year}/{month}/{day}/{topic}"
+
+These are following words reserved and cannot be used as names of route parameters:
+
+	- action
+
+	- area
+
+	- controller
+
+	- handler
+
+	- page
+
+Accessing Route Parameter Values:
+---------------------------------------------------
+Route parameter values are stored in a RouteValueDictionary accessible via the RouteData.Values property. You reference values by their string-based key as follows:
+
+@RouteData.Values["topic"]
+
+The potential problem with this approach is that it relies on referencing values by strings, which are prone to typographical errors, resulting in runtime errors. The recommended alternative is to bind the values to properties on a PageModel. To do this, you can add a public property of a suitable data type to the page model class and a parameter to the OnGet() method with same name and data type as route parameter:
+
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class PostModel : PageModel
+    {
+        public string Topic { get; set; }
+
+        public void OnGet(string topic)
+        {
+            Topic = topic;
+        }
+    }
+}
+
+You assign the parameter value to the public property, which makes it available on the Model property in the content page:
+
+@page "{topic?}"
+@model ASP.NETCoreWebApp1.Pages.PostModel
+@{
+}
+<h2>Post Page</h2>
+
+<h2>@Model.Topic</h2>
+
+The key reason for recommending this approach is that you benefit from strong typing and therefore intellisense support in IDE's that support it.
+
+Alternatively, you can use the [BindProperty] attribute on the PageModel property with 'SupportsGet' set to true as follows:
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class PostModel : PageModel
+    {
+        [BindProperty(SupportsGet = true)]
+        public string Topic { get; set; }
+
+        public void OnGet()
+        {
+        }
+    }
+
+Adding Constraints:
+-----------------------------
+Constraints are an additional means of disambiguating between routes. So far, the only constraint placed on a route parameter value is its presence. You can also constraint route parameter values by data type and range. The following example shows how to constrain a parameter value to an integer data type:
+
+@page "{id:int}"
+
+The id value is both required, and must be an integer. The next example illustrates an optional parameter, which must be a int if a value is provided.
+
+@page "{id:int?}"
+
+The next example shows use of the 'min' constraint, that ensures that the value supplied is an int and that it meets a minimum value of 100. The minimum value is supplied in parentheses:
+
+@page "{id:min(100)?}"
+
+The next example shows how to specify multiple constraints using colons:
+
+@page "{id:min(100):max(500)?}"
+
+This template specifies that the id value is optional, and if id value is given then it must be minimum 100 and maximum 500.
+
+@page "{username:minlength(5):maxlength(10)}"
+
+This template specifies that the username values is required (i.e. it is not optional), must be composed of a mixture of uppercase and lowercase letters (no numbers or other symbol), has a minimum length of 5 characters and a maximum length of 10 characters.
+
+Route Constraints:
+---------------------------
+The following table lists the options for constraining route parameters by data type and range:
+
+alpha: Matches uppercase or lowercase Latin alphabet characters (a-z, A-Z)
+
+Example: {title:alpha}
+
+bool: Matches a boolean value
+
+Example: {isActive:bool)
+
+int: Matches a 32-bit integer value
+
+Example: {id:int}
+
+datetime: Matches a DateTime value
+
+Example: {startDate:datetime}
+
+decimal: Matches a decimal value
+
+Example: {price:decimal}
+
+double: Matches a 64-bit floating point value
+
+Example: {latitude:double}
+
+float: Matches a 32-bit floating point value
+
+Example: {num:float}
+
+long: Matches a 64-bit integer value
+
+Example: {num:long}
+
+guid: Matches a GUID value
+
+Example: {id:guid}
+
+length: Matches a string with the specified length or within a specified range of lengths
+
+Example:
+	{key:length(8)}
+	{postalCode:length(6,8)}
+
+min: Matches an integer with a minimum value 
+
+Example:	{age:min(18)}
+
+max: Matches an integer with a maximum value
+
+Example: {age:max(60)}
+
+minlength: Matches a string with minimum length
+
+Example: {title:minlength(2)}
+
+maxlength: Matches a string with maximum length
+
+Example: {title:maxlength(10)}
+
+range: Matches an integer within a range of values
+
+Example: {month:range(1,12)}
+
+regex: Matches a regular expression.
+
+Example: {pincode:regex(^\d{6}$)}
+
+Note: Any of the above constraint can be made optional by adding ? after the constraint e.g. id:int?
+
+Override Routes:
+-----------------------
+From ASP.NET Core 2.1 onward, you can use the template to specify an alternative route for a page that has no relationship with the file name. To override route template should start with / or ~/. For example, you may have a page located deep in the folder structure somewhere e.g. Pages/Student/Assignment/Daily/Index.cshtml that you want to surface at a much easier to remember URL: /Student/DailyAssignment. You do this by specifying the URL pattern in template:
+
+@page "/Student/DailyAssignment"
+
+This replace the file-path-based URL.
+
+Friendly Routes:
+-----------------------
+Friendly Routes mappings can also be configured by adding options to the RazorPagesOptions.PageConventions collection in the ConfigureService method of Startup class via the AddPageRoute method.
+
+In this example, a physical file named Post exists in /Pages/Archive/. You want to enable users to reach it without prepending Archive to the URL, and you want to specify some route parameters. You do that as follows:
+
+3.x+:
+-----
+ public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRazorPages().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddPageRoute("/Archive/Post", "Post/{year}/{month}/{day}/{title}");
+            });
+        }
+
+2.x:
+
+public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddPageRoute("/Archive/Post", "Post/{year}/{month}/{day}/{title}");
+            });
+        }
+
+The AddPageRoute method takes two parameters. The first is the relative path to the razor page file without the extension and the second is the route template that maps to it.
+
+Unlike Absolute routes, friendly routes are additive, they do not replace existing routes. They act in a similar way to method overloads in programming. It will still be possible to reach the resource above by navigating to /Archive/Post.
+
+The following example illustrates a route that catches any URL that doesn't map to a physical file and gets the Index.cshtml file to process the request:
+
+3.x:
+public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRazorPages().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddPageRoute("/Index", "{*url}");
+            });
+        }
+
+2.x:
+public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddPageRoute("/Index", "{*url}");
+            });
+        }
+
+There is also a method for overloading routes to pages in areas: AddAreaPageRoute(). This takes the name of the area, the name of the page, and the route template.
+
+For Example:
+
+3.x:
+
+public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRazorPages().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddAreaPageRoute("Administration", "/Index", "admin");
+            });
+        }
+
+2.x:
+
+public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMvc().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.AddAreaPageRoute("Administration", "/Index", "admin");
+            });
+        }
+
+Cookies:
+------------
+Cookies are small pieces of text that are passed between browser and web server with every request. Cookies are commonly used to store relatively small amounts of data such as user preferences which help the site remember which features to turn on or off, for example, they might be used to record the fact that the current user has authenticated and is allowed to access restricted areas of the site, or that the user has accepted cookies.
+
+The storage duration of a cookie is determined by the type of cookie and the expiry date that it is given. Cookies with no expiry date are not stored on the client machine and are cleared at the end of the user's session. Persistent cookies - ones that have an expiry date set are typically stored as text files by the browser on the client machine.
+
+Cookies in Razor Pages are enabled by default.
+
+You create or set a cookie within a PageModel or Razor file like this:
+
+Response.Cookies.apppend("Cookie1","Value1");
+
+You can read the value of the cookie as following:
+
+var cookieValue = Request.Cookies["Cookie1"];
+
+The value returned from reading a non-existent cookie is null.
+
+var cookieValue = Request.Cookies["Cookie123"]; //It returns null
+
+Cookie Options:
+-----------------------
+Cookie options provide access to additional configuration of cookies. The following example specifies an expiry time, making the cookie persistent:
+
+Note: To use CookieOptions, you must import the namespace i.e. Microsoft.AspNetCore.Http
+
+using Microsoft.AspNetCore.Http;
+
+var cookieOptions = new CookieOptions
+{
+	Expires = DateTime.Now.AddMinutes(2)
+};
+
+Response.Cookies.Append("Cookie1", "Value1", cookieOptions);
+
+These are following list of properties:
+
+Domain - string: The domain(s) that cookie is accessible to. If it is no specified, the cookie is only sent to the domain of the current document. If provided, all sub-domains are also included.
+
+Expires - DateTime: The expiry date time, making the cookie persistent.
+
+HttpOnly - bool: Specifies whether the cookie is available to client-side code. false (the default) means that the cookie is accessible to JavaScript, which may present a security risk. If set to true, the cookie is only available to code executing on the server.
+
+Path - string: The relative path that the cookie should be accessible to. If not specified, the cookie is available to all pages in the domain(s). Subdirectories are also included. For example, /account will match /account, /account/client etc..
+
+Secure - bool: Specifies whether the cookie should only be sent with secure (HTTPS) request. The default is false, which means that the cookie will be sent on all requests, regardless of protocol.
+
+Cookies are transferred in plain text, so they are not the place for sensitive data unless you take responsibility for encryption and decryption of your content yourself.
+
+Cookies are limited to around 4kb in size each/per domain (depending on the browser) and are consequently not the place for storing the large amount of data.
+
+Cookies depend on the browser. If the user changes their browser or device, any previously set cookies will not be available. They will also disappear if the user chooses to delete cookies.
+
+Ex1: In-Memory Cookie Implementation:
+
+Example.cshtml:
+
+@page
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    <b>Name: </b><br />
+    <input type="text" name="name" />
+    <br /><br />
+    <b>Age: </b><br />
+    <input type="number" name="age" />
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Example.cshtml.cs:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public void OnGet()
+        {
+            
+        }
+
+        public IActionResult OnPost()
+        {
+            var name = Request.Form["name"];
+            var age = Request.Form["age"];
+
+            //Storing in Cookie (In-Memory Cookie)
+            Response.Cookies.Append("name", name);
+            Response.Cookies.Append("age", age);
+
+            return RedirectToPage("Post");
+        }
+    }
+}
+
+Post.cshtml: Accessing the Cookie Value:
+
+@page 
+@model ASP.NETCoreWebApp1.Pages.PostModel
+@{
+}
+
+<p>
+    <b>Name: </b> @Request.Cookies["name"]
+</p>
+<p>
+    <b>Age: </b> @Request.Cookies["age"]
+</p>
+
+Post.cshtml.cs:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class PostModel : PageModel
+    {
+        public void OnGet()
+        {
+            
+        }
+    }
+}
+
+Ex2: Persistent Cookie Implementation:
+
+Example.cshtml:
+
+@page
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    <b>Name: </b><br />
+    <input type="text" name="name" />
+    <br /><br />
+    <b>Age: </b><br />
+    <input type="number" name="age" />
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Example.cshtml.cs:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public void OnGet()
+        {
+            
+        }
+
+        public IActionResult OnPost()
+        {
+            var name = Request.Form["name"];
+            var age = Request.Form["age"];
+
+            //Storing in Cookie (Persistent Cookie)
+            var cookieOptions = new CookieOptions()
+            {
+                Expires = DateTime.Now.AddMinutes(2)
+            };
+
+            Response.Cookies.Append("name", name, cookieOptions);
+            Response.Cookies.Append("age", age, cookieOptions);
+
+            return RedirectToPage("Post");
+        }
+    }
+}
+
+Post.cshtml.cs:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class PostModel : PageModel
+    {
+        public IActionResult OnGet()
+        {
+           if(Request.Cookies["name"]==null && Request.Cookies["age"] == null)
+           {
+                return RedirectToPage("Example");
+           }
+
+            return Page();
+        }
+    }
+}
+
+Post.cshtml:
+
+@page 
+@model ASP.NETCoreWebApp1.Pages.PostModel
+@{
+}
+
+<p>
+    <b>Name: </b> @Request.Cookies["name"]
+</p>
+<p>
+    <b>Age: </b> @Request.Cookies["age"]
+</p>
+
+TempData:
+---------------
+TempData is a container for short-life data that is only intended to be used or read once.
+
+TempData is a storage container for data that needs to be available to a separate http request.
+
+The following example illustrates how TempData works:
+
+Example1:
+
+Example.cshtml:
+-----------------------
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<h1>Welcome to Example Page</h1>
+
+<form method="post">
+    <b>Name:</b><br />
+    <input asp-for="Name" />
+    <br /><br />
+    <b>City: </b><br />
+    <input asp-for="City"  />
+    <br /><br />
+    <input type="submit" value="Submit" />
+</form>
+
+Example.cshtml.cs:
+----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public string Name { get; set; }
+        [BindProperty]
+        public string City { get; set; }
+            
+        public void OnGet()
+        {
+           
+        }
+
+        public IActionResult OnPost()
+        {
+            TempData["name"] = Name;
+            TempData["city"] = City;
+
+            return RedirectToPage("Post");
+        }
+    }
+}
+
+Post.chtml: (TempData value is accessed using a string Indexer)
+---------------------------------------------------------------------------------------------
+@page 
+@model ASP.NETCoreWebApp1.Pages.PostModel
+@{
+}
+<p>
+    <b>Name: </b>@TempData["name"]
+</p>
+<p>
+    <b>City: </b>@TempData["city"]
+</p>
+
+Post.cshtml.cs:
+----------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class PostModel : PageModel
+    {
+        public void OnGet()
+        {
+            
+        }
+    }
+}
+
+Example2:
+--------------
+In the following code snippet, a PageModel property called TName & TCity have been decorated with the TempData attribute, which enables both automatic storing of values in, and loading values from the TempData dictionary.
+
+Example.cshtml:
+------------------------
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<h1>Welcome to Example Page</h1>
+
+<form method="post">
+    <b>Name:</b><br />
+    <input asp-for="Name" />
+    <br /><br />
+    <b>City: </b><br />
+    <input asp-for="City"  />
+    <br /><br />
+    <input type="submit" value="Submit" />
+</form>
+
+Example.cshtml.cs:
+----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public string Name { get; set; }
+        [BindProperty]
+        public string City { get; set; }
+            
+        [TempData]
+        public string TName { get; set; }
+        [TempData]
+        public string TCity { get; set; }
+
+        public void OnGet()
+        {
+           
+        }
+
+        public IActionResult OnPost()
+        {
+            TName = Name;
+            TCity = City;
+
+            return RedirectToPage("Post");
+        }
+    }
+}
+
+The user is redirected to another page (Post.cshtml). There, the TempData value is accessed using a string indexer as follows:
+
+Post.cshtml:
+-----------------
+@page 
+@model ASP.NETCoreWebApp1.Pages.PostModel
+@{
+}
+
+<p>
+    <b>Name: </b>@TempData["TName"]
+</p>
+<p>
+    <b>City: </b>@TempData["TCity"]
+</p>
+
+Post.cshtml.cs:
+---------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class PostModel : PageModel
+    {
+        public void OnGet()
+        {
+            
+        }
+    }
+}
+
+Alternatively, you can add a property to PostModel, decorated with the TempData attribute:
+
+Post.cshtml.cs:
+---------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class PostModel : PageModel
+    {
+        [TempData]
+        public string TName { get; set; }
+        [TempData]
+        public string TCity { get; set; }
+
+        public void OnGet()
+        {
+            
+        }
+    }
+}
+
+Then, you can more simply reference the model property in the page itself as follows:
+
+Post.cshtml:
+-----------------
+@page 
+@model ASP.NETCoreWebApp1.Pages.PostModel
+@{
+}
+
+<p>
+    <b>Name: </b>@Model.TName
+</p>
+<p>
+    <b>City: </b>@Model.TCity
+</p>
+
+Note: Once the value has been read, it is marked for deletion and is therefore not available for subsequent requests.
+
+Retaining TempData Values:
+-----------------------------------------
+If you want to access a TempData value and the retain it for a further request, you have two options. The first is Peek() method, which allows you to read a value without it being marked for deletion as follows:
+
+<p>
+    <b>Name: </b>@TempData.Peek("name")
+</p>
+<p>
+    <b>City: </b>@TempData.Peek("city")
+</p>
+
+The second option is to use the Keep() method after you have accessed the value. This has the effect for marking the value for retention. The Keep() method provides two overloaded options. You can either specify that the whole TempData dictionary is retained:
+
+<p>
+    <b>Name: </b>@TempData["name"]
+</p>
+<p>
+    <b>City: </b>@TempData["city"]
+</p>
+@{
+	TempData.Keep();
+}
+
+Or you can just mark individual values for retention:
+
+<p>
+    <b>Name: </b>@TempData["name"]
+</p>
+<p>
+    <b>City: </b>@TempData["city"]
+</p>
+@{ 
+    TempData.Keep("name");
+}
+
+Storage Mechanisms:
+--------------------------------
+The default storage mechanism for TempData is cookies, which is enabled by default in a typical Razor Pages application.
+
+Response Headers		view source
+Set-Cookie: .AspNetCore.Mvc.CookieTempDataProvider=.............................................................
+
+Alternatively, you can use Session State.
+
+Cookie Configuration:
+-------------------------------
+You can configure various options related to the TempData cookie in the ConfigureService() method of Startup class in the Startup.cs file. The following example changes the name of the cookie:
+
+using Microsoft.AspNetCore.Mvc;
+
+public void ConfigureServices(IServiceCollection services)
+{
+	..........................
+	services.Configure<CookieTempDataProviderOptions>(options =>
+            	{
+                		options.Cookie.Name = "MyTempDataCookie";
+
+		//If you want to make a TempData Storage Cookie as Persistent then set Expiration Property otherwise by 		//default it uses in-memory cookie
+		//For Example It is set to expires after creation of 2 minutes
+                		options.Cookie.Expiration = new TimeSpan(0, 2, 0);
+            	});
+	........................
+}
+
+Response Headers		view source
+Set-Cookie: MyTempDataCookie=.............................................................
+
+Session State
+--------------------
+Most browsers limit the size of cookies and therefore the data can be stored in them. If you exceed this limit, you will get a 400 Http error code: The size of the request headers is too long. If you need to store large amounts of data in TempData, you can use the session provider instead.
+
+The three steps to implements this are:
+
+1. Call the AddSessionStateTempDataProvider() method in ConfigureServices() method (chained to AddRazorPages() method)
+
+2. Call AddSession() method in ConfigureServices() method.
+
+3. Call app.UseSession() method in the Configure method to enable session middleware in ASP.NET Core request pipleline
+
+public void ConfigureServices(IServiceCollection services)
+ {
+	........................
+	services.AddRazorPages().AddSessionStateTempDataProvider();
+	services.AddSession();
+	........................
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+	.........................
+	app.UseSession();
+	........................
+}
+
+Limitations:
+----------------
+You can store simple values in TempData - strings, booleans and numeric types, but if you try to store complex types, you will encounter an InvalidOperationException:
+
+	"InvalidOperationException: The 'Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure.DefaultTempDataSerializer' cannot serialize an object of type '[name of the property]'."
+
+If you want to use TempData to store complex types, you must serialize it to a string-based format yourself. JSON is the recommended format to use because it is relatively compact (compared to XML) and JSON.Net is included as part of the default project template.
+
+The following class needs to create which contains two extension methods: one for serialising data to JSON and other one for deserialising it as follows:
+
+In Application Root Folder:
+
+TempDataExtensions.cs:
+-----------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Newtonsoft.Json;
+
+namespace ASP.NETCoreWebApp1
+{
+    public static class TempDataExtensions
+    {
+        public static void Set<T>(this ITempDataDictionary tempData,string key, T value) where T: class
+        {
+            tempData[key] = JsonConvert.SerializeObject(value);
+        }
+
+        public static T Get<T>(this ITempDataDictionary tempData, string key) where T: class
+        {
+            tempData.TryGetValue(key, out object result);
+            return result == null ? null : JsonConvert.DeserializeObject<T>((string)result);
+        }
+    }
+}
+
+Usage of above extension methods while storing the complex types into TempData as follows:
+
+Models -> Person.cs:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASP.NETCoreWebApp1.Models
+{
+    public class Person
+    {
+        public string Name { get; set; }
+        public string City { get; set; }
+    }
+}
+
+Example.cshtml:
+-----------------------
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<h1>Welcome to Example Page</h1>
+
+<form method="post">
+    <b>Name:</b><br />
+    <input asp-for="Person.Name" />
+    <br /><br />
+    <b>City: </b><br />
+    <input asp-for="Person.City"  />
+    <br /><br />
+    <input type="submit" value="Submit" />
+</form>
+
+Example.cshtml.cs:
+---------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+
+using ASP.NETCoreWebApp1.Models;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public Person Person { get; set; }
+
+        public void OnGet()
+        {
+           
+        }
+
+        public IActionResult OnPost()
+        {
+            TempData.Set("person", Person);
+
+            return RedirectToPage("Post");
+        }
+    }
+}
+
+Post.cshtml:
+-----------------
+@page 
+@model ASP.NETCoreWebApp1.Pages.PostModel
+@using ASP.NETCoreWebApp1.Models
+
+@{
+    Person person = TempData.Get<Person>("person");
+}
+
+<p>
+    <b>Name: </b>@person.Name
+</>
+<p>
+    <b>City: </b>@person.City
+</p>
+
+TempData and Model Binding:
+-------------------------------------------
+Model binding and TempData conflict with each other in the sense that they both provide a mechanism to populate page properties with values from an HTTP request. One must execute after the other, and the default behaviour is that TempData population takes place after model binding. There is nothing to stop you decorating a page property with both the BindProperty and TempData attributes:
+
+[BindProperty, TempData]
+public string Name { get; set; }
+
+However, any posted form value that is bound to the property will be overwritten by whatever is in TempData, which invariably is nothing. If you need to assign a model bound value to TempData, remove the TempData attribute and make the assignation manually as follows:
+
+[BindProperty]
+public string Name { get; set; }
+
+public IActionResult OnPost()
+{
+            TempData["Name"] = Name;
+             ......................
+}
+
+Session Variables:
+--------------------------
+Session state is a mechanism that enables you to store and retrieve user specific values temporarily. These values can be stored for the duration of the visitor's session on your site. In most of cases, they are stored in server memory.
+
+Session is a feature in ASP.NET Core that enables us to save/store the user data. Session stores the data in the dictionary on the Server and SessionId is used as a key. The SessionId is stored on the client at cookie. The SessionId cookie is sent with every request. The SessionId cookie is per browser and it cannot be shared between the browsers. There is no timeout specified for SessionId cookie and they are deleted when the Browser session ends.
+
+So ASP.NET Core maintains session state by providing a cookie to the client that contains a session ID. The cookie session ID:
+
+Is sent to the app with each request.
+Is used by the app to fetch the session data.
+
+At the Server end, session is retained for a limited time. The default session timeout at the Server is 20 minutes but it is configurable.
+
+Sessions are of two types, namely In-Proc or In-memory and Out-Proc or Distributed session (Ex: SQL Server Session state in ASP.NET Core). If our session is in-memory and our application is hosted on Web-Farm environment, we need to use sticky sessions to tie each session to a specific Server whereas an Out-Proc session does not require sticky sessions and they are the most preferred way to use sessions in our application.
+
+Session state demonstrates the following behaviors:
+
+The session cookie is specific to the browser. Sessions aren't shared across browsers.
+
+Session cookies are deleted when the browser session ends.
+
+If a cookie is received for an expired session, a new session is created that uses the same session cookie.
+
+Empty sessions aren't retained. The session must have at least one value set to persist the session across requests. When a session isn't retained, a new session ID is generated for each new request.
+
+The app retains a session for a limited time after the last request. The app either sets the session timeout or uses the default value of 20 minutes. Session state is ideal for storing user data:
+
+	- That's specific to a particular session.
+	- Where the data doesn't require permanent storage across sessions.
+
+Session data is deleted either when the ISession.Clear implementation is called or when the session expires.
+
+There's no default mechanism to inform app code that a client browser has been closed or when the session cookie is deleted or expired on the client.
+
+Session state cookies aren't marked essential by default. Session state isn't functional unless tracking is permitted by the site visitor.
+
+Note: There is no replacement for the cookieless session feature from the ASP.NET Framework because it's considered insecure and can lead to session fixation attacks.
+
+Warning
+------------
+Don't store sensitive data in session state. The user might not close the browser and clear the session cookie. Some browsers maintain valid session cookies across browser windows. A session might not be restricted to a single user. The next user might continue to browse the app with the same session cookie.
+
+Enabling Session State:
+---------------------------------
+The Microsoft.AspNetCore.Session package:
+
+	Is included implicitly by the framework.
+	Provides middleware for managing session state.
+
+It is not enabled by default. You enable Session State in the Startup class as follows:
+
+public void ConfigureServices(IServiceCollection services)
+{
+            services.AddSession(); //Adds services required for application session state
+
+            services.AddMemoryCache(); //Adds In-Memory Implementation at server side to store session information
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+	................................
+	................................
+	app.UseSession(); //Adds the Microsoft.AspNetCore.Session.SessionMiddleware to automatically enable session state for the application.
+	................................
+	................................
+}
+
+The order of middleware is important. 
+Call UseSession after UseRouting and before MapRazorPages and MapControllerRoute/MapDefaultControllerRoute.
+
+HttpContext.Session is available after session state is configured.
+
+HttpContext.Session can't be accessed before UseSession has been called.
+
+A new session with a new session cookie can't be created after the app has begun writing to the response stream. The exception is recorded in the web server log and not displayed in the browser.
+
+The default session provider in ASP.NET Core loads session records from the underlying IMemoryCache/IDistributedCache backing store asynchronously only if the ISession.LoadAsync method is explicitly called before the TryGetValue, Set, or Remove methods. If LoadAsync isn't called first, the underlying session record is loaded synchronously, which can incur a performance penalty at scale.
+
+Session uses a cookie to track and identify requests from a single browser. By default, this cookie is named .AspNetCore.Session, and it uses a path of /. Because the cookie default doesn't specify a domain, it isn't made available to the client-side script on the page (because HttpOnly defaults to true).
+
+Configuring Sessions:
+---------------------------------
+
+To override cookie session defaults, use SessionOptions:
+
+Once enabled, a session begins when the user first visits the site, and lasts for 20 minutes after the last activity from the user at which point the contents of the session are abandoned. The duration is controlled by the IdleTimeout option, which can be configured in ConfigureServices() method of Startup class as follows:
+
+public void ConfigureServices(IServiceCollection services)
+{
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(2);
+            });
+            ...............................
+}
+
+Each request that passes through the Session Middleware resets the timeout.
+
+Set and get Session values
+----------------------------------------
+Session state is accessed from a Razor Pages PageModel class or MVC Controller class with HttpContext.Session. This property is an ISession implementation.
+
+The ISession implementation provides several extension methods to set and retrieve integer and string values. The extension methods are in the Microsoft.AspNetCore.Http namespace.
+
+ISession extension methods:
+
+Get(ISession, String)
+GetInt32(ISession, String)
+GetString(ISession, String)
+SetInt32(ISession, String, Int32)
+SetString(ISession, String, String)
+
+Using Session Variables:
+------------------------------------
+The Session API offers three methods for setting session values: SetInt32, SetString and Set, which takes a byte array as an argument. The session framework stores items as byte arrays to ensure that session values are serialisable, primarily for storage on remote servers. Internally, the SetInt32 and SetString methods convert the supplied values to a byte array. Here is the actual implementation of the SetString() method:
+
+public static void SetString(this ISession session, string key, string value)
+{
+	session.Set(key, Encoding.UTF8.GetBytes(value));
+}
+
+Working with Session:
+--------------------------------
+Example1:
+
+Example.cshtml:
+------------------------
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<h1>Welcome to Example Page</h1>
+
+<form method="post">
+    <b>Name: </b>
+    <input type="text" name="name" />
+    <br /><br />
+    <b>Age: </b>
+    <input type="text" name="age" />
+    <br /><br />
+    <b>Is Married: </b>
+    <input type="checkbox" name="isMarried" />
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Example.cshtml.cs:
+----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public void OnGet()
+        {
+           
+        }
+
+        public IActionResult OnPost()
+        {
+            string name = Request.Form["name"].ToString();
+            int age = int.Parse(Request.Form["age"].ToString());
+            bool isMarried = Request.Form["isMarried"] == "on" ? true : false;
+
+            HttpContext.Session.SetString("name", name);
+            HttpContext.Session.SetInt32("age", age);
+            HttpContext.Session.Set("isMarried", BitConverter.GetBytes(isMarried));
+
+            return RedirectToPage("Post");
+        }
+    }
+}
+
+Retrieving the Session Variables Data in PageModel Class:
+-----------------------------------------------------------------------------------
+
+Post.cshtml.cs:
+---------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Http;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class PostModel : PageModel
+    {
+        public void OnGet()
+        {
+            ViewData["name"] = HttpContext.Session.GetString("name");
+            ViewData["age"] = HttpContext.Session.GetInt32("age");
+            ViewData["isMarried"] = BitConverter.ToBoolean(HttpContext.Session.Get("isMarried"));
+        }
+    }
+}
+
+Displaying the retrieved Session Data:
+-------------------------------------------------------
+
+Post.cshtml:
+-----------------
+@page
+@model ASP.NETCoreWebApp1.Pages.PostModel
+
+<p>
+    <b>Name: </b>
+    @ViewData["name"]
+</p>
+
+<p>
+    <b>Age: </b>
+    @ViewData["age"]
+</p>
+<p>
+    <b>Is Married: </b>
+    @if (ViewData["isMarried"].ToString().ToLower() == "true")
+    {
+        <input type="checkbox" checked="checked" disabled="disabled" />
+    }
+    else
+    {
+        <input type="checkbox" disabled="disabled" />
+    }
+</p>
+
+Or Directly you can access (retrieve) session on Razor Content Page (Ex: Post.cshtml):
+------------------------------------------------------------------------------------------------------------------------------
+@page
+@model ASP.NETCoreWebApp1.Pages.PostModel
+@using Microsoft.AspNetCore.Http
+
+<p>
+    <b>Name: </b>
+    @HttpContext.Session.GetString("name")
+</p>
+
+<p>
+    <b>Age: </b>
+    @HttpContext.Session.GetInt32("age")
+</p>
+<p>
+    <b>Is Married: </b>
+    @{ 
+        bool isMarried = BitConverter.ToBoolean(HttpContext.Session.Get("isMarried"));
+    }
+    @if (isMarried == true)
+    {
+        <input type="checkbox" checked="checked" disabled="disabled" />
+    }
+    else
+    {
+        <input type="checkbox" disabled="disabled" />
+    }
+</p>
+
+Post.cshtml.cs:
+----------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Http;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class PostModel : PageModel
+    {
+        public void OnGet()
+        {
+           
+        }
+    }
+}
+
+All of the Get method along with the GetString and GetInt32 methods return null if no values has been set for the referenced key, or if the value has been cleared for any reason. If that happens to the 'isMarried' value, the BitConverter.ToBoolean method call will result in an 'ArgumentOutOfRangeException'. You should test for this before attempting any further operations:
+
+if (HttpContext.Session.Get("isMarried") != null)
+{
+                ViewData["isMarried"] = BitConverter.ToBoolean(HttpContext.Session.Get("isMarried"));
+}
+
+You can also use the TryGetValue() method to achieve the same result in a cleaner way:
+
+if (HttpContext.Session.Get("isMarried") != null)
+{
+                HttpContext.Session.TryGetValue("isMarried", out byte[] result);
+                ViewData["isMarried"] = BitConverter.ToBoolean(result);
+}
+
+You can use the TryGetValue() method to achieve the Byte array result as follows:
+
+HttpContext.Session.TryGetValue("name", out byte[] result);
+ViewData["BName"] = result;
+
+In The View Page to Print the Byte Array Value:
+
+<h1>
+    @foreach(Byte b in (Byte[])ViewData["BName"])
+    {
+        <span>@b&nbsp;</span>
+    }
+</h1>
+
+Working with other Types:
+--------------------------------------
+As has been shown, when setting non-string or int values as session variables, you need to take care of serilisation to byte array yourself. You could do this at the point of setting values as illustrated earlier, but a more reusable approach can be achieved by creating your own extension methods on ISession. 
+
+Custom Session Extension methods:
+-----------------------------------------------------
+As discussed earlier, there are two extension methods to get the data from session and set the data to session are available, namely GetInt32 and GetString, SetInt32 and SetString. Similarly, we can add our custom extension methods to get and set the value in session.
+
+The following example shows how you might implement methods for getting and setting boolean values as session variables:
+
+SessionExtension.cs (At Application Root Level):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+
+namespace MVCCoreWebApp1
+{
+    public static class SessionExtensions
+    {
+        public static void SetBoolean(this ISession session, string key, bool value)
+        {
+            session.Set(key, BitConverter.GetBytes(value));
+        }
+
+        public static bool? GetBoolean(this ISession session, string key)
+        {
+            var data = session.Get(key);
+            if(data == null)
+            {
+                return null;
+            }
+
+            return BitConverter.ToBoolean(data);
+        }
+    }
+}
+
+Usage of the extension method:
+----------------------------------------------
+	Now you can use these methods to set and get boolean value:
+
+While Setting the Session:
+
+HttpContext.Session.SetString("name", name);
+HttpContext.Session.SetInt32("age", age);
+HttpContext.Session.SetBoolean("isMarried", isMarried);
+
+While Getting the Session:
+
+ViewData["name"] = HttpContext.Session.GetString("name");
+ViewData["age"] = HttpContext.Session.GetInt32("age");
+ViewData["isMarried"] = HttpContext.Session.GetBoolean("isMarried");
+
+In the example given below, I have created an extension method to set double value to session and get double value from session.
+
+SessionExtension.cs (At Application Root Level):
+
+using System;  
+using Microsoft.AspNetCore.Http;  
+
+public static class SessionExtensions  
+{  
+    public static void SetDouble(this ISession session, string key, double value)  
+    {  
+        session.Set(key, BitConverter.GetBytes(value));  
+    }  
+
+    public static double? GetDouble(this ISession session, string key)  
+    {  
+        var data = session.Get(key);  
+        if (data == null)  
+        {  
+            return null;  
+        }  
+        return BitConverter.ToDouble(data, 0);  
+    }   
+} 
+
+Usage of the extension method:
+----------------------------------------------
+	Now you can use these methods to set and get double value:
+
+While Setting the Session:
+
+HttpContext.Session.SetString("name", name);
+HttpContext.Session.SetDouble(“Percentage”,85.55);  
+
+While Getting the Session:
+
+ViewData["name"] = HttpContext.Session.GetString("name");
+ViewData["percentage"] = HttpContext.Session.GetDouble(“Percentage”);  
+
+Store Complex Data into Session:
+-------------------------------------------------
+As we are aware, session is able to store only byte of an array. Compared to the previous version, ASP.NET Core does not perform any operation such as serialization/ de-serialization on the values stored in session. Here, I am converting the complex object into JSON and store it as a string. Later, I am retrieving it as a string and de-serialize to original object.
+
+Thus, I have written the extension method for set and get complex object to session.
+
+SessionExtension.cs (At Application Root Level):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;  
+
+namespace MVCCoreWebApp1
+{
+    public static class SessionExtensions
+    {
+    	public static void SetComplexData(this ISession session, string key, object value)  
+    	{  
+        		session.SetString(key, JsonConvert.SerializeObject(value));  
+    	}
+
+    	public static T GetComplexData<T>(this ISession session, string key)  
+    	{  
+        		var data = session.GetString(key);  
+        		if (data == null)  
+        		{  
+            			return default(T);  
+        		}  
+        		return JsonConvert.DeserializeObject<T>(data);  
+    	} 
+    }
+}
+
+Usage of the extension method:
+----------------------------------------------
+	Now you can use these methods to set and get Complex Data:
+
+Complex Type:
+
+Models -> User.cs:
+
+public class User   
+{  
+    public string Name { get; set; }  
+    public double Percentage { get; set; }  
+} 
+
+Example.cshtml.cs:
+
+public IActionResult OnPost()  
+{  
+    User user = new User();  
+    user.Name = “John Smith”;  
+    user.Percentage = 85.55;             
+      
+    HttpContext.Session.SetComplexData(“UserData”, user);  
+    return RedirectToPage("Post");
+}
+
+Post.cshtml.cs:
+
+public void OnGet()
+{
+    ViewData["userData"] = HttpContext.Session.GetComplexData<User>(“UserData”);  
+}
+
+---------------------------------------------------------------------------------------------------------------------------
+Deleting the Session:
+-------------------------------
+These are two methods available if you want to delete session values. One is the Remove method which allows you to delete individuals values from the session collection by key:
+
+HttpContext.Session.Remove("name");
+
+The other is the Clear method. This removes all keys and values assosiated with the session:
+
+HttpContext.Session.Clear();
+
+Session Cookies:
+------------------------
+ASP.NET Core uses cookies to tie multiple request together in a session. The Cookie options are managed using the Options pattern when configure sessions:
+
+Startup.cs:
+
+public void ConfigureServices(IServiceCollection services)
+{
+            services.AddSession(options =>
+            {
+                ......................
+                options.Cookie.Name = "MySessionIdCookie";
+            });
+            ....................
+}
+
+SQL Server Session State In ASP.NET Core:
+---------------------------------------------------------------
+Session is a feature in ASP.NET Core that enables us to save/store user data. Session stores the data in a dictionary on the Server and SessionId is used as a key. The SessionId is stored on the client at the cookie. The SessionId cookie is sent with every request. The SessionId cookie is Browser specific and it cannot be shared among the Browsers. There is no timeout specified for SessionId cookie and they are deleted when the Browser session ends.
+
+Session are of two types: InProc or In-memory and OutProc or Distributed session. If our session is in-memory and our Application is hosted on Web-Farm environment, we need to use sticky sessions to tie each session to a specific server. Whereas OutProc session does not require sticky sessions and they are the most preferred way to use session in our application.
+
+In the earlier, we talked about InProc or In-memory session. Now, we will learn about OutProc - SQL Server Session state in ASP.NET Core.
+
+Configure SQL Server session state
+-----------------------------------------------------
+In SQL Server Session state, previous version of ASP.NET requires a number of tables and stored procedures to manage the storage of session in SQL server and this can be configured, using “aspnet_regsql” command or a tool. ASP.NET Core requires only one table. 
+
+To create a SQL Server session state item table in a SQL Server instance, you can use the dotnet-sql-cache tool. The tool creates a table with the name and schema that you specify.
+
+To Install 'dotnet sql-cache', run the following command to install
+
+>dotnet tool install --global dotnet-sql-cache
+
+Create a table in SQL Server by running the sql-cache create command. Provide the SQL Server instance (Data Source), database (Initial Catalog), schema (for example, dbo), and table name (for example, SQLSessions):
+
+The command is in the format given below. 
+
+dotnet sql-cache create <connection string>  <schema>  <table name>
+
+Example: .NET CLI:
+
+Given following below command generates the table and an index.
+
+dotnet sql-cache create "Data Source=RSN\RAKESHSOFTNET;Initial Catalog=TestDB;User Id=sa;Password=123;" "dbo" "SQLSessions"
+
+A message is logged to indicate that the tool was successful:
+
+Console:
+
+Table and index were created successfully.
+
+The table created by the sql-cache tool has the following schema:
+
+Column Name		Data Type		Allow Nulls
+Id			nvarchar(900)	No
+Value			varbinary(max)	No
+ExpiresAtTime		datetimeoffset(7)	No
+SlidingExpirationInSecond	bigint		Yes
+AbsoluteExpiration		datetimeoffset(7)	Yes
+
+Note: To use a SQL Server Session State (SQL Server distributed cache), add a package reference to the Microsoft.Extensions.Caching.SqlServer package.
+
+We can add a connection string to appsettings.json file or put it directly in ConfigureServices method of startup class. Following is the definition of ConfigureServices and Configure method of startup class. 
+
+using Microsoft.Extensions.DependencyInjection;
+
+ public void ConfigureServices(IServiceCollection services)  
+        {  
+            services.AddDistributedSqlServerCache(options =>  
+            {  
+                options.ConnectionString = @"Data Source=RSN\\RAKESHSOFTNET;Initial Catalog=TestDB;User Id=sa;Password=123;";  
+	//OR
+                options.ConnectionString = Configuration.GetConnectionString("sqlSessionConStr");
+
+                options.SchemaName = "dbo";  
+                options.TableName = "SQLSessions";  
+            });  
+              
+            services.AddSession(options => {   
+                options.CookieName = "Test.Session";  
+                options.IdleTimeout = TimeSpan.FromMinutes(60);   
+            });  
+            
+            ......................
+        }  
+==================================================
+Application Variables:
+-------------------------------
+Previous versions of ASP.NET provided APIs for storing and retrieving values globally, which revolved around usage of a dictionary like structure represented by the System.Web.HttpApplicationState object. ASP.NET Core doesn't offer anything equivalent to this. Instead, you are encouraged to implement your own solutions for managing data globally.

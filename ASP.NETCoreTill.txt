@@ -1,0 +1,2967 @@
+			           ASP.NET Core 3.1/5.0/6.0 on .NET Core 3.1/.NET 5.0/.NET 6.0 Software Platform
+						       with
+			                     [Razor Pages + Core MVC + EF Core + Core Web API]
+
+					                https://dot.net/
+					   (https://dotnet.microsoft.com/)
+
+					              DotNetConf 2021
+					    (https://www.dotnetconf.net/)
+.NET:
+	|- .NET Framework
+	|- .NET Core
+
+.NET Framework: Software Platform (2002, Version 1.0)
+
+	- Latest Version of .NET Framework is 4.8 (2019)
+
+	C# - Programming Language
+
+	VB.NET - Programming Language
+
+	ASP.NET: Web Platform
+
+		ASP.NET Web Form
+
+		ASP.NET MVC 5
+
+		WCF (Windows Communication Foundation)
+
+		Web API
+
+.NET Core: Software Platform (2016, Version 1.0)
+
+	Latest Version of .NET Core is 3.1 (LTS - Long Term Support) and Next Release of .NET Core 3.1 is .NET 5.0 & Next Release to .NET 5.0 is .NET 6.0
+
+	Programming Languages in .NET Core/.NET5/.NET6: C#, VB, F#
+
+	ASP.NET Core: Web Platform
+
+		ASP.NET Core Razor Pages Framework - Web Site - Page Focused Approach - MVVM
+
+		ASP.NET Core MVC Framework - Web Site - MVC Architectural Design Pattern
+
+		ASP.NET Core API Framework - Web Services (RESTful Services/Http Services) - MVC
+
+		ASP.NET Core with ADO.NET
+
+		ASP.NET Core with ORM Tool/Framework such as Entity Framework Core/Dapper
+
+		ASP.NET Core with Angular Integration - SPA (Single Page Application)
+
+		ASP.NET Core with React.js Integration - SPA (Single Page Application)
+
+		ASP.NET Core with React.js & Redux Integration - SPA (Single Page Application)
+
+.NET Core - Free, Open-Source & Cross-Platform (Windows, Linux, macOS)
+
+	1.x:
+		1.0		- 27th June 2016
+	 	1.1		- 16th November 2016
+	2.x:
+		2.0		- 14th August 2017
+		2.1 		- 30th May 2018
+		2.2		- 4th December 2018
+	3.x:	
+		3.0		- 23rd September 2019
+		3.1 (LTS)		- 3rd December 2019
+
+Version 4 has been skipped due to avoid confusion between .NET Framework 4.x and .NET Core/.NET 4 among the developers.
+
+.NET 5.0 (10th November 2020) @ Virtual Conference i.e. DotNetConf 2020
+
+	- C# 9.0			- Programming Language
+	- ASP.NET Core 5.0		- Web Platform
+	- Entity Framework Core 5.0	- ORM Tool/Framework
+
+.NET 6.0 (8th November 2021) @ Virtual Conference i.e. DotNetConf 2021
+	- C# 10.0
+	- ASP.NET Core 6.0
+	- Entity Framework Core 6.0
+
+.NET 7.0 (Nov 2022)
+
+.NET 8.0 (Nov 2023)
+
+ASP.NET Core 3.1/5.0/6.0:
+-------------------------------------
+ASP.NET Core is a free, open-source and cloud optimized framework which can run on Windows, Linux, or macOS. 
+You can say it is the new version of ASP.NET. The framework is a complete rewrite from scratch in order to make it open-source, modular and cross-platform.
+
+	ASP.NET Core:
+			Web Framework
+
+			Open Source
+
+			Cross-Platform
+
+			Modular
+
+			Cloud Optimized
+
+			Runs on top of the .NET Core
+
+ASP.NET Core:
+
+		Razor Pages Framework
+		Core MVC or MVC Core Framework
+		Core API or API Core
+		EF Core (ORM Tool/Framework)
+		ADO.NET
+		ASP.NET Core with Angular Integration - SPA (Single Page Application)
+
+- Understand .NET Core architecture and advantages
+- Build and run cross-platform ASP.NET Core Applications on Windows, Mac and Linux
+- Understand the ASP.NET Core Project default folders & files structure
+- Understand ASP.NET Core middleware
+- Configure ASP.NET Core request processing pipeline 
+- Understand Serving Static Files in ASP.NET Core
+- Use Dependency Injection in ASP.NET Core
+- Configuring & Implementing ASP.NET Core MVC.
+- Understand the differences between ASP.NET MVC 5 and ASP.NET Core MVC.
+- Obtain appropriate knowledge on role of Model, View and Controller in integrating them to develop complete web application with MVC architectural design pattern.
+- Understand different Action Results in ASP.NET Core.
+- Understand different views (View Page, Partial View Page & Layout Page) in ASP.NET Core.
+- Understand Razor View Engine in ASP.NET Core.
+- Building Forms in ASP.NET Core MVC.
+- Use HTML Helpers & Tag Helpers in ASP.NET Core.
+- Understand data passing techniques in ASP.NET Core.
+- Use Routing, Attribute Routing & Routing Constraints in ASP.NET Core.
+- Work with Entity Framework Core.
+- Access databases and performing CRUD operations using ADO.NET and Entity Framework Core in ASP.NET Core.
+- ASP.NET Core CRUD using Entity Framework Core & Angular.
+- Understand Dapper in ASP.NET Core.
+- Understand ViewModel in ASP.NET Core.
+- Understand Model Binding in ASP.NET Core.
+- Understand DataAnnotation in ASP.NET Core.
+- Understand Model Validation in ASP.NET Core.
+- Use Query String (GET Data), Forms (POST Data), Cookies and Session in ASP.NET Core
+- Learn to Modularize application using Areas.
+- Develop Views which are mobile compatible (Responsive View using Bootstrap Framework).
+- Compress the JavaScript & CSS code using Bundling & Minification features.
+- Handle Errors in ASP.NET Core.
+- Logging in ASP.NET Core.
+- Exploring Filters in ASP.NET Core.
+- Understand Caching in ASP.NET Core.
+- Understand Security using Authentication & Authorization in ASP.NET Core.
+- Implement Security using ASP.NET Core Identity.
+- Create RESTful Service using ASP.NET Core Web API and consuming in an application
+- Use ASP.NET CORE Web API RESTful Service via AJAX Request like jQuery AJAX & Angular AJAX.
+- Understand and Implement Repository and Dependency Injection Design Pattern.
+- Publish your application on IIS production server.
+- Publish your application on Microsoft Azure Cloud.
+- Learn Top 100 Interview Questions & Answers.
+
+ASP.NET Core on .NET Core Platform:
+	Introduction to ASP.NET Core
+	ASP.NET Core First Application
+	ASP.NET Core – launchSettings.json
+	ASP.NET Core – Configuration
+	ASP.NET Core – CLI (Command Line Interface)
+	ASP.NET Core – Middleware
+	ASP.NET Core – Exceptions
+	ASP.NET Core – Static Files
+	ASP.NET Core – Setup Razor Pages Framework
+	ASP.NET Core – Setup MVC Framework
+	ASP.NET Core – Razor Pages: Understanding Page Focused Approach Development
+	ASP.NET Core – Page Model Class & Handler Methods
+	ASP.NET Core – MVC Design Pattern
+	ASP.NET Core – Controllers & Action Methods
+	ASP.NET Core – Action Results
+	ASP.NET Core – Pages/Views
+	ASP.NET Core – Layout Pages/Views
+	ASP.NET Core – Partial Pages/Views
+	ASP.NET Core - _ViewImports.cshtml & _ViewStart.cshtml
+	ASP.NET Core – Helpers
+		HTML Helpers
+		Tag Helpers
+	ASP.NET Core – Model Binding
+	ASP.NET Core – ADO.NET
+	ASP.NET Core – Entity Framework Core (ORM Tool/Framework)
+	ASP.NET Core – Dapper (ORM Tool/Framework)
+	ASP.NET Core – Data Annotations & Validations
+	ASP.NET Core – Bundling & Minification
+	ASP.NET Core – Areas
+	ASP.NET Core – State Management Techniques
+	ASP.NET Core – Routing
+	ASP.NET Core – Attribute Routing
+	ASP.NET Core – Dependency Injection
+	ASP.NET Core – Filters
+	ASP.NET Core – Authentication & Authorization
+	ASP.NET Core – Identity
+	ASP.NET Core – Web API
+	ASP.NET Core – AJAX with JSON using jQuery, & Angular
+	ASP.NET Core – Single Page Application (Using Angular)
+
+.NET Core:
+---------------
+.NET Core is a new version of .NET Framework, which is free, open-source, 
+general-purpose development platform maintained by Microsoft. 
+It is a cross-platform framework that runs on Windows, Linux, and macOS operating systems.
+
+.NET Core framework can be used to build different types of applications today such as console, desktop, web, mobile, cloud, 
+IoT, machine learning (ML), Microservices, games etc...
+
+.NET Core is written from scratch to make it modular, lightweight, fast, and cross-platform framework, 
+it includes the core features that are required to run a basic .NET Core application. 
+Other features are provided as NuGet Packages, which you can add it in your application as needed. 
+In this way, .NET Core application speed up performance, reduce the memory footprint and becomes easy to maintain.
+
+Why .NET Core?
+-----------------------
+There are some limitations with the .NET Framework. For example, it only runs on the Windows OS Platform. 
+Also, you need to use different .NET APIs for different windows devices such as Windows Desktop, 
+Windows Store, Windows Phone, and Web Applications. In addition to this, the .NET Framework is a machine-wide framework. 
+Any changes made to it affects all applications taking dependency on it.
+
+Today, it's common to have an application that runs across devices; a backend on the web server, 
+admin front-end on windows desktop, web and mobile apps for consumers. 
+So there is a need for a single framework that works everywhere. 
+So, considering this, Microsoft created .NET Core. The main objective of .NET Core is to make .NET Framework open-source, 
+cross-platform compatible that can be used in a wide variety of verticals, from data center to touched-based devices.
+
+.NET Core Characteristics:
+--------------------------------------
+=>Open Source Framework:
+
+	-> .NET Core is an open-source framework maintained by Microsoft and available on GitHub under MIT and Apache 2 Licenses.
+
+	You can view, download, or contribute to the source code using following GitHub Repositories:
+
+		-> .NET Core Runtime: https://github.com/dotnet/runtime
+		-> .NET Core SDK: https://github.com/dotnet/sdk
+		-> ASP.NET Core: https://github.com/dotnet/aspnetcore
+		-> Language Compiler Platform Roslyn: https://github.com/dotnet/roslyn
+
+=>Cross-Platform:
+
+	-> .NET Core runs on Windows, Linux and macOS operating systems. These are different runtime for each operating system that 
+            execute the code and generate the same output.
+
+		-> You can create .NET Core apps for many operating systems, including:
+
+			- Windows
+			- macOS
+			- Linux
+			- Android
+			- iOS
+			- tvOS
+			- watchOS
+
+=>Consistent across Architecture:
+
+	-> Execute the code with the same behaviour in different instruction set architecture, including x64, x86, and ARM.
+
+		Supported processor architectures include:
+
+			- x64
+			- x86
+			- ARM32
+			- ARM64
+
+=> Wide-range of Applications:
+
+	-> Various types of applications can be developed and run on .NET Core platform such as Console, Desktop, Web, Mobile, Cloud, IoT, 
+           ML, Microservices, Gaming etc...
+
+
+		-> .NET Core is a free, open-source development platform for building many kinds of apps, such as:
+
+				- Console App
+				- Desktop App
+					- Windows Forms
+					- WPF (Windows Presentation Foundation)
+					- UWP (Universtal Windows Platform)
+				Web Apps
+				Web APIs
+				Microservices
+				Cloud
+				IoT
+				Machine Learning (ML)/AI
+				Games
+				Windows Service
+
+		Share functionality among different apps and app types by using 'Class Libraries".
+
+		With .NET Core, your code and project files look and feel the same no matter which type of app you are building. 
+                You have access to the same runtime, API, and language capabilities with each app.
+
+=> Support Multiple Languages:
+
+	-> You can use C#, F# and Visual Basic programming to develop .NET Core applications. You can use your favorite IDE, 
+           including Visual Studio 2019/2022, Visual Studio Code, Sublime Text, Vim etc...
+
+=> Modular Architecture:
+
+	-> .NET Core supports modular architecture approach using NuGet Packages. There are different NuGet Packages for various features 
+            that can be added to a .NET Core project as needed. Even though .NET Core library is provided as NuGet Packages.
+
+	In this way, .NET Core application speed up the performance, reduce the memory footprint and becomes easy to maintain.
+
+=> CLI Tools:
+
+	-> .NET Core includes CLI tools (Command Line Interface) for development and continuous-integration.
+
+=> Flexible Deployment
+
+	-> .NET Core applications can be deploys user-wide or system-wide or with Docker Containers.
+
+=> Compatibility
+	
+	-> Compatible with .NET Framework and Mono APIs by using .NET Standard Specification.
+
+.NET Core:
+--------------
+Developer(s): Microsoft Corporation, .NET Foundation
+
+Initial Released: .NET Core 1.0 - 27th June 2016
+
+Stable Release: .NET 6.0.0 - 8th Nov 2021
+
+	          Latest Update: .NET 6.0.1 - 14th December 2021
+
+Repository: https://github.com/dotnet/core
+
+Written: C++ and C#
+
+Operating System: Windows, Linux, and macOS
+
+Type: Software Framework
+
+Website: https://dot.net/
+               https://dotnet.microsoft.com
+
+.NET Core Versions:
+----------------------------
+.NET Core 1.x:
+
+	1.0 - 27th June 2016 (VS 2015 Update 3) - Latest Update 1.0.16 (14th May 2019)
+		- Supports Ended on 27th June 2019
+
+	1.1 - 16th November 2016 (VS 2017 Version 15.0) - Latest Update 1.1.13 (14th May 2019)
+		- Supports Ended on 27th June 2019
+
+.NET Core 2.x:
+ 
+	2.0 - 14th August 2017 (VS 2017 Version 15.3) - Latest Update 2.0.9 (10th July 2018)
+		- Supports Ended on 1st October 2018
+
+	2.1 - 30th May 2018 (VS 2017 Version 15.7) - Latest Update 2.1.28 (11th May 2021)
+		- Supports Ended on 21st August 2021
+
+	2.2 - 4th December 2018 (VS 2019 Version 16.0) - Latest Update 2.2.8 (19th November 2019)
+		- Supports Ended on 23rd December 2019
+
+.NET Core 3.x:
+	
+	3.0 - 23rd September 2019 (VS 2019 Version 16.3) - Latest Update 3.0.3 (18th Feb 2020)
+		- Supports Ended on 3rd March 2020
+
+	3.1 - 3rd December 2019 (VS 2019 Version 16.4) - Latest Update 3.1.22 (14th December 2021) - LTS
+		- Supports will be ended on 3rd December 2022
+
+.NET 5: It is next release of .NET Core 3.1
+
+	5.0 - 10th November 2020 (VS 2019 Version 16.8+) - Latest Update 5.0.13 (14th December 2021)
+		- Supports will be ended on 8th May 2022
+
+Note: The next release after .NET Core 3.1 is .NET 5. The .NET Framework will be deprecated in future, and .NET 5 will be the 
+      only .NET going forward - hence the removal of the "Core" branding and skipping of version 4 to avoid confusion with .NET Framework 4.x.
+
+.NET 5 - Nov 2020 (10th November 2020) - Latest Update 5.0.13 (14th December 2021)
+		- Supports will be ended on 8th May 2022
+
+.NET 6 - Nov 2021 (8th November 2021) - Latest Update 6.0.1 (14th December 2021) - LTS
+		- Supports will be ended on 8th November 2024
+
+.NET 7 - Nov 2022 (Projected to be Release in Nov 2022) - Upcoming
+
+.NET 8 - Nov 2023 (Projected to be Release in Nov 2023) - Upcoming
+
+Important Notes:
+------------------------
+.NET 5.0 is the next major release of .NET Core following 3.1. Microsoft named this new release .NET 5.0 instead of .NET Core 4.0 for two reasons:
+1. Microsoft skipped version number 4.x to avoid confusion with .NET Framework 4.x.
+2. Microsoft dropped "Core" from the name to emphasize that this is the main implementation of .NET going forward. 
+  .NET 5.0 supports more types of apps and more platforms than .NET Core or .NET Framework.
+
+ASP.NET Core 5.0 is based on .NET 5.0 but retain the name "Core" to avoid confusion with ASP.NET MVC 5. Likewise, 
+Entity Framework Core 5.0 retains the name "Core" to avoid confusion with Entity Framework 5 and 6.
+
+Language Support:
+---------------------------
+.NET Core supports following languages such as C#, F#, or Visual Basic in which you can write your .NET Core applications.
+
+.NET Core Composition:
+-----------------------------------
+The .NET Core Framework composed of the following parts:
+
+	CLI Tools
+	Roslyn
+	CoreFX
+	CoreCLR
+
+CLI Tools: A set of tooling for development and deployment.
+
+Roslyn: .NET Compiler Platform for C# and Visual Basic languages from Microsoft.
+
+CoreFx: A set of framework libraries.
+
+CoreCLR: A JIT based CLR (Common Language Runtime). CoreCLR is the .NET execution engine in .NET Core, performing function 
+such as garbage collection (GC) and compilation to machine code.
+
+ASP.NET Core 3.1/5.0/6.0:
+-------------------------------
+Application Template Types:
+
+	-> ASP.NET Core with Razor Pages (ASP.NET Core Razor Pages)
+
+	-> ASP.NET Core with MVC (ASP.NET Core MVC or Core MVC or MVC Core)
+
+	-> ASP.NET Core with API (ASP.NET Core API or Core API or API Core)
+
+	-> ASP.NET Core with ADO.NET
+
+	-> ASP.NET Core with Entity Framework Core (ORM Tool/Framework)
+
+	-> ASP.NET Core with Angular (Single Page Application)
+
+	-> ASP.NET Core with React JS (Single Page Application)
+
+	-> ASP.NET Core with React JS & Redux (Single Page Application)
+
+Note: In the above any of the listed application template types we may use traditional ADO.NET or Entity Framework Core ORM Tool for developing 
+      database-centric applications.
+
+ASP.NET Core:
+--------------------
+ASP.NET Core is the new version of the ASP.NET Web Framework mainly targeted to run on .NET Core Software Platform.
+
+ASP.NET Core is a free, open-source, and cross-platform for building cloud-based applications, such as web apps, IoT apps, and mobile backend. 
+It is designed to run on the cloud as well as on-premises.
+
+Same as .NET Core, it was architected modular with minimum overhead, and then other more advanced features can be added as NuGet 
+Packages as per application requirement. This results in high performance, require less memory, less deployment size, and easy to maintain.
+
+ASP.NET Core is an open-source framework supported by Microsoft and the community, so you can also contribute or download the source code 
+from the ASP.NET Core Repository on GitHub (https://github.com/dotnet/aspnetcore).
+
+ASP.NET Core 3.x onward application can be targeted to be develop and run on top of the .NET Core only.
+
+ASP.NET Core 1.x and 2.x application can be targeted to be develop and run on top of the .NET Core (Cross-Platform) as well as .NET Framework (Windows Only).
+
+Diagram Representation1:...............................................
+
+Summary:	
+ASP.NET Core is a cross-platform, high-performance, open-source framework for building modern, cloud-enabled, internet-connected apps. With ASP.NET Core you can:
+	- Build web apps and services, Internet of Things (IoT) apps, and mobile backends.
+	- Use your favorite development tools on Windows, Linux and macOS.
+	- Deploy to the cloud or on-premises.
+	- Run on .NET Core.
+
+Why ASP.NET Core?
+----------------------------
+> Supports Multiple Platforms:
+
+	- ASP.NET Core Applications can run on Windows, Linux and macOS. So you don't need to build different apps for different platforms using different frameworks.
+
+> Fast:
+
+	- ASP.NET Core no longer depends on System.Web.dll for browser-server communication. ASP.NET Core allows us to include packages that we need for application. 
+          This reduces the request pipeline and improves performance and scalability.
+
+> IoC Container:
+
+	- It includes the built-in IoC (Inversion of Control) container for automatic dependency injection which makes it maintainable and testable.
+
+> Integration with modern front-end framework & library:
+
+	- It allows you to use and manage modern front-end framework & library such as jQuery, Angular, ReactJS, and Bootstrap etc...
+
+> Hosting:
+
+	- ASP.NET Core web application can be hosted on multiple platforms with any web server such as IIS, Apache etc... 
+          It is not dependent only on IIS as a standard .NET Framework.
+
+> Code Sharing:
+
+	- It allows you to build a class library that can be used with .NET Framework such as .NET Framework 4.x or Mono.  
+          Thus a single code base can be shared across frameworks.
+
+> Side-by-Side App Versioning:
+
+	- ASP.NET Core runs in .NET Core, which supports the simultaneous running of multiple versions of application.
+
+> Smaller Deployment Footprint:
+
+	- ASP.NET Core applications runs on .NET Core, which is smaller than the full .NET Framework. 
+          So, the application which uses only a part of .NET CoreFX will have a smaller deployment size. This reduces the deployment footprint.
+
+Note:
+-------
+Many people are confused between ASP.NET Core and .NET Core. Please note that ASP.NET Core and .NET Core are not the same. 
+They are different, just like ASP.NET and .NET Framework are different.
+.NET Core is a fast, lightweight, modular and open-source framework for creating web application, services that run on Windows, 
+Linux, and macOS. So it is software platform on which ASP.NET Core applications runs.
+
+.NET Core vs ASP.NET Core:
+-----------------------------------------
+.NET Core is an open source and cross platform.
+ASP.NET Core is an open source and cross platform.
+
+.NET Core is a runtime to execute applications which are built on it.
+ASP.NET Core is a web framework to build web apps, IoT apps, and mobile backend on top of the .NET Core.
+
+Install .NET Core runtime to run applications and install .NET Core SDK to build/develop applications.
+There is no separate runtime and SDK are available for ASP.NET Core. .NET Core runtime and SDK includes ASP.NET Core libraries.
+
+.NET Core GitHub Repository:
+---------------------------------------------
+.NET Core Runtime: https://github.com/dotnet/runtime
+
+.NET Core SDK: https://github.com/dotnet/sdk
+
+ASP.NET Core GitHub Repository: https://github.com/dotnet/aspnetcore
+
+Latest version of .NET Core is .NET 6.0 which is the next release of .NET 5.0 and it was launched on 8th November 2021 at DotNetConf 2021.
+
+.NET 5.0 is the next release of .NET Core 3.1 and it was launched on 10th November 2020 at DotNetConf 2020.
+
+Latest version of ASP.NET Core is ASP.NET Core 6.0 which comes with .NET 6.0
+
+There is no separate versioning of ASP.NET Core. It is same as .NET Core/.NET versions.
+
+.NET Core is named "Core" because it includes core features of .NET Framework. The main objective of .NET Core is to make 
+.NET Framework open-source and cross-platform compatible so that it can be used in resource-constrained environments. 
+It includes minimum features that are required to run a basic .NET Core application and other advanced features that can be as package from NuGet.
+
+Install .NET Core 3.1/.NET 5.0/.NET 6.0:
+----------------------------------------------------------
+How to prepare a development environment for building .NET Core 3.1 or .NET 5.0 or .NET 6.0 applications.
+
+.NET Core 3.1/.NET 5.0/.NET 6.0 can be installed in two ways:
+
+	-> By installing Visual Studio 2019/2022 IDE
+
+	-> By installing .NET Core 3.1 or .NET 5.0 or .NET 6.0 SDK manually
+
+.NET Core 3.1/.NET 5.0/.NET 6.0 SDK installer already contains ASP.NET Core libraries, so there is no separate installer for ASP.NET Core.
+
+.NET Core v3.1.22:
+--------------------------
+	- .NET Core SDK 3.1.416:
+		- .NET Core Runtime 3.1.22
+		- ASP.NET Core Runtime 3.1.22
+		- .NET Core Desktop Runtime 3.1.22
+
+	Visual Studio Support:
+		Visual Studio 2019 (v16.7)
+		Visual Studio 2019 for Mac (v8.10)
+
+	Included in Visual Studio 16.7.22
+
+	Language Support:
+		C# 8.0
+		F# 4.7
+		Visual Basic 15.9
+
+.NET 5.0.13:
+-----------------
+	- .NET SDK 5.0.404:
+		- .NET Core Runtime 5.0.13
+		- ASP.NET Core Runtime 5.0.13
+		- .NET Core Desktop Runtime 5.0.13
+
+	Visual Studio Support:
+		Visual Studio 2019 (v16.11)
+		Visual Studio 2019 for Mac (v8.10)
+
+	Included in Visual Studio 16.11.8
+
+	Language Support:
+		C# 9.0
+		F# 5.0
+		Visual Basic 16.0
+
+.NET 6.0.1:
+---------------
+	- .NET SDK 6.0.101:
+		- .NET Core Runtime 6.0.1
+		- ASP.NET Core Runtime 6.0.1
+		- .NET Core Desktop Runtime 6.0.1
+
+	Visual Studio Support:
+		Visual Studio 2022 (v17.0)
+		Visual Studio 2022 for Mac (v17.0 latest preview)
+
+	Included in Visual Studio 17.0.3
+
+	Language Support:
+		C# 10.0
+		F# 6.0
+		Visual Basic 16.9
+
+Installing Visual Studio 2019/2022 IDE:
+--------------------------------------------------------
+You can use your favorite IDE, such as Visual Studio 2019/2022, Visual Studio Code (VS Code), and Sublime Text etc. to develop, restore, 
+build and run .NET Core/.NET 5/.NET 6 applications.
+
+If you don't have Visual Studio on your development PC, then it is recommended to install the latest Visual Studio 2022 (v17.0).
+
+Download and install Visual Studio 2022 based on your OS from https://visualstudio.microsoft.com/downloads/ select the appropriate 
+edition as per your license. The community edition is free for students, open-source contributors, and individuals.
+
+Install .NET Core 3.1/.NET 5.0
+------------------------------------------
+If Visual Studio installer doesn't includes .NET Core 3.1 and .NET 5.0 then you need to install it separately.
+
+To download the latest version of .NET Core 3.1 and .NET 5.0, dot it from it official website i.e. https://dotnet.microsoft.com/download 
+or https://dotnet.microsoft.com/download/dotnet-core and select the platform you are using.
+
+In our case Windows Platform:
+
+	.NET Core
+			.NET Core 3.1 (LTS)
+
+	.NET 
+			.NET 5.0
+
+.NET Core/.NET is a free, cross-platform, open-source development platform for building many different types of applications.
+
+.NET Core 3.1:
+
+		Build Apps: Download .NET Core SDK
+		Run Apps: Download .NET Core Runtime
+
+.NET 5.0:
+
+		Build Apps: Download .NET SDK
+		Run Apps: Download .NET Runtime
+
+As you can see above, .NET Core/.NET Runtime and .NET Core/.NET SDK are different things. .NET Core/.NET Runtime is only used to run .NET Core/.NET applications, 
+whereas .NET Core/.NET SDK includes tools and libraries to develop .NET Core/.NET applications. To setup a development environment,
+ we need to install .NET Core/.NET SDK for platform we use for development such as Windows, Linux, or Mac. 
+Here we will install .NET Core/.NET SDK because we are preparing a development environment for building .NET Core/.NET applications. 
+If you are aiming to run .NET Core/.NET application, then install .NET Core/.NET Runtime on your server or cloud or client desktop.
+
+Click on the "Download .NET Core/.NET SDK" button to download the latest version of .NET Core/.NET SDK installer. 
+It will download .NET Core 3.1/.NET 5.0 SDK as of today date.
+
+After downloading the installer, click on it to start the installation.
+
+Click on "Install" button and follow the wizard to install .NET Core 3.1/.NET 5.0 SDK.
+
+After installation complete successfully, you can now develop .NET Core 3.1/.NET 5.0 applications.
+
+Once installed, you can verify it by opening a command prompt (terminal in Mac) and type "dotnet --version" and press enter. 
+This will display the installed version and usage information as shown below:
+
+For .NET 6:
+----------------
+C:\Users\RakeshSoftNet>dotnet --version
+6.0.101
+
+OR
+
+For .NET 5:
+----------------
+C:\Users\RakeshSoftNet>dotnet --version
+5.0.13
+
+OR
+For .NET Core 3.1:
+--------------------------
+C:\Users\RakeshSoftNet>dotnet --version
+3.1.22
+
+Creating ASP.NET Core Application:
+----------------------------------------------------
+We will create our First ASP.NET Core 3.1/5.0 application using Visual Studio 2019/2022 IDE.
+
+Open Visual Studio 2019/2022 and click on "Create a new project".
+
+The "Create a new project" dialog box includes different .NET Core 3.1/.NET 5.0 application templates. 
+Each will create predefined project folders and files depends on the application type.  
+Here we will create a simple web application, so select "ASP.NET Core Web App" 
+template (It is a project template for creating an ASP.NET Core application with example ASP.NET Razor Pages Content) and click "Next".
+
+Next, give the appropriate name, location, and the solution name for ASP.NET Core application. In this example, 
+we will give the project name "ASPNETCoreWebApp1", use default location or you may change the location as per your 
+need and solution name i.e. "ASPNETCoreWebApps" and then click on the "Next" button.
+
+Next, make sure you have selected the appropriate Target Framework like .NET Core 3.1 (LTS) or .NET 5.0 (Current) 
+and we don't want HTTPS at this point, so uncheck "Configure for HTTPS" checkbox. Click on the "Create" button to create a project.
+
+This will create a new "ASP.NET Core Web App" project in Visual Studio 2019/2022. Wait for some time till Visual Studio restore 
+the packages in the project. Restoring process means Visual Studio will automatically add, update, or delete configured 
+dependencies as NuGet packages in the project.
+To run this web application, click on IIS Express or press F5 (with Debug) or Ctrl + F5 (without Debug). 
+This will open the browser and display the Welcome screen page output comes from the Index.cshtml under the Pages folder.
+
+ASP.NET Core Web Application Razor Pages - Project Structure:
+--------------------------------------------------------------------------------------------
+The following is a default project structure when you create an ASP.NET Core Web Application in Visual Studio 2019:
+
+ASPNETCoreWebApp1:
+-----------------------------------
+	Dependencies
+	Properties
+	wwwroot
+	Pages
+	appsettings.json
+	Program.cs
+	Startup.cs
+
+Note: ASP.NET Core Project files and folders are synchronized with physical files and folders. 
+If you add a new file in the project folder then it will directly reflect in the solution explorer. 
+You don't need to add it in the project explicitly by right clicking on the project.
+
+.csproj:
+----------
+ASP.NET Core 1.0 does not create .csproj file, instead, it uses .xproj and project.json to manage the project. 
+This has changed in ASP.NET Core 2.0. Visual Studio now uses .csproj file to manage projects. 
+We can edit .csproj settings by right clicking on the project and selecting "Edit Project File".
+
+The .csproj for created project looks like as below:
+
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+</Project>
+
+OR
+
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+</Project>
+
+The csproj file includes settings related to target framework such as .NET Core 3.1/.NET 5.0 Framework, project folder, NuGet Package references etc...
+
+Dependencies:
+---------------------
+The Dependencies in the ASP.NET Core project contain all the installed server side NuGet Packages.
+
+You can install all other required server side dependencies as NuGet Packages from Manage NuGet Packages window or using Package Manager Console. 
+(Ex: Install-Package <PackageName>).
+
+Properties:
+---------------
+The Properties node includes launchSettings.json file which includes Visual Studio profiles of debug settings. 
+The following is a default launchSettings.json file:
+
+{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:36870",
+      "sslPort": 0
+    }
+  },
+  "profiles": {
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    },
+    "ASPNETCoreWebApp1": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "applicationUrl": "http://localhost:5000",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
+
+We can also edit settings from debug tab of the project properties. Right click on the project -> select properties -> click Debug tab.
+
+In the debug tab, select a profile which you want to edit. You may change environment variable, URL etc...
+
+wwwroot:
+-------------
+By default, the wwwroot folder in the ASP.NET Core project is treated as a 'web root' folder. 
+Static files can be stored in any folder under the web root folder and accessed with a relative path to that root.
+
+In the standard ASP.NET application, static files can be served from the root folder of an application or any other folder under it. 
+This has been changed in ASP.NET Core. Now, only those files that are in the web root - wwwroot folder can be served over an http request. 
+All other files are blocked and cannot be served by default.
+
+Generally, there should be separate folder for the different types of static files such as JavaScript, CSS, Images, Library scripts etc. 
+in the wwwroot folder as shown below:
+
+	wwwroot:
+		css
+			site.css
+		js
+			site.js
+		lib
+			bootstrap
+			jquery
+			jquery-validation
+			jquery-validation-unobtrusive
+		favicon.ico
+
+You can access static files with base URL and file name. For example, we can access above site.css in css folder by http://localhost:<port>/css/site.css
+
+Remember you need to include a middleware for serving static files in the 'Configure()' method of Startup.cs file.
+
+	app.UseStaticFiles();
+
+Rename wwwroot folder:
+-----------------------------------
+You can rename wwwroot folder to any other name as per your choice and set it as a web root while preparing hosting environment in the Program.cs file.
+
+For example, let's rename wwwroot folder to 'Content' folder. Now, call UseWebRoot() method to configure 'Content' 
+folder as a web root folder in the Main() method of Program class in Program.cs file.
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASPNETCoreWebApp1
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>().UseWebRoot("Content");
+                });
+    }
+}
+
+Pages (Folder):
+----------------------
+There are two ways you can create web pages in ASP.NET Core. One is the MVC approach. The other one is using Razor Pages. 
+This folder (Pages) is created, if you choose the 'Web Application with the Razor Pages template'. All the razor pages will go into this folder.
+
+By default Pages folder contains following files:
+
+	Pages
+		Shared
+			_Layout.cshtml
+			_ValidationScriptsPartial.cshtml
+
+		_ViewImports.cshtml
+		_ViewStart.cshtml
+		Error.cshtml
+		Index.cshtml
+		Privacy.cshtml
+
+appsettings.json:
+-------------------------
+When we create an ASP.NET Core Web Application with an empty project template or Razor Pages or MVC template or Web API templates, 
+then Visual Studio automatically creates the appsettings.json file for us.
+
+appsettings.json file is an application configuration file used to store configuration settings of an application such as database connection strings, 
+any application scope global variables etc....
+
+If you open the appsettings.json file, then you can see the following default code:
+
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*"
+}
+
+Program.cs:
+-----------------
+ASP.NET Core web application is actually a console project which starts executing from the entry point "public static void Main()" 
+in Program class where can create a host for the web application.
+
+The following is the Program class in ASP.NET Core 3.1/5.0:
+
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASPNETCoreWebApp1
+{
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+    }
+}
+
+As you can see above, the Main() method calls method expression CreateHostBuilder() to build host with pre-configured defaults. 
+The CreateHostBuilder expression can also be written as a method that returns IHostBuilder.
+
+The Host is a static class which can be used for creating an instance of IHostBuilder with pre-configured defaults. 
+The CreateDefaultBuilder() method creates a new instance of HostBuilder with pre-configured defaults. Internally, 
+it configures Kestrel (Internal Web Server for ASP.NET Core), IISIntegration and other configurations.
+
+Setup Host in ASP.NET Core 1.x:
+-----------------------------------------------
+public static void Main(string[] args)
+{
+	var host = new WebHostBuilder()
+		.UseKestrel()
+		.UseContentRoot(Directory.GetCurrentDirectory)
+		.UseIISIntegration()
+		.UseStartup<Startup>()
+		.Build();
+
+	host.Run();
+}
+
+Setup Host in ASP.NET Core 2.x:
+-----------------------------------------------
+public static void Main(string[] args)
+{
+	CreateWebHostBuilder(args).Build().Run();
+}
+
+public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
+	WebHost.CreateDefaultBuilder(args)
+		.UseStartup<Startup>();
+
+Setup Host in ASP.NET Core 3.x:
+----------------------------------------------
+public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+
+Setup Host in ASP.NET Core 5.0:
+-----------------------------------------------
+public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+
+Startup.cs:
+----------------
+ASP.NET Core application must include Startup class. It is like Global.asax (Global Application Class) in the traditional 
+ASP.NET application. As the name suggests, it is executed first when the application starts.
+
+The startup class can be configured using UseStartup<T> method at the time of configuring the host in the Main() 
+method of Program class in Program.cs file as below:
+
+public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                });
+    }
+
+The name 'Startup' is by ASP.NET Core convention. However, we can give any name of the Startup class, 
+just specify it as the generic parameter in the UseStartup<T>() method. 
+For example, to name the Startup class as MyStartup specify it as .UseStratup<MyStartup>().
+
+Open Startup class in Visual Studio by clicking on the Startup.cs file in the solution explorer. 
+The following is a default Startup class in ASP.NET Core 3.x/5.0:
+
+public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddRazorPages();
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");
+            }
+
+            app.UseStaticFiles();
+
+            app.UseRouting();
+
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapRazorPages();
+            });
+        }
+    }
+
+As you can see, Startup class includes two public methods: ConfigureServices() and Configure().
+
+The Startup class must include a Configure() method and can optionally include ConfigureServices() method.
+
+ConfigureServices():
+-----------------------------
+The Dependency Injection pattern is used heavily in ASP.NET Core architecture. 
+It includes built-in IoC container to provide dependent objects using constructors.
+
+The ConfigureServices() method is a place where you can register your dependent classes with the built-in IoC container. 
+After registering dependent class, it can be used anywhere in the application. You just need to include it in the parameter of the constructor of a class 
+where you want to use it. The IoC container will inject it automatically.
+
+ASP.NET Core refers dependent class as a Service. So, whenever you read 'Service' then understand it is a class which is going to be used in some other class.
+
+ConfigureServices() method includes IServiceCollection parameter to register services to the IoC container.
+
+Configure():
+----------------
+The Configure() method is a place where you can configure application request pipeline for your application 
+using IApplicationBuilder instance that is provided by the built-in IoC container.
+
+ASP.NET Core introduced the middleware components to define a request pipeline, which will be executed on every request. 
+You include only those middleware components which are required by your application and thus increase the performance of your application.
+
+Create ASP.NET Core MVC Application:
+---------------------------------------------------------
+We will create our First ASP.NET Core 3.1/5.0 MVC application using Visual Studio 2019 IDE.
+
+Open Visual Studio 2019 and click on "Create a new project".
+
+The "Create a new project" dialog box includes different .NET Core 3.1/.NET 5.0 application templates. 
+Each will create predefined project folders and files depends on the application type.  
+Here we will create a MVC web application, so select "ASP.NET Core Web App (Model-View-Controller)" template and click "Next".
+
+Next, give the appropriate name, location, and the solution name for ASP.NET Core application. In this example, 
+we will give the project name "ASPNETCoreMVCWebApp1", use default location or you may change the 
+location as per your need and solution name i.e. "ASPNETCoreWebApps" and then click on the "Next" button.
+
+Next, make sure you have selected the appropriate Target Framework like .NET Core 3.1 (LTS) or .NET 5.0 (Current) and we don't want HTTPS at this point, 
+so uncheck "Configure for HTTPS" checkbox. Click on the "Create" button to create a project.
+
+This will create a new "ASP.NET Core MVC Web Application" project in Visual Studio 2019. Wait for some time till Visual Studio restore the packages in the project. 
+Restoring process means Visual Studio will automatically add, update, or delete configured dependencies as NuGet packages in the project.
+
+To run this web application, click on IIS Express or press F5 (with Debug) or Ctrl + F5 (without Debug). 
+This will open the browser and display the Welcome screen view output which renders through the Index action method of HomeController 
+(default controller of an application).
+
+ASP.NET Core MVC Web Application  - Project Structure:
+----------------------------------------------------------------------------------
+The following is a default project structure when you create an ASP.NET Core MVC Web Application in Visual Studio 2019 IDE:
+
+ASPNETCoreMVCWebApp1:
+-----------------------------------------
+	Dependencies
+	Properties
+	wwwroot
+	Controllers:
+		HomeController.cs
+	Models:
+		ErrorViewModel.cs
+	Views:
+		Home
+			Index.cshtml
+			Privacy.cshtml
+		Shared
+			_Layout.cshtml
+			_ValidationScriptsPartial.cshhtml
+			Error.cshtml
+		_ViewImports.cshtml
+		_ViewStart.cshtml
+	appsettings.json
+	Program.cs
+	Startup.cs
+
+-> ASP.NET Core MVC is a framework software maintained by Microsoft Corporation as a part of ASP.NET Core Framework on the top of .NET Core/.NET 
+Software Platform for the purpose of developing an application i.e. Web Application based on a Standard Architectural Pattern 
+such as MVC (Model-View-Controller) which allows developers to develop an application by splitting into three main aspects (components or logics or concerns).
+	i) Model 		
+	ii) View		
+	iii) Controller
+
+Model: It represents to data of an application along with business logics & data access logics.
+
+View: It represents to a view page (UI). View page gets created/rendered through the help of View-Engine.
+
+Controller: It represents to a user interaction logic that handles the user request and also provides a communication between Model & View if needed.
+
+Based on above discussion, we can say MVC provides a "Separation of Concerns or Separation of Logics"
+
+Due to separation of concerns it supports "loosely coupled" behaviour that leads into the following major three advantages in our application:
+		- Reusability
+		- Maintainability
+		- Testability
+
+In ASP.NET Core MVC Web Application:
+---------------------------------------------------------
+Models: This folder contains model classes such as:
+
+	- Application Data Domain Classes
+	- Business Logic Class
+	- Data Access Logic Class
+
+Note: Data Access Logic Classes can be created using traditional approach i.e. ADO.NET or by using modern approach i.e. 
+ORM (Object Relational Mapping) Tool (Framework) such as 'Entity Framework Core' or any other third party supported ORM Tool like 'NHibernate' or 'Dapper'.
+
+Views: This folder contains view pages (Razor Views).
+
+Controllers: This folder contains controller classes (User Interaction Logics).
+
+		In order to create controller classes, we have to follow some rules:
+
+			- It must be public class
+			- Controller class name must be followed by a word i.e. 'Controller'
+				For Example:
+						StudentController
+						TeacherController
+			- Every Controller class must be derive from a base class i.e. 'Controller' which is found into a namespace i.e. "Microsoft.AspNetCore.Mvc
+			- A controller class must contain at least one action method but as per need we may have any number of action methods 
+                          to perform some operation/action based on the given request by any user (client).
+
+.NET Core/.NET Command Line Interface (CLI):
+------------------------------------------------------------------
+The .NET Core Command Line Interface (CLI) is a new cross-platform tool for creating, restoring packages, building, running and publishing .NET Core Applications.
+
+We created our first ASP.NET Core Application using Visual Studio 2019 IDE in the earlier. Visual Studio internally uses this CLI to restore, 
+build and publish an application. Other higher level IDEs, editors and tools can use CLI to support .NET Core/.NET applications.
+
+.NET Core/.NET CLI is installed with .NET Core/.NET SDK for selected platform. So we don't need to install it separately on the development machine. 
+We can verify whether the CLI is installed properly by opening command prompt in windows and writing 'dotnet' and pressing Enter key. 
+It displays usage and help as shown below then it means it is installed properly.
+
+Usage: dotnet [options]
+Usage: dotnet [path-to-application]
+
+Options:
+  -h|--help         Display help.
+  --info            Display .NET information.
+  --list-sdks       Display the installed SDKs.
+  --list-runtimes   Display the installed runtimes.
+
+path-to-application:
+  The path to an application .dll file to execute.
+
+Command Structure:
+------------------------------
+The following is a command structure:
+
+dotnet <command> <argument> <option>
+
+All the command start with driver named dotnet. The driver starts the execution of the specified command. 
+After dotnet, we can supply command (also known as verb) to perform a specific action. Each command can be followed by arguments and options. 
+The following are .NET Core CLI commands:
+
+new: Creates a new project, configuration file, or solution based on the specified template.
+
+restore: Restores the dependencies and tools of a project.
+
+build: Build a project and all its dependencies. (Build a .NET Core/.NET Project)
+
+run: Run source code without any explicit compile or launch command. (Build & Run a .NET Core/.NET Project)
+
+publish: Packs the application and its dependencies into a folder for deployment to hosting system. (Publish a .NET Core/.NET project for deployment)
+
+test: Execute unit tests. (Run unit tests using test runner specified in a .NET Core/.NET project)
+
+vstest: Runs tests from the specified file. (Run Microsoft Test Engine (VSTest) commands)
+
+pack: Packs the code into a NuGet package. (Create a NuGet package)
+
+clean: Cleans the output of a project. (Clean build outputs of a .NET Core/.NET Project)
+
+help: Display help on the specified command. (Show command line help)
+
+sln: Modifies a .NET Core/.NET solution file. (Modify Visual Studio Solution files)
+
+store: Stores the specified assemblies in the runtime package store.
+
+Project Modification Commands:
+------------------------------------------------
+add package: Adds a package reference to a project.
+
+add reference: Adds project-to-project (P2P) references.
+
+remove package: Removes package reference from the project.
+
+remove reference: Remove project reference.
+
+list reference: Lists all project-to-project references.
+
+Create a New Project using CLI:
+---------------------------------------------
+To create a new .NET Core/.NET project, we have to use 'new' command followed by template name argument. We can create console, 
+class library, web, webapp, MVC, WebAPI, razor, Angular, react etc... project using CLI.
+
+The following command creates a new .NET Core/.NET project using the TEMPLATE:
+
+> dotnet new <TEMPLATE>
+
+You can find out the list of template using following option:
+
+> dotnet new -l
+
+It will show the list of available templates based on version of .NET Core/.NET:
+
+Template Name                                 Short Name           Language    Tags
+--------------------------------------------  -------------------  ----------  -------------------------------------
+ASP.NET Core Empty                            web                  [C#],F#     Web/Empty
+ASP.NET Core gRPC Service                     grpc                 [C#]        Web/gRPC
+ASP.NET Core Web API                          webapi               [C#],F#     Web/WebAPI
+ASP.NET Core Web App                          razor,webapp         [C#]        Web/MVC/Razor Pages
+ASP.NET Core Web App (Model-View-Controller)  mvc                  [C#],F#     Web/MVC
+ASP.NET Core with Angular                     angular              [C#]        Web/MVC/SPA
+ASP.NET Core with React.js                    react                [C#]        Web/MVC/SPA
+ASP.NET Core with React.js and Redux          reactredux           [C#]        Web/MVC/SPA
+Blazor Server App                             blazorserver         [C#]        Web/Blazor
+Blazor WebAssembly App                        blazorwasm           [C#]        Web/Blazor/WebAssembly/PWA
+Class Library                                 classlib             [C#],F#,VB  Common/Library
+Console App                                   console              [C#],F#,VB  Common/Console
+dotnet gitignore file                         gitignore                        Config
+Dotnet local tool manifest file               tool-manifest                    Config
+EditorConfig file                             editorconfig                     Config
+global.json file                              globaljson                       Config
+MSTest Test Project                           mstest               [C#],F#,VB  Test/MSTest
+MVC ViewImports                               viewimports          [C#]        Web/ASP.NET
+MVC ViewStart                                 viewstart            [C#]        Web/ASP.NET
+NuGet Config                                  nugetconfig                      Config
+NUnit 3 Test Item                             nunit-test           [C#],F#,VB  Test/NUnit
+NUnit 3 Test Project                          nunit                [C#],F#,VB  Test/NUnit
+Protocol Buffer File                          proto                            Web/gRPC
+Razor Class Library                           razorclasslib        [C#]        Web/Razor/Library/Razor Class Library
+Razor Component                               razorcomponent       [C#]        Web/ASP.NET
+Razor Page                                    page                 [C#]        Web/ASP.NET
+Solution File                                 sln                              Solution
+Web Config                                    webconfig                        Config
+Windows Forms App                             winforms             [C#],VB     Common/WinForms
+Windows Forms Class Library                   winformslib          [C#],VB     Common/WinForms
+Windows Forms Control Library                 winformscontrollib   [C#],VB     Common/WinForms
+Worker Service                                worker               [C#],F#     Common/Worker/Web
+WPF Application                               wpf                  [C#],VB     Common/WPF
+WPF Class library                             wpflib               [C#],VB     Common/WPF
+WPF Custom Control Library                    wpfcustomcontrollib  [C#],VB     Common/WPF
+WPF User Control Library                      wpfusercontrollib    [C#],VB     Common/WPF
+xUnit Test Project                            xunit                [C#],F#,VB  Test/xUnit
+
+-> The following creates new console project in the current directory with the same name as current directory.
+
+D:\DotNetCoreApps\ConsoleApp1>dotnet new console
+
+-> The following command creates a new console project named 'MyConsoleApp1'. The -n or --name option specifies the name of the project.
+
+D:\DotNetCoreApps>dotnet new console -n MyConsoleApp1
+
+-> The following command creates a new console application named MyConsoleApp1 to MyProjects directory. 
+The -o or --output option is used to specify an output directory where the project should be generated.
+
+D:\>dotnet new console -n MyConsoleApp1 -o D:\MyProjects\MyConsoleApp1
+
+OR
+
+D:\>dotnet new console -o D:\MyProjects\MyConsoleApp1
+
+After creating a project, navigate to the project directory (folder) in command prompt to apply project specific commands.
+
+Add Package Reference:
+-----------------------------------
+We often need to add NuGet package reference for different purposes.
+ For example, apply the following command to add Newtonsoft.json package to our .NET Core project:
+
+D:\DotNetCoreApps\ASPNETCoreWebApp1> dotnet add package Newtonsoft.json
+
+This will add Newtonsoft.json package to our project. We can verify it by opening .csproj file to the project.
+
+Add a specific version of a package to a project:
+
+D:\DotNetCoreApps\ASPNETCoreWebApp1> dotnet add package Newtonsoft.json -v/--version 12.0.2
+
+Remove Package Reference:
+-----------------------------------------
+The "dotnet remove package" command provides a convenient option to remove a NuGet package reference from a project.
+
+D:\DotNetCoreApps\ASPNETCoreWebApp1> dotnet remove package Newtonsoft.json
+
+Restore Packages:
+--------------------------
+To restore packages or to update existing packages, we can use restore command as shown below:
+
+D:\DotNetCoreApps\ASPNETCoreWebApp1> dotnet restore
+
+Build Project:
+-------------------
+To build a new or existing project, use 'dotnet build' command as shown below:
+
+D:\DotNetCoreApps\ASPNETCoreWebApp1> dotnet build
+
+Run Project:
+------------------
+To run our project, apply 'dotnet run' command as shown below:
+
+D:\DotNetCoreApps\ASPNETCoreWebApp1> dotnet run
+
+sln:
+-----
+dotnet sln: List or modifies the projects in a .NET solution file.
+
+dotnet sln [<Solution-File>] [command]
+
+dotnet sln [command] -h|--help
+
+The dotnet sln command provides a convenient way to list and modify projects in a solution file.
+
+To use the dotnet sln command, the solution file must already exist. If you need to create one, use the dotnet new command, as in the following example:
+
+	>dotnet new sln
+
+Arguments:
+
+	Solution-File:
+
+		The solution file to use. If this argument is omitted, the command searches the current directory for one, 
+                if it find no solution file or multiple solution files, the command fails.
+
+Options:
+
+	-?|-h|--help
+
+		Prints out a description of how to use the command.
+
+Commands:
+
+list: 
+-----
+List all the projects in a solution file.
+
+dotnet sln list [-h|--help]
+
+Arguments:
+
+	Solution-File:
+
+		The solution file to use. If this argument is omitted, the command searches the current directory for one, 
+                if it find no solution file or multiple solution files, the command fails.
+
+Options:
+
+	-?|-h|--help
+
+		Prints out a description of how to use the command.
+
+add:
+------
+Adds one or more projects to the solution file.
+
+dotnet sln [<Solution-File>] add <Project_Path>
+
+Example: 
+
+First Create any new project (Ex: ASP.NET Core Empty Project) in existing solution:
+
+D:\WebApps\ASPNETCoreWebApps>dotnet new web -n ASPNETCoreEmptyApp1 --no-https=true
+
+Then Add the above created project in existing solution:
+
+D:\WebApps\ASPNETCoreWebApps>dotnet sln add ASPNETCoreEmptyApp1
+
+Remove:
+------------
+Removes a project or multiple projects from the solution file.
+
+>dotnet sln [<Solution-File>] remove <Project-Path>
+
+Example:
+
+D:\WebApps\ASPNETCoreWebApps>dotnet sln remove ASPNETCoreEmptyApp1
+
+ASP.NET Core - Dependency Injection:
+--------------------------------------------------------
+ASP.NET Core is designed from scratch to support Dependency Injection. ASP.NET Core injects objects of dependency classes through constructor or method 
+by using built-in IoC (Inversion of Control) container.
+
+Dependency Injection:
+--------------------------------
+Dependency Injection (DI) is a design pattern used to implement IoC. It allows the creation of dependency object outside of class 
+and provides those objects to a class through different ways. Using DI, we move the creation and binding of the dependent 
+objects outside of the class that depends on them.
+
+Dependency Injection pattern involves 3 types of classes:
+
+1. Client Class:
+
+	- The Client class (dependent class) is a class which depends on the service class.
+
+2. Service Class
+
+	- The Service class (dependency) is a class that provides service to the client class.
+
+3. Injector Class
+
+	- The Injector class injects the service class object into the client class.
+
+Diagram Representation 2:...............................
+
+As you can see above in diagram, the injector class creates an object of the service class, and injects that object to a
+client class. In this way, the DI pattern separates the responsibility of 
+creating an object of the service class out of the client class.
+
+Types of Dependency Injection:
+----------------------------------------------
+As you have seen above in diagram, the injector class injects the service (dependency) to the client (dependent).  
+The injector class injects dependency broadly in three ways such as a constructor, a property, or a method.
+
+Constructor Injection:
+-------------------------------
+	- In the constructor injection, the injector supplies the service (dependency) through the client class constructor.
+
+Property Injection:
+---------------------------
+	- In the property injection (the Setter Injection), the injector supplies the service (dependency) through a public property of the client class.
+
+Method Injection:
+------------------------
+	- In this type of injection, the client class implements an interface which declares the method(s) to supply the dependency 
+          and the injector uses this interface to supply the dependency to the client class.
+
+Constructor Injection:
+-------------------------------
+As mentioned earlier, when we provide dependency through the constructor, this is called a constructor injection.
+
+Consider the following example where we have implemented DI using the constructor: 
+
+Example:
+
+public interface ICustomerDataAccess
+{
+	string GetCustomerName(int id);
+}
+
+public class CustomerDataAccess: ICustomerDataAccess
+{
+	public string GetCustomerName(int id)
+	{
+		//Write the logic to get the customer name based on given id from DB in real time applications
+
+		return "Name of the Customer";
+	}
+}
+
+public class CustomerBusinessLogic
+{
+	ICustomerDataAccess _customerDataAccess;
+
+	public CustomerBusinessLogic(ICustomerDataAccess customerDataAccess)
+	{
+		_customerDataAccess = customerDataAccess;
+	}
+	
+	public string GetCustomerName(int id)
+	{
+		return _customerDataAccess.GetCustomerName(id);
+	}
+}
+
+In the above example, CustomerBusinessLogic includes the constructor with one parameter of type ICustomerDataAccess. 
+Now, the calling class must inject an object of ICustomerDataAccess.
+
+public class CustomerService
+{
+	CustomerBusinessLogic _customerBusinessLogic;
+
+	public CustomerService()
+	{
+		_customerBusinessLogic = new CustomerBusinessLogic(new CustomerDataAccess());
+	}
+
+	public string GetCustomerName(int id)
+	{
+		return _customerBusinessLogic.GetCustomerName(id);
+	}
+}
+
+As you can see in the above example, the CustomerService class creates and injects the CustomerDataAccess 
+object into the CustomerBusinessLogic class. Thus, the CustomerBusinessLogic class doesn't need to create 
+an object of CustomerDataAccess using the new keyword or using factory class. The calling class (CustomerService) 
+creates and sets appropriate CustomerDataAccess class to CustomerBusinessLogic class. In this way, the 
+CustomerBusinessLogic and CustomerDataAccess class becomes more loosely coupled classes.
+
+Property injection:
+--------------------------
+In the property injection, the dependency is provided through a public property.
+
+Example:
+
+public interface ICustomerDataAccess
+{
+	string GetCustomerName(int id);
+}
+
+public class CustomerDataAccess: ICustomerDataAccess
+{
+	public string GetCustomerName(int id)
+	{
+		//Write the logic to get the customer name based on given id from the database in real time application
+
+		return "Name of the Customer";
+	}
+}
+
+public class CustomerBusinessLogic
+{
+	public ICustomerDataAccess DataAccess {get;set;}
+
+	public string GetCustomerName(int id)
+	{
+		return DataAccess.GetCustomerName(id);
+	}
+}
+
+public class CustomerService
+{
+	CustomerBusinessLogic _customerBusinessLogic;
+
+	public CustomerService()
+	{
+		_customerBusinessLogic = new CustomerBusinessLogic();
+
+		_customerBusinessLogic.DataAccess = new CustomerDataAccess();
+	}
+
+	public string GetCustomerName(int id)
+	{
+		return _customerBusinessLogic.GetCustomerName(id);
+	}
+}
+
+As you can see in the above example, the CustomerBusinessLogic class includes the public property named DataAccess, 
+where you can set an instance of a class that implements ICustomerDataAccess. So, CustomerService class creates and 
+sets CustomerDataAccess class using this public property.
+
+Method injection:
+-------------------------
+In the method injection, dependencies are provided through methods. This method can be a class method or an interface method.
+
+Example: (Interface Based)
+
+public interface ICustomerDataAccess
+{
+	string GetCustomerName(int id);
+}
+
+public class CustomerDataAccess: ICustomerDataAccess
+{
+	public string GetCustomerName(int id)
+	{
+		//Write the logic to get the customer bame based on given id from the database in real time application
+
+		return "Name of the Customer";
+	}
+}
+
+interface IDataAccessDependency
+{
+	void SetDependency(ICustomerDataAccess customerDataAccess);
+}
+
+public class CustomerBusinessLogic: IDataAccessDependency
+{
+	ICustomerDataAccess _customerDataAccess;
+
+	public void SetDependency(ICustomerDataAccess customerDataAccess)
+	{
+		_customerDataAccess = customerDataAccess;
+	}
+
+	public string GetCustomerName(int id)
+	{
+		return _customerDataAccess.GetCustomerName(id);
+	}
+}
+
+public class CustomerService
+{
+	CustomerBusinessLogic _customerBusinessLogic;
+
+	public CustomerService()
+	{
+		_customerBusinessLogic = new CustomerBusinessLogic();
+		_customerBusinessLogic.SetDependency(new CustomerDataAccess());
+	}
+
+	public string GetCustomerName(int id)
+	{
+		return _customerBusinessLogic.GetCustomerName(id);
+	}
+}
+
+In the above example, the CustomerBusinessLogic class implements the IDataAccessDependency interface, 
+which includes the SetDependency() method. So the injector class (CustomerService) 
+will now use this method to inject the dependency class (CustomerDataAccess) to the client class (CustomerBusinessLogic).
+
+IoC Container:
+--------------------
+We learned how to implement the dependency injection pattern to achieve loose coupled classes. 
+IoC container (DI container) is framework for implementing automatic dependency injection. 
+It manages object creation and its life-time, and also injects dependencies to the class.
+
+The IoC container creates object of the specified class and also injects all the dependency 
+objects through a constructor, a property, or a method at run time and disposes 
+it at the appropriate time. This is done so that we don't have to create and manage objects manually.
+
+All the containers must provide easy support for the following DI lifecycle:
+
+Register:
+------------
+	The container must know which dependency to instantiate when it encounters a particular type. 
+        This process is called registration. Basically, it must include some way to register type-mapping.
+
+Resolve:
+------------
+	When using the IoC container, we don't need to create object manually. 
+        The container class does it for us. This is called resolution. 
+        The container must include some methods to resolve the specified type; 
+        the container creates an object of the specified type, injects the required dependencies if any and returns the object.
+
+Dispose:
+------------
+	The container must manage the lifetime of the dependent objects. 
+        Most IoC containers include different lifetime managers to manage an object's lifecycle and dispose it.
+
+        There are many open-source or commercial containers available for .NET. They are following:
+
+	- Unity
+	- Autofac	
+	- Ninject
+	- StructureMap
+	- Simpleinjector
+	- DryIoC
+	- LightInject
+	- CastleWindsor
+	  etc...
+	
+ASP.NET Core : Built-in IoC Container :
+-------------------------------------------------------
+The built-in IoC container is represented by IServiceProvider implementation 
+that supports constructor injection by default. The types (classes) managed by built-in IoC container are called services.
+
+There are basically two types of services in ASP.NET Core:
+1. Framework Service:
+	Services which are part of ASP.NET Core framework such as IApplicationBuilder, IHostingEnvironment, ILoggerFactory etc...
+
+2. Application Service:	
+	The services (custom types or classes) which you as a developer (programmer) create for your application.	
+
+Registering Application Service:
+----------------------------------------------
+Consider the following example of simple ILog interface and its implementation class. 
+We will see how to register it with built-in IoC container and use it in our application.
+
+public interface ILog
+{
+	string Info(string message);
+}
+
+public class MyLog: ILog
+{
+	public string Info(string message)
+	{
+		return message;
+	}
+}
+
+ASP.NET Core allows us to register our application services with IoC container, 
+in the ConfigureServices() of the Startup class. The ConfigureServices() method 
+includes as parameter of IServiceCollection type which is used to register application services.
+
+Let's register above ILog with IoC container in ConfigureServices() method as follows:
+
+public class Startup
+   {
+	...................
+	...................
+	// This method gets called by the runtime. Use this method to add services to the container.
+                 public void ConfigureServices(IServiceCollection services)
+                   {
+		     .....................
+
+		services.Add(new ServiceDescriptor(typeof(ILog), new MyLog()));
+	}
+	
+	..................
+	..................
+}
+
+As you can see above code, Add() method of IServiceCollection type is used to register 
+a service with an IoC container. The ServiceDescriptor is used to specify a service 
+type and its instance. We have specified as ILog as service type and MyLog as its instance. 
+This will register ILog service as singleton by default. Now, and IoC container will create 
+a singleton object of MyLog class and inject it in the constructor of class wherever 
+we include ILog as a constructor or method parameter throughout the application.
+
+Thus, we can register our custom application services with an IoC container in ASP.NET Core application. 
+There are other extension methods available for quick and easy registration of services.
+
+Understanding Service Lifetime:
+----------------------------------------------
+Built-in IoC container manages the lifetime of a registered service type. It automatically disposes a service instance on the specified lifetime.
+
+The built-in IoC container supports three kind of lifetimes:
+
+i) Singleton:
+	The IoC container will create a shared single instance of a service throughout the application's lifetime.
+
+ii) Transient:
+	The IoC container will create a new instance of the specified service type every time you ask for it.	
+
+iii) Scoped:
+	The IoC container will create an instance of the specified service type once per request and will be shared in a single request.
+
+public class Startup
+{
+	.............................
+	.............................
+	// This method gets called by the runtime. Use this method to add services to the container.
+                   public void ConfigureServices(IServiceCollection services)
+                   {
+		.......................
+		
+		//Singleton Implicitly
+		services.Add(new ServiceDescriptor(typeof(ILog), new MyLog()));
+
+		//Singleton Explicitly
+		services.Add(new ServiceDescriptor(typeof(ILog), typeof(MyLog),ServiceLifetime.Singleton));
+
+		//Transient
+		services.Add(new ServiceDescriptor(typeof(ILog), typeof(MyLog),ServiceLifetime.Transient));
+
+		//Scoped
+		services.Add(new ServiceDescriptor(typeof(ILog), typeof(MyLog),ServiceLifetime.Scoped));
+	}
+
+	...............................
+	...............................
+}
+
+Extension Methods for Registration:
+----------------------------------------------------
+ASP.NET Core framework includes extension methods for each types of lifetime such as AddSingleton(), 
+AddTransient(), and AddScoped() methods for singleton, transient, and scoped lifetime respectively.
+
+Example: Registering types (services) using extension methods into built-in IoC container.
+
+public class Startup
+{
+	.............................
+	.............................
+	// This method gets called by the runtime. Use this method to add services to the container.
+                   public void ConfigureServices(IServiceCollection services)
+                   {
+		.......................
+		
+		//Singleton
+            		services.AddSingleton<ILog, MyLog>();
+            		//OR
+            	                 services.AddSingleton(typeof(ILog), new MyLog());
+            		//OR
+            		services.AddSingleton(typeof(ILog), typeof(MyLog));
+
+            		//Transient
+		services.AddTransient<ILog, MyLog>();
+            		//OR
+
+
+       		services.AddTransient(typeof(ILog), typeof(MyLog));
+
+            		//Scoped
+            		services.AddScoped<ILog, MyLog>();
+            		//OR
+            		services.AddScoped(typeof(ILog), typeof(MyLog));
+	}
+
+	...............................
+	...............................
+}
+
+Constructor Injection:
+-------------------------------
+Once we register a service, the IoC container automatically performs constructor injection if a service type is included as a parameter in a constructor.
+
+In Razor Pages Framework Application:
+
+For example, we can use ILog service type in any Razor Page Model Class.
+
+Pages:
+	Home.cshtml			Page UI
+
+		Home.cshtml.cs		Page Model Class
+
+Home.cshtml.cs:
+-----------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
++namespace ASPNETCoreWebApp1.Pages
+{
+    public class HomeModel : PageModel
+    {
+        ILog _log;
+
+        public HomeModel(ILog log)
+        {
+            _log = log;
+        }
+
+        public void OnGet()
+        {
+            ViewData["Info"] = _log.Info("Hello, Logger in Razor Pages !!!");
+        }
+    }
+}
+
+Home.cshtml (View - UI)
+----------------------------------
+@page
+@model ASPNETCoreWebApp1.Pages.HomeModel
+@{
+}
+
+<h1>@ViewData["Info"]</h1>
+
+Now, run the application and make request as following:
+
+WebSite Domain/{Page Route Name}
+
+Ex:
+
+http://localhost:<port>/Home
+
+In the above example, an IoC container will automatically pass an instance of MyLog to the constructor
+ of PageModel Class. We don't need to do anything else. An IoC container will create and dispose an instance of ILog based on registered lifetime.
+
+In MVC Framework Application:
+---------------------------------------------
+ILog.cs:
+------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASPNETCoreMVCWebApp1
+{
+    public interface ILog
+    {
+        string Info(string message);
+    }
+}
+
+MyLog.cs:
+---------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASPNETCoreMVCWebApp1
+{
+    public class MyLog : ILog
+    {
+        public string Info(string message)
+        {
+            return message;
+        }
+    }
+}
+
+Startup.cs: (Registering the Service)
+-----------------------------------------------------
+public class Startup
+{
+        ............................
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllersWithViews();
+
+            services.AddSingleton<ILog, MyLog>();
+        }
+        .............................
+}
+
+We can use ILog service type in any Controller class:
+
+Controllers:
+		DemoController.cs
+
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASPNETCoreMVCWebApp1.Controllers
+{
+    public class DemoController : Controller
+    {
+        ILog _log;
+
+        public DemoController(ILog log)
+        {
+            _log = log;
+        }
+        public IActionResult Index()
+        {
+            ViewData["Message"] = _log.Info("Hello Logger in Core MVC !!!");
+
+            return View();
+        }
+    }
+}
+
+Views -> Demo -> Index.cshtml:
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<h2>@ViewData["Message"]</h2>
+
+Now, run the application and make request as following:
+
+http://localhost:<port>/{controller}/{action"} Ex: http://localhost:<port>/Demo/Index
+
+In the above example, an IoC container will automatically pass an instance of MyLog to 
+the constructor of Controller class. We don't need to do anything else. 
+An IoC container will create and dispose an instance of ILog based on registered lifetime.
+
+Method Injection:
+-------------------------
+Sometimes we may only need dependency service type in a single method. For this, use [FromService] attribute with service type parameter in the method.
+
+In Razor Pages Framework Application:
+
+Pages:
+	Home.cshtml				Page - UI
+		Home.cshtml.cs			Page Model Class
+
+In Page Model Class: Home.cshtml.cs
+------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASPNETCoreWebApp1.Pages
+{
+    public class HomeModel : PageModel
+    {
+        public void OnGet([FromServices]ILog log)
+        {
+            ViewData["Message"] = log.Info("Hello Logger in Razor Page !!!");
+        }
+    }
+}
+
+Home.cshtml (Page - UI):
+------------------------------------
+@page
+@model ASPNETCoreWebApp1.Pages.HomeModel
+@{
+}
+
+<h1>@ViewData["Message"]</h1>
+
+In MVC Framework Application:
+---------------------------------------------
+Controllers -> DemoController.cs:
+
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASPNETCoreMVCWebApp1.Controllers
+{
+    public class DemoController : Controller
+    {
+        public IActionResult Index([FromServices]ILog log)
+        {
+            ViewData["Message"] = log.Info("Hello Logger in Core MVC !!!");
+
+            return View();
+        }
+    }
+}
+
+Views -> Demo -> Index.cshtml:
+----------------------------------------------
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+<h2>@ViewData["Message"]</h2>
+
+Property Injection:
+--------------------------
+The built-in IoC container in ASP.NET Core doesn't support property injection. You will have use any third party IoC container.
+
+Get Services Manually:
+--------------------------------
+It is not required to include dependency services in the constructor. 
+We can access dependent services configures with built-in IoC container manually using RequestServices property of HttpContext as show below:
+
+For Example:
+
+In Razor Pages Framework Application:
+
+In Page Model Class: Home.cshtml.cs:
+-------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASPNETCoreWebApp1.Pages
+{
+    public class HomeModel : PageModel
+    {
+        public void OnGet()
+        {
+            IServiceProvider services = this.HttpContext.RequestServices;
+            ILog log = (ILog)services.GetService(typeof(ILog));
+
+            ViewData["Message"] = log.Info("Hello Logger in Razor Page !!!");
+        }
+    }
+}
+
+Home.cshtml (Page - UI):
+-----------------------------------
+@page
+@model ASPNETCoreWebApp1.Pages.HomeModel
+@{
+}
+
+<h1>@ViewData["Message"]</h1>
+
+In MVC Framework Application:
+----------------------------------------------
+Controllers -> DemoController.cs:
+
+using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASPNETCoreMVCWebApp1.Controllers
+{
+    public class DemoController : Controller
+    {
+        public IActionResult Index()
+        {
+            IServiceProvider services = this.HttpContext.RequestServices;
+            ILog log = (ILog)services.GetService(typeof(ILog));
+
+            ViewData["Message"] = log.Info("Hello Logger in Core MVC !!!");
+
+            return View();
+        }
+    }
+}
+
+Views -> Demo -> Index.cshtml:
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+
+
+<h2>@ViewData["Message"]</h2>
+
+Note: It is recommended to use constructor/method injection instead of getting it using RequestServices property.
+
+
+ASP.NET Core Framework includes built-in IoC container for automatic dependency injection. The built-in IoC container is a simple yet effective container.
+
+These are following important interfaces and classes used for built-in IoC container:
+
+Interfaces:
+		i) IServiceProvider
+		ii) IServiceCollection
+
+Classes:
+		i) ServiceProvider
+		ii) ServiceCollection
+		iii) ServiceDescriptor
+		iv) ServiceCollectionServiceExtensions
+		v) ServiceCollectionContainerBuilderExtensions
+
+IServiceCollection:
+--------------------------
+We can register application services with built-in IoC container in the ConfigureServices() method of Startup class by using IServiceCollection. IServiceCollection interface is an empty interface. It just inherits IList<ServiceDescriptor>. ServiceCollection class implements IServiceCollection interface. So, the services you add in the IServiceCollection type instance, it actually creates an instance ServiceDescriptor and adds it to the list.
+
+IServiceProvider:
+------------------------
+IServiceProvider includes GetService() method. The ServiceProvider class implements IServiceProvider interface which returns registered services with the container. We cannot instantiate ServiceProvider class because its constructor are marked with internal access modifier.
+
+ServiceCollectionServiceExtensions:
+-----------------------------------------------------
+The ServiceCollectionServiceExtensions class includes extension methods related to service registrations which can used to add services with lifetime. AddSingleton(), AddTransient(), AddScoped() extension methods defined in this class.
+
+ServiceCollectionContainerBuilderExtensions:
+-------------------------------------------------------------------
+The ServiceCollectionContainerBuilderExtensions class includes BuildServiceProvider() extension method creates and returns an instance of ServiceProvider.
+
+There are following ways to get an instance of IServiceProvider:
+---------------------------------------------------------------------------------------------
+Using IApplicationBuilder:
+-------------------------------------
+We can get the services in Configure() method of Startup class using IApplicationBuilder's ApplicationServices property as follows:
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+            IServiceProvider services = app.ApplicationServices;
+            ILog log = (ILog)services.GetService(typeof(ILog));
+
+            ..........................
+            ..........................
+}
+
+Using HttpContext:
+---------------------------
+            IServiceProvider services = this.HttpContext.RequestServices;
+            ILog log = (ILog)services.GetService(typeof(ILog));
+
+Using IServiceCollection:
+------------------------------------
+            IServiceProvider serviceProviders = services.BuildServiceProvider();
+            ILog log = (ILog)serviceProviders.GetService(typeof(ILog));
+
+ASP.NET Core - Middleware:
+=======================
+ASP.NET Core introduced a new concept called Middleware. A middleware is nothing but a component (class) which is executed on every request in ASP.NET Core applications. In the classic ASP.NET, HttpHandlers and HttpModules were part of request pipeline. Middleware is similar to HttpHandlers and HttpModules were both needs to be configured and executed in each request.
+
+Typically, there will be multiple middleware in ASP.NET Core web application. It can be either framework provided middleware, added via NuGet or your own custom middleware. We can set the order of middleware execution in the request pipeline. Each middleware adds or modifies http request and optionally passes control to the next middleware component.
+
+Where we use middleware components in the ASP.NET Core application?
+
+	We may require a middleware component for the following purpose:
+
+		-> Authenticating the user
+		-> Authorizing the user
+		-> Log the request and response
+		-> Handle the errors
+		-> Handle the static resource like images, JavaScript or css files to serve to the browser.
+		-> etc...
+
+How to configure middleware component in ASP.NET Core Application?
+---------------------------------------------------------------------------------------------------------
+Configure Middleware:
+---------------------------------
+	In ASP.NET Core application, you need to configure the middleware components within the Configure() method of the Startup class which is present within the Startup.cs file. This Startup class is going to run when the application starts.
+
+	So, we can configure middleware in the Configure() method of the Startup class using IApplicationBuilder interface.
+
+The following example adds a single middleware using Run() method which returns a string "Hello ASP.NET Core" on each request.
+
+Startup.cs:
+---------------
+using Microsoft.AspNetCore.http;
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+	............................
+	//configure middleware using IApplicationBuilder here
+
+	app.Run(async(context) =>
+	{
+		await context.Response.WriteAsync("Hello ASP.NET Core");
+	});
+	..............................
+}
+
+In the above example code, Run() method is an extension method on IApplicationBuilder instance which adds a terminal middleware to the application's request pipeline. The above configures middleware returns a response with a string "Hello ASP.NET Core" for each request.
+
+Understand Run() method:
+---------------------------------------
+We used Run() extension method to add terminal middleware.
+
+The following is the structure of the Run() method:
+
+Method Signature:
+--------------------------
+	public static void Run(this IApplicationBuilder app, RequestDelegate handler);
+
+The Run() method is an extension method of IApplicationBuilder and accepts a parameter of RequestDelegate. The RequestDelegate is a delegate method which handles the request.
+
+The following is a RequestDelegate  signature:
+
+	public delegate Task RequestDelegate(httpContext context);
+
+As you can see above code, the Run() method accepts a parameter whose signature should match with RequestDelegate. Therefore, the method should accept the HttpContext parameter and return Task. So, You can either specify a lambda expression or specify a function in the Run() method.
+
+The lambda expression specified in the Run() method above is similar to one in the example shown below:
+
+Startup.cs:
+
+private Task MyMiddlewareTask(HttpContext context)
+{
+            return context.Response.WriteAsync("Hello ASP.NET Core");
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+	..............................
+	//Configure middleware using IApplicationBuilder here!!!
+	app.Run(MyMiddlewareTask);
+	...............................
+}
+
+The above MyMiddlewareTask function is not asynchronous and so will block the thread till the time it completed the execution. So, make it asynchronous by using async and await to improve the performance and scalability.
+
+private async Task MyMiddlewareTask(HttpContext context)
+{
+            await context.Response.WriteAsync("Hello ASP.NET Core");
+}
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+	.............................
+	//Configure middleware using IApplicationBuilder here!!!
+	app.Run(MyMiddlewareTask);
+	.............................
+}
+
+Thus, the above code snippet is same as the one below:
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+	............................
+	//configure middleware using IApplicationBuilder here
+
+	app.Run(async(context) =>
+	{
+		await context.Response.WriteAsync("Hello ASP.NET Core");
+	});
+
+	//OR
+
+	app.Run(async (context) => await context.Response.WriteAsync("Hello ASP.NET Core"));
+	..............................
+}
+
+So, in this way, we can configure middleware using Run() method.
+
+Configure Multiple Middleware:
+---------------------------------------------
+Mostly there will be multiple middleware components in ASP.NET Core application which will be executed sequentially. The Run() method adds a terminal middleware so it cannot call next middleware as it would be the last middleware in a sequence. The following will always executes the first Run() method and will never reach the second Run() method:
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+           ..................................................
+            app.Run(async(context)=>
+            {
+                await context.Response.WriteAsync("Hello ASP.NET Core");
+            });
+
+            //The following will never execute
+            app.Run(async (context) =>
+            {
+                await context.Response.WriteAsync("Welcome to ASP.NET Core");
+            });
+            ....................................................
+}
+
+To configure multiple middleware, use Use() extension method. It is similar to Run() method except that it includes next parameter to invoke next middleware in the sequence.
+
+For example:
+
+In Startup.cs:
+-------------------
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+            ..................................................            
+            app.Use(async(context,next)=>
+            {
+                await context.Response.WriteAsync("Hello ASP.NET Core");
+
+                await next(); OR await next.Invoke();
+            });
+
+            app.Run(async (context) =>
+            {
+                await context.Response.WriteAsync("\nWelcome to ASP.NET Core");
+            });
+            ...................................................
+}
+
+The above example code will display in the browser as following;
+Hello ASP.NET Core
+Welcome to ASP.NET Core
+
+Thus, we can use Use() method to configure multiple middleware in the order we like.
+
+Add Built-in Middleware via NuGet:
+--------------------------------------------------
+ASP.NET Core is a modular framework.  We can add server-side features we need in our application by installing different plug-in via NuGet. There are many middleware plug-in available which can be used in our application.
+
+These are following some built-in middleware:
+
+	Authentication: It adds authentication support.
+
+	Authorization: Its adds autorization support.
+
+	CORS: It configures Cross-Origin Resource Sharing.
+
+	Routing: It adds routing capabilities for Razor Pages or MVC or API
+
+	Session: It adds support for user session.
+
+	StaticFile: It adds support for serving static files and directory browsing.
+
+	Diagnostics: It adds support for reporting and handling exception and errors.
+
+	etc...
+
+Diagnostics Middleware:
+------------------------------------
+ASP.NET Core middleware for exception handling, exception display pages, and diagnostics information. It includes developer exception page middleware, exception handler middleware, runtime info middleware, status code page middleware, and welcome page middleware.
+
+This includes following middleware and extension methods for it:
+
+Middleware Name: DeveloperExceptionPageMiddleware
+Extension Method: UseDeveloperExceptionPage()
+Description: Captures synchronous and asynchronous exception instances from the pipeline and generates HTML error responses.
+
+Middleware Name: ExceptionHandlerMiddleware
+Extension Method: UseExceptionHandler()
+Description: It adds a middleware to the pipeline that will catch exception, log them, reset the request path and re-execute the request. The request will not be re-execute if the response has already started.
+
+Middleware Name: StatusCodePageMiddleware
+Extension Method: UseStatusCodePage()
+Description: It Checks for responses with status code between 400 and 599 that do not have a body.
+
+Middleware Name: WelcomePageMiddleware
+Extension Method: UseWelcomePage()
+Description: It Displays welcome page for root path.
+
+We can call respective Use* extension method to use the above middleware in the Configure() method of Startup Class.
+
+Now, we will add 'WelcomePage' middleware which will display welcome page for the root path.
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+	.........................................
+	app.UseWelcomePage();
+	.........................................
+        }
+
+The above example will display the following Welcome Page for each request.
+
+	-----------------------Welcome Page-----------------------------
+
+There would be no links available on the page to go to other parts of the application. And even when you try to go another page via URL, then also you would be redirected to this Welcome Page only.
+
+Welcome page is a good option to use, when application's work is in progress.
+
+You can also configure this middleware to handle the request for certain path as follows:
+
+app.UseWelcomePage("/Welcome");
+
+So when you hit the URL i.e. http://localhost:3156/Welcome, then only welcome page will come.
+
+This way we can use different Use* extension method to include different middleware.
+
+Add Custom Middleware in ASP.NET Core Application:
+------------------------------------------------------------------------------
+Now, we will learn how to create and add our own custom middleware into the request pipeline of ASP.NET Core application.
+
+For Example: How to implement logging functionality in the ASP.NET Core application.
+
+The custom middleware components is like any other .NET class with Invoke() method. However, in order to execute next middleware in a sequence, it should have RequestDelegate type parameter in the constructor.
+
+Visual Studio includes templates for creating standard middleware class. For this, right click on the project or folder where you want to create middleware class and select Add -> New Item. This will open 'Add New Item' popup. Search for word 'middleware" in the top right search box:
+
+Select 'Middleware Class' item and give it a name and click on Add button. This will add a new class for middleware with extension method as shown below:
+
+DemoMiddleware.cs:
+------------------------------
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASPNETCoreWebApp1.Middlewares
+{
+    // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
+    public class DemoMiddleware
+    {
+        private readonly RequestDelegate _next;
+
+        public DemoMiddleware(RequestDelegate next)
+        {
+            _next = next;
+        }
+
+        public Task Invoke(HttpContext httpContext)
+        {
+
+            return _next(httpContext);
+        }
+    }
+
+    // Extension method used to add the middleware to the HTTP request pipeline.
+    public static class DemoMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseDemoMiddleware(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<DemoMiddleware>();
+        }
+    }
+}
+
+As you can see above code, the Invoke() method is not asynchronous. So, change it to asynchronous and write your custom logic before calling next().
+
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASPNETCoreWebApp1.Middlewares
+{
+    // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
+    public class DemoMiddleware
+    {
+        private readonly RequestDelegate _next;
+
+        private readonly ILogger _logger;
+
+        public DemoMiddleware(RequestDelegate next, ILoggerFactory loggerFactory)
+        {
+            _next = next;
+
+            _logger = loggerFactory.CreateLogger("DemoMiddleware");
+        }
+
+        public async Task Invoke(HttpContext httpContext)
+        {
+            _logger.LogInformation($"DemoMiddleware Executed on {DateTime.Now}");
+
+            await _next(httpContext); //Call the Next Middleware
+        }
+    }
+
+    // Extension method used to add the middleware to the HTTP request pipeline.
+    public static class DemoMiddlewareExtensions
+    {
+        public static IApplicationBuilder UseDemoMiddleware(this IApplicationBuilder builder)
+        {
+            return builder.UseMiddleware<DemoMiddleware>();
+        }
+    }
+}
+
+Add Custom Middleware:
+------------------------------------
+Now, we need to add our custom middleware in the request pipeline of ASP.NET Core application by using extension method as shown below:
+
+Startup.cs:
+---------------
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            ..................................................
+            app.UseDemoMiddleware();
+
+            //OR
+            //We can add middleware using app.UseMiddleware<DemoMiddleware>() method of IApplicationBuilder object also
+            app.UseMiddleware<DemoMiddleware>();
+            ..................................................
+         }
+
+Configure Default File in ASP.NET Core:
+----------------------------------------------------------
+Configure the default file to be served on the root request:
+
+-> We use app.UseDefaultFiles() middleware to serve the following files on the root request:
+
+	i) Default.htm
+	ii) Default.html
+	iii) Index.htm
+	iv) Index.html
+
+Suppose, you want to set Home.html as a default page which should be displayed on the root request. To do this specify DefaultFileOptions 
+in UseDefaultFiles() method as following:
+
+Startup.cs:
+----------------
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            ..............................
+            DefaultFilesOptions filesOptions = new DefaultFilesOptions();
+            filesOptions.DefaultFileNames.Clear();
+            filesOptions.DefaultFileNames.Add("Home.html");
+            app.UseDefaultFiles(filesOptions);
+            ...............................
+        }
+
+This will display Home.html from wwwroot (web root) folder on the root request i.e. http://localhost:<port>
+
+Serving Static Files in ASP.NET Core:
+------------------------------------------------------
+How to serve static files such as html, JavaScript, css, or image files on http request without any server side processing?
+
+ASP.NET Core application cannot serve static files by default. We must include Microsoft.AspNetCore.StaticFiles middleware in the request pipeline.
+
+Install StaticFiles Middleware:
+-------------------------------------------
+The Microsoft.AspNetCore.StaticFiles middleware package is already included in the Meta package Microsoft.AspNetCore.All, 
+so we don't need to install separately in ASP.NET Core 2.x, 3.x and 5.0 applications.
+
+To install StaticFiles middleware in ASP.NET Core 1.x applications, open NuGet package manager by right clicking on 
+project in the solution explorer and select "Manage NuGet Packages...". Search for StaticFiles in search box in browse tab. 
+This will display Microsoft.AspNetCore.StaticFiles middleware.
+
+Click on the install button on the right pane to install it. Once installed, the Microsoft.AspNetCore.StaticFiles is 
+automatically included in the dependencies section of the project.json file in ASP.NET Core 1.x as follows:
+
+	"dependencies: {
+		"Microsoft.NETCore.App: {
+			"version": "1.1",
+			"type": "platform"
+		}
+		................
+		................
+		"Microsoft.AspNetCore.StaticFiles": "1.1"
+	}
+
+Using StaticFiles Middleware:
+------------------------------------------
+By default, all the static files of a web application should be located in the web root folder i.e. 'wwwroot'.
+
+To understand this, let's create a simple html file i.e. Home.html in the wwwroot folder with the following content:
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+<h1>Welcome to Home Page !!!</h1>
+</body>
+</html>
+
+Now, to serve the above Home.html static file, we must add StaticFiles middleware in the Configure() of Startup class as shown below:
+
+Startup.cs:
+--------------
+
+public class Startup
+{
+	.............................................
+	public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+	{
+		..............................
+		app.UseStaticFiles();
+		..............................
+	}
+}
+
+As you can see above code, the app.UseStaticFiles() method add StaticFiles middleware in the request pipeline. 
+The UseStaticFiles is an extension method included in the StaticFiles middleware so that we can easily configure it.
+
+Now, open the browser and send http request http://localhost:<port>/Home.html which will display Home.html as a response in the browser.
+
+This way we can serve any other files stored in wwwroot or sub-folder. For example, consider the following Test.js file in the wwwroot folder.
+
+wwwroot:
+	> Test.js
+
+Test.js file:
+---------------
+function fun1() {
+    alert("Welcome to JavaScript !!!");
+}
+
+Now, we can access this file by sending http://localhost:<port>/Test.js request
+
+Suppose, you want to serve files from the outside of the web root (wwwroot) folder.
+
+For example, you include images in the following Images folder as shown below:
+
+ASPNETCoreWebApp1
+	> wwwroot
+		.................
+		.................
+	> Images
+		RSN.png
+
+Now, specify "StaticFileOptions" parameter in the UseStaticFiles() method to serve images 
+from "Images" folder which is outside wwwroot folder as shown below:
+
+Startup.cs:
+---------------
+        using Microsoft.AspNetCore.Http;
+        using Microsoft.Extensions.FileProviders;
+        using System.IO;
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            ......................................
+            ......................................
+            app.UseStaticFiles(); //for the wwwroot folder
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"Images")),
+                RequestPath = new PathString("/AppImages")
+            });
+           ......................................
+           ......................................
+        }
+
+As you can see, we used FileProvider option to specify Images folder from which static files will be served. 
+The RequestPath option specifies the relative path in the URL which maps to the static folder.
+
+Now a request to http://localhost:<port>/AppImages/RSN.png will serve the RSN.png file to the browser.
+
+Set Default File:
+----------------------
+As we have seen earlier, Default.html or Test.js was served on the specific request for it. 
+However, what if we want to serve Default.html on the root request?
+
+Currently, when you sent http://localhost:<port> request, it will be handled by Run() method and display following result:
+
+		-----------Hello World of ASP.NET Core--------
+
+To serve Default.html on the web root request http://localhost:<port>, 
+call the "UseDefaultFiles()" before UseStaticFile() in the Configure() method of Startup class as following:
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+	..................................
+	..................................
+	app.UseDefaultFiles();
+	app.UseStaticFiles();
+	
+	app.Run(async (context) => 
+	{
+		await context.Response.WriteAsync("Hello World of ASP.NET Core");
+	});
+	................................
+	................................
+}
+
+The UseDefaultFiles() configures the DefaultFiles middleware which is a part of StaticFiles middleware. 
+This will automatically serve html file names default.htm, default.html, index.htm or 
+index.html on the http request i.e. http://localhost:<port>.
+
+The above example will display Default.html file on the http://localhost:<port> request as shown below:
+
+	Welcome to Default.html Page
+
+The following code changes the default file name to MyDefault.html
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            .......................................
+            .......................................
+            DefaultFilesOptions options = new DefaultFilesOptions();
+            options.DefaultFileNames.Clear();
+            options.DefaultFileNames.Add("MyDefault.html");
+            app.UseDefaultFiles(options);
+
+            app.UseStaticFiles();
+            .....................................
+            .....................................
+       }
+
+Note: Order of middleware is very important. app.UseDefaultFiles() should be 
+added before app.UseStaticFiles() in the request pipeline.
+
+UseDefaultFiles() should always be before UseStaticFiles(). 
+This is because UseDefaultFiles() rewrite the URLs. 
+UseStaticFiles() only serves the URLs. 
+If serving of document happens earlier than URL rewrite, then you may not get default document served.
+
+Enable Directory Browsing:
+----------------------------------------
+Directory browsing allows users of your web app to see a directory listing and files within a specified directory. 
+Directory browsing is disabled by default for security reasons.
+
+Enable directory browsing by invoking the UseDirectoryBrowser() method in Configure() method of Startup class:
+
+Example1:
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+            .......................................
+            .......................................
+            app.UseDirectoryBrowser(); //Enable directory browsing on the current path - for all wwwroot directories
+            .....................................
+            .....................................
+}
+
+Example2:
+
+public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+{
+            .......................................
+            .......................................
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"wwwroot","css")),
+                                RequestPath = new PathString("/css")
+            });
+            .....................................
+            .....................................
+}
+
+In the above example i.e. Example2, it enables directory browsing for only css directory to view the contents of the wwwroot 
+and also allows to access all containing files if UseStaticFiles() method has been used below.
+
+Note: If 'css' directory browsing of the wwwroot is going to be request with any custom directory name such as 'MyCSS' instead of 'css' 
+then also we can view (browse) all the contents of the 'css' directory but we can't access their containing files as 
+it generates the http error 404 (This localhost page can't be found). Then overcome to this problem we have a solution as following:
+
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            .......................................
+            .......................................
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"wwwroot","css")),
+                                RequestPath = new PathString("/MyCss")
+            });
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"wwwroot","css")),
+                            RequestPath = new PathString("/MyCss")
+            });
+        }
+
+The preceding code allows directory browsing of the wwwroot/css folder using the URL i.e. http://localhost:<port>/MyCss, 
+with links to each files and sub-folders to access it.
+
+How to enable directory browsing of other folder than wwwroot folder in ASP.NET Core:
+-------------------------------------------------------------------------------------------------------------------------------
+For Example:
+
+	ASPNETCoreWebApp1
+		....................
+		....................
+		wwwroot
+			..........................
+			..........................
+		Contents
+			Text1.txt
+			Text2.txt
+			Text3.txt
+		Pages
+		appsettings.json
+		Program.cs
+		Startup.cs
+
+So, in the above example of project folder structure, we want to enable directory browsing of "Contents" folder which is outside of
+wwwroot and also allowing to access their containing files.
+
+Now, configure the DirectoryBrowser and StaticFiles middleware in the Configure() method of the Startup class as shown below:
+
+Startup.cs:
+---------------
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            .....................................
+            .....................................
+            app.UseDirectoryBrowser(new DirectoryBrowserOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"Contents")),
+                        RequestPath = new PathString("/AppContents")
+            });
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(),"Contents")),
+                        RequestPath = new PathString("/AppContents")
+            });
+            ................................
+            ................................
+         }
+
+The above code configures DirectoryBrowser and StaticFiles of "Contents" folder which is outside of wwwroot folder on the request 
+path i.e. /AppContents. So now, we will be able to view the contents of 'Contents" folder (directory) and also allows 
+us to access all their containing static files.
+
+FileServer:
+---------------
+The FileServer middleware combines the functionalities of UseDefaultFiles and UseStaticFiles middleware. 
+So, instead of using both the middleware, just use UseFileServer() method in Configure() method.
+
+UseFileServer = UseDefaultFiles + UseStaticFiles
+
+Note: Even UseFileServer() method combines the functionality of UseDirectoryBrowser() method also using their additional overload option.
+
+The following code enables the serving of static and the default file. Directory browsing isn't enabled
+
+app.UseFileServer();
+
+The following code builds upon the parameter overload by enabling directory browsing:
+
+app.UseFileServer(true);
+//OR
+app.UseFileServer(enableDirectoryBrowsing: true);
+
+Example: Consider the following project folder structure:
+
+	ASPNETCoreWebApp1:
+		.......................
+		.......................
+		wwwroot
+			css
+			js
+			lib
+			..................
+			..................
+		Contents
+			Images
+				RSN.png
+			Default.html
+			Text1.txt
+			Text2.txt
+			Text3.txt
+
+The following code enables static files, default files, and directory browsing of Contents folder in the above project structure:
+
+Startup.cs
+---------------
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+	.....................
+	.....................
+	app.UseFileServer(new FileServerOptions()
+            	{
+                		FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), "Contents")),
+                			RequestPath = new PathString("/AppContents"),
+			EnableDirectoryBrowsing = true
+            	});
+	...................
+	...................
+         }
+
+Using the file hierarchy and preceding code, URLs resolves as follows:
+
+Request: http://localhost:3156/AppContents
+	
+	Response: Default file i.e. Default.html will display in the browser.
+
+Request: http://localhost:3156/AppContents/Images
+
+	Response: Images Directory Listing will show in the browser.
+
+Request: http://localhost:3156/AppContents/Images/RSN.png
+
+	Response: RSN.png will display in the browser.
+
+Rename wwwroot Folder:
+-------------------------------------
+You can rename wwwroot folder to any other name as per your choice and set it as a web root while preparing hosting environment in the Program.cs file.
+
+For Example, let's rename wwwroot folder to 'MyWebRoot' folder. Now, call UseWebRoot() method to configure 'MyWebRoot' 
+folder as web root folder in the Main() method of Program class in the Program.cs file as shown below:
+
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>().UseWebRoot("MyWebRoot");
+                });
+    }
+
+Thus, you can rename the default web root folder i.e. wwwroot as per your choice.

@@ -1,0 +1,1025 @@
+Model Binding in ASP.NET Core Razor Pages/MVC:
+-------------------------------------------------------------------------
+Model Binding in Razor Pages/MVC is the process takes values from HTTP request and maps them to handler/action method parameters or PageModel/ViewModel properties. Model binding reduces the need for the developer to manually extract values from the request and then assign them, one by one, to variables or properties for later processing. This work is repetitive, tedious and error prone, mainly because request values are usually exposed via string-based indexes.
+
+To illustrate the role that model binding plays, create a new Razor page with a PageModel and name it Example.cshtml. Change the code in the content page as following:
+
+Example.cshtml:
+------------------------
+@page
+@model ASPNETCoreWebApp1.Pages.ExampleModel
+@{ 
+}
+<h3>@ViewData["Message"]</h3>
+<form method="post">
+    <b>Name: </b><br />
+    <input type="text" name="name"/>
+    <hr />
+    <b>Email: </b><br />
+    <input type="text" name="email"/>
+    <hr />
+    <button type="submit">Submit</button>
+</form>
+
+It represents a standard HTML form accepting a name and a email address (such as might be used to capture requests for information, for example), with a confirmation message at the top of the page. When the form is completed and submitted, the values are sent in the request body in name/value pairs, where the "name" represents the name attribute of the input, and the value is what was supplied by the user. You can see this in the Network tab of your preferred browser if it supports developer tools:
+
+Form Data
+	name: Rahul
+	email: rahul@gmail.com
+
+Add the following handler method code to the PageModel class in Example.cshtml.cs:
+
+public void OnPost()
+{
+            var name = Request.Form["name"];
+            var email = Request.Form["email"];
+            ViewData["Message"] = $"{name}, information will be sent to {email}";
+}
+
+This represents the traditional way that values in server-side code are processed in many web frameworks. The appropriate Request collection is accessed by string-based index and then values from the collection are assigned to local variables for further processing.
+
+Launch the page in a browser and enter some values into the form. Then submit it and you should see those values included in the confirmation message.
+
+This approach is sustainable for small forms, but if you are dealing with complex (large) forms, such as one representing an order of multiple items complete with shopping details, for example, the assignment code can become very much tedious. And, because development tools (IDEs) provide no code-completion or Intellisense support for string indices, it is fairly easy to mistype Request.Form["email"] as Request.Form["emial"], thereby introducing a subtle but damaging bug that may be difficult to track down among 40 to 50 other form fields.
+
+Binding Posted Form Values to Handler Method Parameters:
+----------------------------------------------------------------------------------------
+Razor Pages/MVC provides two approaches to leveraging model binding. The first approach involves adding parameters to the handler/action method. The parameters are named after the form fields, and given an appropriate type for the expected data. To see this approach live in action, remove the assignment code in the OnPost handler method and add two parameters to the method as following:
+
+        public void OnPost(string name, string email)
+        {
+            ViewData["Message"] = $"{name}, information will be sent to {email}";
+        }
+
+When the form is posted, the Razor Pages framework calls the OnPost method and sees that it has two parameters. It extracts posted form values that match the names of the parameters and automatically assigns the values from the form to the parameters if the value can be converted to the type represented by the parameter. There is no need for any assignment code.
+
+Binding Posted Form Values to PageModel Properties:
+-------------------------------------------------------------------------------
+The previous approach is suitable when the values are not needed outside of the handler method to which the parameters belong. The second approach is more suitable if you need to access the values outside of the handler method (for display on the page or binding to tag helpers, for example), or if you prefer to work in a strongly typed manner within the Razor content page. This approach involves adding public properties to the PageModel class (or to @function block if you don't to want to use the PageModel approach) and then decorating them with the BindProperty attribute.  To try this out, alter the PageModel code as following:
+
+Example.cshtml.cs:
+---------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASPNETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public string Name { get; set; }
+        [BindProperty]
+        public string Email { get; set; }
+
+        public void OnGet()
+        {
+
+        }
+
+        public void OnPost()
+        {
+            ViewData["Message"] = $"{Name}, information will be sent to {Email}";
+        }
+    }
+}
+
+From version 2.1 of ASP.NET Core, you can add the new [BindProperties] attribute to the PageModel class rather than applying [BindProperty] to individual properties, which results in all the public properties in the PageModel taking part in model binding as following:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASPNETCoreWebApp1.Pages
+{
+    [BindProperties]
+    public class ExampleModel : PageModel
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+
+        public void OnGet()
+        {
+
+        }
+
+        public void OnPost()
+        {
+            ViewData["Message"] = $"{Name}, information will be sent to {Email}";
+        }
+    }
+}
+
+Note that the case of the variables in the format string has altered to refer to the public property names. Model binding itself is not case sensitive. It performs case-insensitive matches between the names of incoming values and the names or parameters or properties that it attempts to bind the values to. Now when you run the page, the result is exactly the same as before.
+
+Binding Data from GET Requests:
+-------------------------------------------------
+The same options apply if you want to bind data from GET requests (which is appended to the URL as a query string). Binding to handler method parameters is automatic and requires no additional configuration. However, by default, only values that form part of a POST request are considered for model binding when you use the BindProperty attribute. The BindProperty attribute has a property called SupportsGet, which is false by default. You have to set this to true to opt in to model binding to PageModel properties on GET requests as follows:
+
+Example.cshtml.cs:
+----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASPNETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty(SupportsGet = true)]
+        public string Name { get; set; }
+        [BindProperty(SupportsGet = true)]
+        public string Email { get; set; }
+
+        public void OnGet()
+        {
+            if(!string.IsNullOrEmpty(Name) && !string.IsNullOrEmpty(Email))
+            {
+                ViewData["Message"] = $"{Name}, information will be sent to {Email}";
+            }
+        }
+    }
+}
+
+Example.cshtml:
+------------------------
+@page
+@model ASPNETCoreWebApp1.Pages.ExampleModel
+@{ 
+}
+<h3>@ViewData["Message"]</h3>
+<form method="get">
+    <b>Name: </b><br />
+    <input type="text" name="name"/>
+    <hr />
+    <b>Email: </b><br />
+    <input type="text" name="email"/>
+    <hr />
+    <button type="submit">Submit</button>
+</form>
+
+Note: Obviously it is not a good idea to create a form with GET request that uses sensitive data like password, OTP, CVV etc. because form values will appear in the URL, which could be a security issues.
+
+Binding Route Data:
+-----------------------------
+So far the examples have featured how model binding works with form values. It also works with Route Data, which is part of the routing system that Razor Pages uses. 
+
+For example:
+
+Example.cshtml:
+----------------------
+@page "{id}"
+@model ASPNETCoreWebApp1.Pages.ExampleModel
+@{ 
+}
+
+<h1>Id: @ViewData["id"]</h1>
+
+A route parameter named id has been added and the content of the h1 heading has been altered to print the value of a ViewData entry named id.
+
+Next, remove the public properties from the PageModel and add a parameter named id of type int to the OnGet handler method, and in the body of the method, assign its value to ViewData as follows:
+
+Example.cshtml.cs:
+---------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASPNETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public void OnGet(int id)
+        {
+            ViewData["id"] = id;
+        }
+    }
+}
+
+Now, run the application by making a request to a page i.e. Example.cshtml with a route data as follows:
+
+http://localhost:5932/Example/120
+
+Once again, model binding takes care of assigning the value in the route to the handler method parameter. This also works for public properties on PageModel in exactly the same way as for form values:
+
+Example.cshtml.cs:
+----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASPNETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty(SupportsGet = true)]
+        public int Id { get; set; }
+
+        public void OnGet()
+        {
+            ViewData["id"] = Id;
+        }
+    }
+}
+
+Binding Complex Object:
+------------------------------------
+Up to this point, you have seen how to use model binding to populate simple properties. As the number of form fields grows, the PageModel class will start to creak with either a long list of properties, all decorated with the BindProperty attribute, or a large number of parameters applied to a handler method. Fortunately model binding also works with complex objects. So the properties to be bound can be wrapped in an object that can be exposed as a property of the PageModel or a parameter for the handler method. 
+
+For Example:
+
+Models -> Login.cs
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using System.ComponentModel.DataAnnotations;
+
+namespace ASPNetCoreWebApp1.Models
+{
+    public class Login
+    {
+        [DataType(DataType.EmailAddress)]
+        public string Email { get; set; }
+
+        [DataType(DataType.Password)]
+        public string Password { get; set; }
+    }
+}
+
+Now this can be added as a property on the PageModel class:
+
+Example.cshtml.cs: (PageModel Class)
+----------------------------
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public Login Login { get; set; }
+
+        public void OnGet()
+        {
+        }
+
+        public void OnPost()
+        {
+            ViewData["Message"] = $"Welcome {Login.Email}";
+        }
+    }
+}
+
+Example.cshtml:
+-----------------------
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    <label asp-for="Login.Email"></label><br />
+    <input asp-for="Login.Email" />
+    <hr />
+    <label asp-for="Login.Password"></label><br />
+    <input asp-for="Login.Password" />
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+<h2>
+    @ViewData["Message"]
+</h2>
+
+Or it can be applied as a parameter to the OnPost method depending on your usage needs:
+
+Example.cshtml.cs: (PageModel Class)
+---------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+
+        public Login Login { get; set; }
+
+        public void OnGet()
+        {
+        }
+
+        public void OnPost(Login login)
+        {
+            ViewData["Message"] = $"Welcome {login.Email}";
+        }
+    }
+}
+
+Example.cshtml:
+-----------------------
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    <label asp-for="Login.Email">Email</label><br />
+    <input asp-for="Login.Email" />
+    <hr />
+    <label asp-for="Login.Password">Password</label><br />
+    <input asp-for="Login.Password" />
+    <hr />
+    <button type="submit">Submit</button>
+</form>
+<h2>
+    @ViewData["Message"]
+</h2>
+
+Binding Complex Objects in A Get Request:
+---------------------------------------------------------------
+Model binding in GET requests works with complex objects decorated with the BindProperty attribute as long as the SupportsGet parameter is set to true, just as with simple types. In situations where you want to bind to a complex type which is a handler method parameter rather than a PageModel property, you must tell the model binder where to get the the value from. You do this using one of the [From*] attributes.
+
+	=> FromQuery - It specifies that model binding should obtain values from the request query string
+
+	=> FromHeader - It specifies that values should be taken from request header values
+
+	=> FromBody - The values to be bound should be obtained from the request body
+
+	=> FromRoute - Route data should be used as the source for model binding values
+
+The appropriate attribute is placed before the parameter in the handler method.
+
+For Example: Using PageModel Class Property:
+
+Example.cshtml.cs: PageModel Class:
+----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty(SupportsGet = true)]
+        public Login Login { get; set; }
+
+        public void OnGet()
+        {
+
+        }
+
+        public void OnGetSubmit()
+        {
+            ViewData["Message"] = $"Welcome {Login.Email}";
+        }
+    }
+}
+
+Example.cshtml:
+-----------------------
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="get">
+    <label asp-for="Login.Email"></label><br />
+    <input asp-for="Login.Email" />
+    <hr />
+    <label asp-for="Login.Password"></label><br />
+    <input asp-for="Login.Password" />
+    <br /><br />
+    <button type="submit">Submit</button>
+    <input type="hidden" name="handler" value="Submit" />
+</form>
+<h2>
+    @ViewData["Message"]
+</h2>
+
+Using Handler Method Parameter:
+
+Example.cshtml.cs: PageModel Class
+---------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public Login Login {get;set;}
+
+        public void OnGet()
+        {
+
+        }
+
+        public void OnGetSubmit([FromQuery] Login login)
+        {
+            ViewData["Message"] = $"Welcome {login.Email}";
+        }
+    }
+}
+
+Example.cshtml:
+------------------------
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="get">
+    <label asp-for="Login.Email">Email</label><br />
+    <input asp-for="Login.Email" />
+    <hr />
+    <label asp-for="Login.Password">Password</label><br />
+    <input asp-for="Login.Password" />
+    <hr />
+    <button type="submit">Submit</button>
+    <input type="hidden" name="handler" value="Submit" />
+</form>
+<h2>
+    @ViewData["Message"]
+</h2>
+
+Binding Simple Collections:
+---------------------------------------
+The next code example shows a form where the user is allowed to select more than one option. In this case, the user is invited to select which type of movies they like:
+
+In Razor Content Page (Example.cshtml):
+
+<form method="post">
+    <label>Which types of movie do you like?</label>
+    <br />
+        <div>
+            <input type="checkbox" id="chk1" name="CategoryId" value="1" />
+            <label for="chk1">Horror</label>
+            <input type="checkbox" id="chk2" name="CategoryId" value="2" />
+            <label for="chk2">Thriller</label>
+            <input type="checkbox" id="chk3" name="CategoryId" value="3" />
+            <label for="chk3">Historical</label><br />
+            <input type="checkbox" id="chk4" name="CategoryId" value="4" />
+            <label for="chk4">Comedy</label>
+            <input type="checkbox" id="chk5" name="CategoryId" value="5" />
+            <label for="chk5">Romantic</label>
+            <input type="checkbox" id="chk6" name="CategoryId" value="6" />
+            <label for="chk6">Factual</label>
+        </div>
+    <button type="submit">Submit</button>
+</form>
+
+The form includes multiple checkboxes, each with the same name attribute value i.e. CategoryId. When the form is submitted, the posted values look something like this (depending on the selection made):
+
+CategoryId=1&CategoryId=3&CategoryId=4
+
+ASP.NET Core will take those values and transform them into a StringValues type, which represents zero/null, one or many strings. This can be converted by the model binder to an array of any type that the values can be converted to strings or integers will work in this example. The code for binding to a handler method parameter and passing the posted values to ViewData as following:
+
+In PageModel Class (Example.cshtml.cs):
+----------------------------------------------------------
+        public void OnPost(int[] CategoryId)
+        {
+            ViewData["categoryId"] = CategoryId;
+        }
+
+Display the ViewData result on the page/view as following:
+
+@if (ViewData["categoryId"] != null)
+{
+    <h3>You Selected the following Movie Categories: @string.Join(",",(int[])ViewData["categoryId"])</h3>
+}
+
+If you choose to bind to a PageModel property, you can initiate the collection as part of its declaration:
+
+In PageModel Class (Example.cshtml.cs):
+-----------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public int[] CategoryId { get; set; } = new int[0];
+
+        public void OnGet()
+        {
+
+        }
+
+        public void OnPost()
+        {
+           
+        }
+    }
+}
+
+Then you can use Any() to check whether the collection has been populated:
+
+In Razor Content Page (Example.cshtml):
+
+@if (Model.CategoryId.Any())
+{
+    <h3>You Selected the following Movie Categories: @string.Join(",",Model.CategoryId)</h3>
+}
+
+Binding Complex Collections:
+-------------------------------------------
+The model binder also supports binding to collections of complex objects. The following class represents a contact:
+
+Models -> Contact.cs:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASPNETCoreWebApp1.Models
+{
+    public class Contact
+    {
+        public int ContactId { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Email { get; set; }
+    }
+}
+
+Here is a form that enables users to submit multiple contacts in one go:
+
+In Razor Content Page - Example.cshtml:
+
+@page 
+@model ASPNETCoreWebApp1.Pages.ExampleModel
+@{ 
+}
+
+<form method="post" class="form-horizontal">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for(int index = 0; index < 5; index++)
+            {
+            <tr>
+                <td>
+                    <input type="text" name="[@index].FirstName" />
+                </td>
+                <td>
+                    <input type="text" name="[@index].LastName" />
+                </td>
+                <td>
+                    <input type="text" name="[@index].Email" />
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <div class="form-group" align="center">
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+</form>
+
+The model binder will bind the posted values to a collection of Contact objects, which is usually represented by a List<T>. This can be a property of PageModel class:
+
+        [BindProperty]
+        public List<Contact> Contacts { get; set; }
+
+Or it can be a handler method parameter:
+
+        public void OnPost(List<Contact> contacts)
+        {
+            // Write the logic to process the contacts
+        }
+
+This approach to complex object binding makes use of a sequential index. The index must start at 0, and it must be sequential, as its name suggests. There must be no gaps. The index is placed in square brackets and added to the form field's name attribute i.e. [0].FirstName. The code below shows the generated HTML for first two rows in the form:
+
+            <tr>
+                <td>
+                    <input type="text" name="[0].FirstName" />
+                </td>
+                <td>
+                    <input type="text" name="[0].LastName" />
+                </td>
+                <td>
+                    <input type="text" name="[0].Email" />
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" name="[1].FirstName" />
+                </td>
+                <td>
+                    <input type="text" name="[1].LastName" />
+                </td>
+                <td>
+                    <input type="text" name="[1].Email" />
+                </td>
+            </tr>
+
+In this example, for format that is used for the form field name is [index].propertyname. The process also works with parametername[index].propertyname if you prefer e.g.:
+
+            @for(int index = 0; index < 5; index++)
+            {
+            <tr>
+                <td>
+                    <input type="text" name="Contacts[@index].FirstName" />
+                </td>
+                <td>
+                    <input type="text" name="Contacts[@index].LastName" />
+                </td>
+                <td>
+                    <input type="text" name="Contacts[@index].Email" />
+                </td>
+            </tr>
+            }
+
+When the form is submitted, a collection of five (in this example) Contact objects is instantiated and populated with the posted values. If the user only provides values for first three contacts, the final two will have their properties set to the default for the type - null for strings.
+
+The same approach works when you bind to a PageModel property. However, you can also use the asp-for attribute of an input tag helper as follows:
+
+In Razor Content  Page: (Example.cshtml)
+
+            @for(int index = 0; index < 5; index++)
+            {
+            <tr>
+                <td>
+                    <input type="text" asp-for="Contacts[index].FirstName" />
+                </td>
+                <td>
+                    <input type="text" asp-for="Contacts[index].LastName" />
+                </td>
+                <td>
+                    <input type="text" asp-for="Contacts[index].Email" />
+                </td>
+            </tr>
+            }
+
+In PageModel Class: (Example.cshtml.cs)
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using ASPNETCoreWebApp1.Models;
+
+namespace ASPNETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public List<Contact> Contacts { get; set; }
+
+        public void OnGet()
+        {
+            Contacts = new List<Contact>()
+            {
+                new Contact(),
+                new Contact(),
+                new Contact()
+            };
+        }
+
+        public void OnPost()
+        {
+            // Write the logic to process the contacts
+        }
+    }
+}
+
+You can also use an explicit index. This approach requires an additional hidden field for each item, named [property].Index (the explicit index). The index can be any value that uniquely identifies a data item. This approach is more suited to forms designed for editing existing values, where the primary key of each item is often used as the index value.
+
+In this example, ContactId - the key value for the Contact entity - is used as the index value.
+
+In PageModel Class (Example.cshtml.cs):
+----------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using ASPNETCoreWebApp1.Models;
+
+namespace ASPNETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public List<Contact> Contacts { get; set; }
+
+        public void OnGet()
+        {
+            Contacts = new List<Contact>()
+            {
+                new Contact() {ContactId=101,FirstName="John",LastName="Kumar",Email="john.kumar@gmail.com"},
+                new Contact(){ContactId=102,FirstName="Rahul",LastName="Reddy",Email="rahul.r@gmail.com"},
+                new Contact(){ContactId=103,FirstName="Mayank",LastName="Kumar",Email="mayank.k@gmail.com"}
+            };
+        }
+
+        public void OnPost()
+        {
+            // Write the logic to process the contacts
+        }
+    }
+}
+
+In Razor Content Page (Example.cshtml):
+
+@page 
+@model ASPNETCoreWebApp1.Pages.ExampleModel
+@{ 
+}
+
+<form method="post" class="form-horizontal">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Contact Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var contact in Model.Contacts)
+            {
+            <tr>
+                <td>
+                    <input type="hidden" name="Contacts.Index" value="@contact.ContactId" />
+                    <input type="hidden" name="Contacts[@contact.ContactId].ContactId" value="@contact.ContactId" />
+                    <span>
+                        @contact.ContactId
+                    </span>
+                </td>
+                <td>
+                    <input type="text" name="Contacts[@contact.ContactId].FirstName" value="@contact.FirstName" />
+                </td>
+                <td>
+                    <input type="text" name="Contacts[@contact.ContactId].LastName" value="@contact.LastName" />
+                </td>
+                <td>
+                    <input type="text" name="Contacts[@contact.ContactId].Email" value="@contact.Email" />
+                </td>
+
+            </tr>
+            }
+        </tbody>
+    </table>
+    <div class="form-group" align="center">
+        <button type="submit" class="btn btn-primary">Update</button>
+    </div>
+</form>
+
+This is how one row of data might render, given some actual values:
+
+            <tr>
+                <td>
+                    <input type="hidden" name="Contacts.Index" value="101" />
+                    <input type="hidden" name="Contacts[101].ContactId" value="101" />
+                    <span>
+                        101
+                    </span>
+                </td>
+                <td>
+                    <input type="text" name="Contacts[101].FirstName" value="John" />
+                </td>
+                <td>
+                    <input type="text" name="Contacts[101].LastName" value="Kumar" />
+                </td>
+                <td>
+                    <input type="text" name="Contacts[101].Email" value="john.kumar@gmail.com" />
+                </td>
+            </tr>
+
+The model binders uses the Contacts.Index field value to group other values.
+
+Binding Related Collections to a Complex Object:
+------------------------------------------------------------------------
+Sometimes you may want to create a form that enables the creation of a parent object along with one or more items belonging to a collection property of the parent. One of the easier example of this to understand is an order and its items. The following simple model illustrates this relationship:
+
+Models -> Order.cs:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASPNETCoreWebApp1.Models
+{
+    public class Order
+    {
+        public int OrderId { get; set; }
+        public string Customer { get; set; }
+        public List<OrderItem> OrderItems { get; set; }
+    }
+}
+
+Models -> OrderItem.cs:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASPNETCoreWebApp1.Models
+{
+    public class OrderItem
+    {
+        public int OrderItemId { get; set; }
+        public string Item { get; set; }
+        public decimal Price { get; set; }
+    }
+}
+
+In Razor Content Page (Example.cshtml):
+------------------------------------------------------------
+@page
+
+@model ASPNETCoreWebApp1.Pages.ExampleModel
+@{
+}
+
+<form method="post">
+    <b>Order Details:</b>
+    <hr />
+    <label asp-for="Order.Customer">Customer Name: </label>
+    <input asp-for="Order.Customer" /><br />
+    <b>Order Items: </b><br />
+    @for (int index = 0; index < Model.Order.OrderItems.Count; index++)
+    {
+        <div>
+            <label asp-for="Order.OrderItems[index].Item">Item Name: </label>
+            <input asp-for="Order.OrderItems[index].Item" />&nbsp;
+            <label asp-for="Order.OrderItems[index].Price">Price: </label>
+            <input asp-for="Order.OrderItems[index].Price" />
+        </div>
+    }
+    <button type="submit" class="btn btn-info">Submit</button>
+</form>
+
+Finally, the PageModel class with an Order property with the [BindProperty] attribute:
+
+In Page Model Class (Example.cshtml.cs):
+------------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using ASPNETCoreWebApp1.Models;
+
+namespace ASPNETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public Order Order { get; set; }
+
+        public void OnGet()
+        {
+            Order = new Order()
+            {
+                OrderItems = new List<OrderItem>()
+                {
+                    new OrderItem(),
+                    new OrderItem(),
+                    new OrderItem()
+                }
+            };
+        }
+
+        public void OnPost()
+        {
+           //Write the logic to process the order.
+        }
+    }
+}
+
+Binding to Arbitrary Keys:
+-------------------------------------
+When binding posted values, ASP.NET Core matches the name of the form or query string keys in the request to parameter names or the names of the public properties decorated with [BindProperty] attribute. A form field with a name attribute of person.firstname will be bound to Person.FirstName. Sometimes, you might want to override the default matching. This is possible by specifying a value for the Name property of the BindProperty attribute as in the following code example:
+
+Models -> Person.cs
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+using Microsoft.AspNetCore.Mvc;
+
+namespace ASPNETCoreWebApp1.Models
+{
+    public class Person
+    {
+        [BindProperty(Name = "first-name")]
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+}
+
+In PageModel Class (Example.cshtml.cs):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using ASPNETCoreWebApp1.Models;
+
+namespace ASPNETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public Person Person { get; set; }
+
+        public void OnGet()
+        {
+            
+        }
+
+        public void OnPost()
+        {
+           //Write the logic to process the person.
+        }
+    }
+}
+
+In Razor Content Page (Example.cshtml):
+----------------------------------------------------------
+@page
+
+@model ASPNETCoreWebApp1.Pages.ExampleModel
+@{
+}
+
+<form method="post">
+    <b>First Name: </b><input name="person.first-name" />
+    <hr />
+    <b>Last Name: </b><input name="person.lastname" />
+    <br />
+    <button type="submit" class="btn btn-info">Submit</button>
+</form>

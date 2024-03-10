@@ -1,0 +1,214 @@
+Validating User Input in Razor Pages/MVC:
+-------------------------------------------------------------
+When you allow users to provide values that you then process, you need to ensure that the incoming values are of the expected data type, that they are within the permitted range and that required values are present. This process is known as input validation.
+
+The term "user input" covers any value that the user has control over. Values provided via forms constitute the bulk of user input, but user input also comes in the form of values provided in URLs and cookies. The default position should be that all user input is to be considered untrusted.
+
+You can validate user input in two places in a web application: in the browser using client-side script or the browser's in-built data type validation; and on the server. However, you should only ever view client-side validation as a courtesy to the user because it is easily circumnavigated.
+
+The MVC framework, on which Razor Pages is built, includes a robust validation framework that works against inbound model properties on the client-side and on the server-side.
+
+The key players in the Input Validation framework are:
+
+	-> DataAnnotation Attributes
+
+	-> Tag Helpers
+
+	-> jQuery Unobtrusive Validation
+
+	-> ModelState
+
+	-> Route Constraints
+
+DataAnnotation Attributes:
+---------------------------------------
+The primary building block of the validation framework is a set of attributes that inherit from ValidationAttribute. 
+Most of these attributes reside in the System.ComponentModel.DataAnnotations namespace.
+
+Required: It specifies that a value must be provided for this property. Note that non-nullable value types such as DateTime and numeric values are treated as required by default and do not need this attribute applied to them.
+
+StringLength: It sets the maximum number of string characters allowed.
+
+Compare: It is used to specify another form field that the value should be compared to for equality.
+
+MinLength: It sets the minimum number of characters that can be accepted.
+
+MaxLength: It sets the maximum number of characters that can be accepted.
+
+Range: It sets the minimum & maximum values of a range.
+
+RegularExpression: It checks the value against the specified regular expression. 
+
+Remote: It enables client-side validation against a server-side resource, such as a database check to see if a username is already in use.
+
+Note:
+------
+Apart from the Remote attribute, all the other attributes cause validation to occur on both the client and the server. The Remote attribute also differs from the others in that it doesn't belong to the System.ComponentModel.DataAnnotations namespace. It is found in the Microsoft.AspNetCore.Mvc namespace.
+
+There are a number of other attributes in the System.ComponentModel.DataAnnotations namespace that inherit from the DataTypeAttribute. These include Phone, EmailAddress, Url, CreditCard and so on. These do not form part of the validation framework. However, these attributes affect the type of the rendered input element associated with model property to which they have been applied. The input tag helper will render an appropriate HTML5 type based on the data type of the property to take advantage of any supporting features provided by the browser which can include browser-specific type validation. This validation is not consistent across browsers and cannot be relied upon. If you want to validate for a data type, you should implement your own custom solution.
+
+Attributes are applied to properties on the inbound model - typically a PageModel or ViewModel:
+
+User.cshtml.cs: (PageModel Class File):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using System.ComponentModel.DataAnnotations;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class UserModel : PageModel
+    {
+        [BindProperty]
+        [Required]
+        [MinLength(6)]
+        public string UserName { get; set; }
+        [BindProperty]
+        [Required, MinLength(6)]
+        public string Password { get; set; }
+
+        [Required]
+        [Compare(nameof(Password))]
+        public string ConfirmPassword { get; set; }
+
+        public void OnGet()
+        {
+        }
+    }
+}
+
+-> Each attribute can be declared separately, or as a comma separated list, or a mixture of both.
+
+Client Side Validation:
+-------------------------------
+Client-side validation support is provided by the jQuery Unobtrusive Validation library, developed by Microsoft. You must include jQuery Unobtrusive Validation within the page containing the form for client side validation to work. 
+This is most easily accomplished by the inclusion of the _ValidationScriptsPartial.cshtml file (located in the Shared folder) within the Page.
+
+For Example:
+
+User.cshtml: (Razor Content Page):
+
+@page
+@model ASP.NETCoreWebApp1.Pages.UserModel
+@{
+}
+
+@section Scripts{ 
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    .field-validation-error{
+        color:red;
+        font-weight:bold
+    }
+</style>
+
+<form method="post">
+    <div>
+        <label asp-for="UserName">User Name</label><br />
+        <input asp-for="UserName" />
+        <span asp-validation-for="UserName"></span>
+    </div>
+    <div>
+        <label asp-for="Password">Password</label><br />
+        <input asp-for="Password" />
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div>
+        <label asp-for="ConfirmPassword">Confirm Password</label><br />
+        <input asp-for="ConfirmPassword" />
+        <span asp-validation-for="ConfirmPassword"></span>
+    </div>
+    <div>
+        <br />
+        <input type="submit" value="Submit" />
+    </div>
+</form>
+
+The form uses the validation message tag helper to output validation error messages.
+
+Note: You should also ensure that jQuery core library is available on the page too because jQuery validation library depends on jQuery core library.
+
+Client side validation works with special HTML5 data-* attributes emitted by tag helpers.
+
+This is how the form renders as HTML:
+
+<form method="post">
+    <div>
+        <label for="UserName">User Name</label><br />
+        <input type="text" data-val="true" data-val-minlength="The field UserName must be a string or array type with a minimum length of &#x27;6&#x27;." data-val-minlength-min="6" data-val-required="The UserName field is required." id="UserName" name="UserName" value="" />
+        <span class="field-validation-valid" data-valmsg-for="UserName" data-valmsg-replace="true"></span>
+    </div>
+    <div>
+        <label for="Password">Password</label><br />
+        <input type="password" data-val="true" data-val-minlength="The field Password must be a string or array type with a minimum length of &#x27;6&#x27;." data-val-minlength-min="6" data-val-required="The Password field is required." id="Password" name="Password" />
+        <span class="field-validation-valid" data-valmsg-for="Password" data-valmsg-replace="true"></span>
+    </div>
+    <div>
+        <label for="ConfirmPassword">Confirm Password</label><br />
+        <input type="password" data-val="true" data-val-equalto="&#x27;ConfirmPassword&#x27; and &#x27;Password&#x27; do not match." data-val-equalto-other="*.Password" data-val-required="The ConfirmPassword field is required." id="ConfirmPassword" name="ConfirmPassword" />
+        <span class="field-validation-valid" data-valmsg-for="ConfirmPassword" data-valmsg-replace="true"></span>
+    </div>
+    <div>
+        <br />
+        <input type="submit" value="Submit" />
+    </div>
+<input name="__RequestVerificationToken" type="hidden" value="CfDJ8FIR_aQdQdxDgHMsNKMB0_Qnwkb6ddX7KVZsAjn5USIWGKahYtnA7KrxBJLtJiLxqManH0PeG-i5jfSABI9qbYaWabft2RmQhxNJJB2g9tVJHeKXs4zkYuq0yZhlbFRS7Lrx7Is4plEEP705ACTlO4Y" />
+</form>
+
+Validation is activated by the inclusion of the data-val attribute with a value of true which has been applied to the span elements targeted by the validation message tag helper. Various other data-val-* attributes are added as part of the tag helper rendering to specify the type of validation required and the error message, which can be customised as part of the attribute declaration as follows:
+
+[Required(ErrorMessage ="Please enter confirm password")]
+[Compare(nameof(Password),ErrorMessage ="Confirm Password must be same as Password.")]
+[DataType(DataType.Password)]
+public string ConfirmPassword { get; set; }
+
+ <input type="password" data-val="true" data-val-equalto="Confirm Password must be same as Password." data-val-equalto-other="*.Password" data-val-required="Please enter confirm password" id="ConfirmPassword" name="ConfirmPassword" />
+
+Validation message or summary tag helpers are required to provide somewhere for the error message to be displayed. Without these, any attempt to submit a form that faild client-side validation will not succeed, but without any visual clues as to why, potentially leaving the user confused.
+
+Server Side Validation:
+--------------------------------
+Client side validation will not take place unless you include _ValidationScriptsPartial.cshtml in your form, or if you don't use tag helpers to generate the HTML for your form controls.
+
+There are a number of other ways to circumevent client-side validation:
+
+	- Use the browser's developer tools to change data-val="true" to data-val="false"
+
+	- Save a copy of the form to your desktop and remove the validation scripts
+
+	- Use Postman, Fiddler or Curl to post the form values directly
+
+	- etc...
+
+Because it is so easy to circumevent client-side validation, server-side validation is included as part of the ASP.NET Core validation framework. Once property values have been bound, the framework looks for all validation attributes on those properties and executes them. Any failures result in an entry being added to a ModelStateDictionary (a dictionary-like structure where validation errors are stored.) This is made available in the PageModel/Controller class via ModelState, which has a property named IsValid that returns false if any of the validation tests fail.
+
+public IActionResult OnPost()
+{
+            if (ModelState.IsValid)
+            {
+                //do something
+                return RedirectToPage("Profile");
+            }
+            else
+            {
+                return Page();
+            }
+}
+
+The above code illustrates the most common pattern for dealing with validation in an OnPost handler - query ModelState's IsValid property, and if returns true, process the form otherwise redisplay the form, and let the framework take care of extracting error messages from ModelState and passing them to validation message and/or summary tag helpers. If you use this approach, the values submitted by the the user will be retained in the form for the user to modify accordingly.
+
+
+PageRemote:
+-------------------
+The form has its method set to post, which will result in a request verification token being included in the rendered HTML. It also includes a validation tag helper for outputting any validation messages relating to the Model property.
+
+The AdditionalFields property must include the request verification token because request verification takes place by default in Razor Pages. If this field is not included in a POST request, the request will fail with a 400 Bad Request status code.
+
+400 error codes are also returned if the property that you are trying to validate is a "nested property", e.g. the EmailAddress property of a Contact class, which is then assigned as property of the PageModel. If you use an input tag helper to generate the form field, the name of the field that is generated is Contact.EmailAddress. The Contact prefix is also applied to ALL fields listed in the AdditionalFields property, including the field containing the request verification token. As a result, the request verification token itself is not found, and request verification fails.

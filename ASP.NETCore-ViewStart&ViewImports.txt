@@ -1,0 +1,69 @@
+The ViewStart file:
+-------------------------
+The Razor Pages _ViewStart.cshtml file contains code that is executed at the start of each Razor Page's execution. The ViewStart file affects all Razor Pages located in the same folder as the ViewStart file or any of its subfolders. ViewStart files are hierarchical. Those located in subfolders will be executed after those located higher up the file system hierarchy.
+
+The most common use for the ViewStart file is to set the layout page for each Razor content page. Since the ViewStart file is a Razor Page, server-side code must be loacted in a razor code block:
+
+@{
+	Layout = "_Layout";
+}
+
+The ViewImports File:
+------------------------------
+The purpose of the _ViewImports.cshtml file is to provide a mechanism to make directives available to Razor Pages globally so that you don't have to add them to pages individually.
+
+The default Razor Pages template includes a _ViewImports.cshtml file in the Pages folder (the Root folder for the Razor Pages). All Razor pages in the folder hierarchy will be affected by the directive set in the _ViewImports.cshtml file.
+
+The _ViewImports.cshtml file supports the following directives:
+
+@addTagHelper
+
+@inherits
+
+@namespace
+
+@inject
+
+@model
+
+@removeTagHelper
+
+@tagHelperPrefix
+
+@using
+
+The @addTagHelper, @removeTagHelper and @tagHelperPrefix directives relate to the management of Tag Helpers.
+
+The @namespace directive is used to specify the namespace that the ViewImports belongs to, typically ApplicationName.Pages.
+
+Dependency Injection is supported through the use of the @inject directive.
+
+The @model directive is used to specify the Model.
+
+The @using directive makes other selected namespaces available to all pages in the folder hierarchy to save you having to provide full qualified names.
+
+The @inherit directive provides full control of the class the view inherits.
+
+The default _ViewImports.cshtml file typically contains three directives:
+
+	- a @using directive specifying the namespace of your application
+	- a @namespace directive sets the namespaces of the class of generated Razor Page, MVC View.
+	- @addTagHelper directive making the Microsoft.AspNetCore.Mvc.TagHelpers library contents avaialable to your pages
+
+@using ASP.NETCoreWebApp1
+@namespace ASP.NETCoreWebApp1.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+The @namespace directive specifies the root namespace to be used by pages (and their models). By convention, it is composed from a dot-separated path to the Razor Page location with the name of the application provided as the "root". Having the @namespace declaration in the _ViewImports.cshtml file saves you having to fully qualified the model names in the @model directive of individual pages.
+
+You can only have one @namespace directive per _ViewImports.cshtml file. Adding multiple @namespace directives to the same file will result in build errors.
+
+You can add further @using directives to bring additional namespaces into scope:
+
+@using ASP.NETCoreWebApp1
+@using ASP.NETCoreWebApp1.Models
+@using ASP.NETCoreWebApp1.Services
+@namespace ASP.NETCoreWebApp1.Pages
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+There is no limit to number of _ViewImports.cshtml file that a Razor Pages application can support. You can place additional _ViewImports.cshtml files in sub-folders to either add to the top level _ViewImports.cshtml file's directives, or to override its settings. The @addTagHelper, @removeTagHelper, @inject and @using directives are additive, while the other directives override eachother, the close you get to page. So, for example, the model specifies in the root Pages folder will be overriden for pages in a sub-folder if a different @model directive is specified in _ViewImports.cshtml file in that sub-folder.

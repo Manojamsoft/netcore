@@ -1,0 +1,1297 @@
+Tag Helpers:
+-----------------
+Tag helpers are reusable components for automating the generation of HTML in Razor Pages/Views. Tag helpers target specific HTML tags. Tag helpers enable server-side code to participate in creating and rendering HTML elements in Razor files. Tag helpers are a new feature in ASP.NET Core and similar to HTML helpers, which helps us to render HTML. So, with the help of Tag Helpers which one is the Microsoft's new features in ASP.NET Core, developers can replace the Razor cryptic syntax with @ symbol with a more natural looking HTML-like syntax. So, the first question always arise that "Why we need Tag Helpers?". The simple answer is that Tag Helpers actually reduce the coding amount in HTML which we need to write and also create an abstracted layer between our UI and server-side code. We can extend the existing HTML tag elements or can create custom elements just like HTML elements with the help of Tag Helpers. Actually, we can write server-side code in the Razor files to create new elements or rendering HTML elements. But, we need to remember that Tag Helpers does not replace the HTML helpers, so we can use both of the side-by-side as per our requirement.
+
+Now, we need to understand why Tag Helpers is important or what are the advantages of it's over the HTML Helpers. So that can compare these two different helpers.
+
+	i) Tag helpers use server-side binding without any server-side code.
+
+	ii) This helper object is very much useful when HTML developers do the UI designing who does not have any idea or concept about Razor syntax.
+
+	iii) It provides us an experience of working on basic HTML environments.
+
+	iv) It supports rich intellisense environment support to create a markup between HTML and Razor.
+
+The ASP.NET Core framework includes a number of predefined Tag Helpers trageting many commonly used HTML elements as well as custom tags.
+
+Built-In Tag Helpers:
+-----------------------------
+Anchor Tag Helpers
+Cache Tag Helpers
+Environment Tag Helpers
+Form Action Tag Helpers
+Form Tag Helper
+Image Tag Helper
+Input Tag Helper
+Label Tag Helper
+Link Tag Helper
+Option Tag Helper
+Partial Tag Helper
+Script Tag Helper
+Select Tag Helper
+Textarea Tag Helper
+Validation Tag Helper
+ValidationSummary Tag Helper
+
+The Tag Helpers used in Razor Pages/Views were introduced as part of ASP.NET Core MVC and are found in the Microsoft.AspNetCore.Mvc.TagHelpers package which is included as part of the Microsoft.AspNetCore.All meta-package. It is also possible to create your own custom tag helpers to automate the generation of HTML.
+
+The following below example illustrates an Anchor tag helper, which targets the HTML anchor <a> tag:
+
+<a asp-page="/Index">Index</a> |
+<a asp-page="/Privacy">Privacy</a>
+
+Each tag helper arguments that target element with additional attributes, prefixed with asp-. In the above example, you can see that the asp-page attribute in the tag has a value applied. And additional attributes can be shown by intellisense (in IDE that provides this feature). Some of the attributes are specific to Razor Pages and some are specific to MVC. Others are relevant to both development platform.
+
+Enabling Tag Helpers:
+--------------------------------
+Tag helpers are an opt-in feature. They are not available to the page/view by default. They are enabled by adding an @addTagHelper directive to the page/view, or more usually to _ViewImports.cshtml file.
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+The @addTagHelper directive is followed by a wildcard character (*) to specify that all tag helpers found in the specified assembly should be used, and then the name of assembly containing the tag helpers is provided. The name of the assembly is the name of your Razor Pages project in most cases, unless you are defining your tag helpers in a separate project. If you want to enable tag helpers defined in your current project named 'DemoWebApp1', which has a .csproj file named DemoWebApp1.csproj, you would do so like this:
+
+@addTagHelper *, DemoWebApp1
+
+Selective Tag Helper processing:
+-----------------------------------------------
+Once a tag helper has been enabled, it will process every instance of the tag that it targets. That may not be desirable, especially so where tags don't feature special attributes that need to be processed. It is possible to opt in or opt of tag processing selectively. You can use the @addTagHelper and @removeTagHelper directives opt-in or opt-out of processing all tags of a certain type. Rather than pass the wildcard charcater to the @addTagHelper directive, you can pass name(s) of the tag helpers that you want to enable as following:
+
+@addTagHelper "Microsoft.AspNetCore.Mvc.TagHelpers.AnchorTagHelper, Microsoft.AspNetCore.Mvc.TagHelpers"
+
+The only tag helper is enabled in the above code is the AnchorTagHelper. This approach is suitable if you only want to enable a small section of tag helpers. If you want to enable most of the tag helpers in a library, you can use the @removeTagHelper directive to filter out tag helpers having enabled all of them. Here's how you would disable the AnchorTagHelper using this method:
+
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@removeTagHelper "Microsoft.AspNetCore.Mvc.TagHelpers.AnchorTagHelper, Microsoft.AspNetCore.Mvc.TagHelpers"
+
+You can opt individual tags out of processing by placing the ! prefix just prior to the tag name. The following example illustrates how that is applied to an anchor tag to prevent it being processed unnecessarily.
+
+<!a asp-page="/Index">Index</!a>
+
+The prefix is place in both the start and end tag. Any tag without the ! prefix will be processed by an associated tag helper.
+
+The alternative option is to opt specific tags in to processing at parse time. You will achieve this by registering a custom prefix via the @tagHelperPrefix directive and then applying your chossen prefix to tags you want to take part in processing. You can register your prefix in the _ViewImports.cshtml file, where you enabled tag helper processing.
+
+@tagHelperPrefix rsn
+
+You can use pretty much any string you like as a prefix. Then you apply it to both the start and end tag, just like ! prefix:
+
+<rsna asp-page="/Index">Home</rsna>
+
+Only those tags that feature the prefix will be processed. Visual Studio shows enabled tag helpers with a different font.
+
+<rsna asp-page="/Index">Home</rsna>
+<a asp-page="/Privacy">Privacy</a>
+
+For the sake of clarity, most developers are likely to use punctuation to separate the prefix from the tag name, For example:
+
+@tagHelperPrefix rsn:
+
+<rsn:a asp-page="/Index">Home</rsn:a>
+
+This should reduce any visual confusion especially for designers when they look at the HTML content.
+
+The Anchor Tag Helper:
+----------------------------------
+The anchor tag helper targets the HTML anchor <a> tag is used to generate relative links from the values passed to various custom attributes. It can also used to generate absolute URLs to external resources.
+
+Note: The anchor tag helper's role is to generate an href attribute from the parameter values passed to its custom attributes. Therefore, if you try to add an href attribute to the anchor tag helper as well as values to custom attributes, an exception will be raised as follows:
+
+An unhandled exception occurred while processing the request.
+InvalidOperationException: Cannot override the 'href' attribute for <a>. An <a> with a specified 'href' must not have attributes starting with 'asp-route-' or an 'asp-action', 'asp-controller', 'asp-area', 'asp-route', 'asp-protocol', 'asp-host', 'asp-fragment', 'asp-page' or 'asp-page-handler' attribute.
+
+If a route cannot be matched from the values passed to the tag helper attributes, the output for the href attribute will silently fall back to an empty string into Razor Pages/Views.
+
+Anchor Tag Helper Attributes: These are following most commonly used attributes:
+
+	action: The name of the action method on an MVC controller
+
+	controller: The name of the MVC controller
+
+	page: The Razor page to link to
+
+	fragment: The fragment in the URL
+
+	page-handler: The Razor page handler method to invoke
+
+	all-route-data: Multiple route parameter values
+	
+	route: The name of the route.
+
+	route-: A single route parameter value
+
+	area: The name of the Area
+
+	host: The name of the host (domain)
+
+Notes:
+
+1.
+-> If the target URL includes multiple route parameters, their values can be packaged as a Dictionary<string, string> and passed to the all-route-data parameter:
+
+@{
+    var obj1 = new Dictionary<string, string>
+    {
+        {"id","101" },
+        {"name","Smith" }
+    };
+}
+
+<a asp-page="/Privacy" asp-all-route-data="obj1">Privacy</a>
+
+If the route has parameters defined, the anchor tag helper will output the values as URL segments:
+
+<a href="/Privacy/101/Smith">Privacy</a>. 
+
+If it doesn't, the route parameters will be appended to the URL as query string values:
+
+<a href="/Privacy?id=101&Name=Smith">Privacy</a>
+
+2.
+
+The fragment is the value after a hash or pound sign (#) in a URL used to identify a named portion of a document. 
+
+For Example:
+
+<h1 id="notes">Class Notes</h1>
+
+The "Class Notes" heading above has an identity value of "notes" and can be referenced in a URL using the anchor tag helper as follows:
+
+<a asp-fragment="notes">Click Here to View Class Notes</a>
+
+Render output of fragment link: <a href="/Example#notes">Click Here to View Class Notes</a>
+
+3. The name of the Razor page to link to must be provided without the file extension:
+
+<a asp-page="Privacy">Privacy</a>
+
+Render output of page link: <a href="/Privacy">Privacy</a>
+
+If no valid page name is specified, the tag helper will generate a link to the current page. 
+
+If you want to generate a link to the default page in a folder, you must include the default page's file name:
+
+<a asp-page="/Admin/Index">Admin</a>
+
+This renders as <a href="/Admin">Admin</a>
+
+The tag helper will generate an href attribute whose value will be taken from the route template of the specified page.
+
+4. The page handler method name will appear as a query string value unless it has been included as a route parameter for the target page
+
+5. Razor pages doesn't support named routes. This parameter will only be used for MVC routes.
+
+6. The route- attribute enables you to specify the value for a single route data paramter. The parameter name is added after the hyphen. 
+
+For example: Here, the route parameter name is 'id':
+
+<a asp-route-id="5" asp-page="Edit">Edit</a>
+
+This renders as follows:
+
+<a href="/Edit/5">Edit</a> (If the id parameter is defined as part of the page's route template)
+
+If the id parameter is not defined as part of the page's route template then it renders as follows:
+
+<a href="/Edit?id=5">Edit</a>
+
+The Formaction Tag Helper:
+----------------------------------------
+The foraction tag helper adds a "formaction" attribute to the target element with a value generated from the parameters passed to the various custom attributes.
+
+The formaction tag helper targets two elements:
+
+	-> Button
+
+	-> Input with a type attribute set to image or submit
+
+The formaction tag helper is an example where the name of tag helper doesn't follow the convention that match tag helper class names with the name of the target element.
+
+Note: The formaction attribute specifies where a form is to be posted. It overrides the form's 'action' attribute. It is new to HTML5 and is not supported in IE9 or earlier.
+
+action: The name of the action method on an MVC controller
+
+controller: The name of the MVC controller
+
+page: The Razor page to link to
+
+fragment: The fragment in the URL
+
+page-handler: The Razor page handler method to invoke
+
+all-route-data: Multiple route parameter values
+	
+route: The name of the route.
+
+route-: A single route parameter value
+
+area: The name of the Area
+
+host: The name of the host (domain)
+
+Notes:
+---------
+1. If the target URL includes mutiple route parameters, their values can be packaged as Dictionary<string, string> and passed to the all-route-data parameter:
+
+@{
+    var obj1 = new Dictionary<string, string>
+    {
+        {"id","101" },
+        {"name","Smith" }
+    };
+}
+<form method="post">
+    <button asp-all-route-data="obj1">Submit</button>
+</form>
+
+If the route has parameters defined, the formaction tag helper will output the values as URL segments as follows:
+
+<button formaction="/Example/101/Smith">Submit</button>
+
+If it doesn't, the route parameters will be appended to the URL as query string values as follows:
+
+<button formaction="/Example?id=101&amp;name=Smith">Submit</button>
+
+2. The fragment is the value after a hash sign (#) in a URL used to identify a named portion of document.
+
+For Example:
+
+<h1 id="notes">Class Notes</h1>
+
+The "Class Notes" heading above has an identity value of "notes" and can be referenced in a URL using the formaction tag helper as follows:
+
+<form method="post">
+    <button asp-fragment="notes">Click Here to View Class Notes</button>
+</form>
+
+Rendering this HTML: <button formaction="/Example#notes">Click Here to View Class Notes</button>. It should be noted that fragments have no influence on the submission of a form.
+
+3. The name of the Razor page to link to must be provided without the file extension as follows:
+
+<form method="post">
+        <button asp-page="Privacy">Privacy</button>
+</form>
+
+If no page is specified, the tag helper will generate a link to the current page.
+
+4. The page handler method name will appear as a query string value unless it has been included as a route parameter for the target page.
+
+5. Razor pages doesn't support named routes. This parameter will only be used for MVC routes.
+
+6. The route- parameter enables you to specify the value of a single route value. The route parameter name is added after the hyphen. Here, the route parameter name is "id":
+
+    <form method="post">
+        <button asp-route-id="5">Submit</button>
+    </form>
+
+This renders as <button formaction="/Example?id=5">Submit</button>
+
+If the id parameter is defined as part of the page's route template then it renders as following:
+
+ <button formaction="/Example/5">Submit</button>
+
+The Form Tag Helper:
+-------------------------------
+The form tag helper renders an 'action' within a <form> element. It also includes an anti-forgery token for request verification. If a method attribute is not specified in the form element, the form tag helper will render one with a value of post.
+
+Important Point: The form tag helper's primary role is to generate an action attribute from the parameter passed to its custom attributes. Therefore, if you try to provide an action attribute to the form tag helper in addition to the custom attributes, an exception will raised.
+
+action		- The name of the action method on an MVC controller
+
+all-route-data 	- Multiple route parameter values
+
+antiforgery	- Specifies whether an anti-forgery token is rendered.
+
+area		- The name of the MVC area
+
+controller		- The name of the MVC controller
+
+fragment		- The fragment in the URL
+
+host		- The domain
+
+page		- The Razor page to link to
+
+page-handler	- The Razor page handler method to invoke
+
+protocol		- The protocol (http, https, ftp etc)
+
+route		- The name of the route
+
+route-		- A single route parameter value
+
+Notes:
+---------
+1. If the target URL for the action includes multiple route parameters, their values can be packaged (grouped) as a Dictionary<string, string> and passed to the all-route-data parameter:
+
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+@{ 
+    var obj1 = new Dictionary<string, string>
+    {
+        {"id","101" },
+        {"name","smith" }
+    };
+}
+
+<form asp-all-route-data="obj1">
+    <button>Submit</button>
+</form>
+
+If the route parameters are not defined as part of the page's route template then it renders as following:
+
+<form action="/Example?id=101&amp;name=smith" method="post"></form>
+
+If the route parameters are defined as part of the page's route template then it renders as following:
+
+<form action="/Example/101/smith" method="post"></form>
+
+2. The fragment is the value after a hash sign (#) in a URL used to identify a named portion of document.
+
+For Example:
+
+<h1 id="notes">Class Notes</h1>
+
+The "Class Notes" heading above has an identity value of "notes" and can be referenced in a URL using the form tag helper as follows:
+
+<form asp-fragment="notes">
+    <button>Click Here to View Class Notes</button>
+</form>
+
+Rendering this HTML: <form action="/Example#notes" method="post"></form>. It should be noted that fragments have no influence on the submission of a form.
+
+3. The name of the Razor page to link to must be provided without the file extension:
+
+    <form asp-page="Privacy">
+        <button>Submit</button>
+    </form>
+
+Rendering this HTML: <form action="/Privacy" method="post"></form>
+
+If no page name is specified, the tag helper will generate a link to the current page.
+
+4. The page handler method name will appear as a query string value unless it has been included as a route parameter for the target page.
+
+5. Razor pages doesn't support named routes. This parameter will only be used for MVC routes.
+
+6. The route- parameter enables you to specify the value of a single route value. The route parameter name is added after the hyphen. Here, the route parameter name is "id":
+
+    <form asp-route-id="5">
+        <button>Submit</button>
+    </form>
+
+This renders as <form action="/Example?id=5"></form>
+
+If the id parameter is defined as part of the page's route template then it renders as following:
+
+ <form action="/Example/5"></form>
+
+The Image Tag Helper:
+-------------------------------
+The image tag helper targets the <img> element and enables versioning of image files.
+
+Attribute:
+append-version: A boolean value indicating whether to append the image URL with a file version.
+
+Notes:
+The query string named 'v' is added to the images's url if the append-version attribute is set to true. The value is calculated from the file contents, so if the file is amended, the value will differ. Browsers take query string values into account when determining whether a request can be satisfied from its cache. Therefore, if the query string value changes, the browser will retrieve new version of the file from the server.
+
+This usage example utilises one of the images provided with Razor Pages (and MVC) template:
+
+<img src="~/Images/Banner.png" asp-append-version="true" />
+
+The rendered HTML is as follows:
+
+<img src="/Images/Banner.png?v=N6blhOhV0YpNdNhYDfjc4XXD7SPUvbhyYxa9RlKtSKM" />
+
+---------------
+
+The Input Tag Helper:
+-------------------------------
+The input tag helper generates appropriate 'name' and 'id' attribute values based on the PageModel/ViewModel property that is assigned to it. It will generate an appropriate value for the 'type' attribute, based on the property's meta data. The tag helper will also emit attributes that provide support for unobtrusive client-side validation.
+
+The Input tag helper has two attributes:
+
+for: An expression to be evaluated against the current PageModel/ViewModel, usually a PageModel/ViewModel property name
+
+format: A format string used to set the format of the value attribute.
+
+Although it only has two attributes, the input tag helper is quite powerful. It examines the meta data of the type that is passed to the 'for' attribute, including any Data Annotations that have been applied to the properties and emits HTML accordingly.
+
+Example:
+
+Here is a class (Model Class) with various property types and data annotation attributes applied on it:
+
+Models - Student.cs
+
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+
+namespace ASP.NETCoreWebApp1.Models
+{
+    public class Student
+    {
+        [HiddenInput]
+        public int StudentId { get; set; }
+        public string Name { get; set; }
+        public int Age { get; set; }
+        [EmailAddress]
+        public string Email { get; set; }
+        [DataType(DataType.Password)]
+        public string Password {get; set;}
+        public string City { get; set; }
+        [DataType(DataType.Date)]
+        public DateTime DateOfBirth { get; set; }
+        public decimal Fee { get; set; }
+        [Url]
+        public string Website { get; set; }
+        public bool IsFeePaid { get; set; }
+        public IFormFile Photo { get; set; }
+    }
+}
+
+This is then applied as a property to a PageModel for a Page called Example.cshtml
+
+Example.cshtml.cs (PageModel Class File):
+
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ASP.NETCoreWebApp1.Models;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public Student Student { get; set; }
+
+        public void OnGet()
+        {
+           
+        }
+    }
+}
+
+The property of the model are applied to various input tag helpers in the Razor file as follows:
+
+Example.cshtml:
+
+@page 
+
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<form method="post" enctype="multipart/form-data">
+    <input asp-for="Student.StudentId" />
+    <input asp-for="Student.Name" /> <br />
+    <input asp-for="Student.Age" /><br />
+    <input asp-for="Student.Email" /><br />
+    <input asp-for="Student.Password" /><br />
+    <input asp-for="Student.DateOfBirth" /><br />
+    <input asp-for="Student.City" /><br />
+    <input asp-for="Student.Fee" /><br />
+    <input asp-for="Student.Website" /><br />
+    <input asp-for="Student.IsFeePaid" /><br />
+    <input asp-for="Student.Photo" /><br /><br />
+    <button>Submit</button>
+</form>
+
+And this generates the following HTML:
+
+<form method="post" enctype="multipart/form-data">
+    <input type="hidden" data-val="true" data-val-required="The StudentId field is required." id="Student_StudentId" name="Student.StudentId" value="" />
+    <input type="text" id="Student_Name" name="Student.Name" value="" /> <br />
+    <input type="number" data-val="true" data-val-required="The Age field is required." id="Student_Age" name="Student.Age" value="" /><br />
+    <input type="email" data-val="true" data-val-email="The Email field is not a valid e-mail address." id="Student_Email" name="Student.Email" value="" /><br />
+    <input type="password" id="Student_Password" name="Student.Password" /><br />
+    <input type="date" data-val="true" data-val-required="The DateOfBirth field is required." id="Student_DateOfBirth" name="Student.DateOfBirth" value="" /><br />
+    <input type="text" id="Student_City" name="Student.City" value="" /><br />
+    <input type="text" data-val="true" data-val-number="The field Fee must be a number." data-val-required="The Fee field is required." id="Student_Fee" name="Student.Fee" value="" /><br />
+    <input type="url" data-val="true" data-val-url="The Website field is not a valid fully-qualified http, https, or ftp URL." id="Student_Website" name="Student.Website" value="" /><br />
+    <input type="checkbox" data-val="true" data-val-required="The IsFeePaid field is required." id="Student_IsFeePaid" name="Student.IsFeePaid" value="true" /><br />
+    <input type="file" id="Student_Photo" name="Student.Photo" /><br /><br />
+    <button>Submit</button>
+<input name="__RequestVerificationToken" type="hidden" value="CfDJ8DuVWLGQ4ctJqhurFG9b06y1skqLZBs55cgwGPvbt4YM5A41CwO6HbPMoVVJ-_FeCifOEVmH53i9VRPyoDql5zOHray4HLJaYFVeocofXziCYb4gNNt9E0vAfLSwZvkao7Y0vNElbHLfYeAga-OTIR8" /><input name="Student.IsFeePaid" type="hidden" value="false" /></form>
+
+Type attribute based on data type:
+--------------------------------------------------
+The data type of the property is taken into account when the input tag helper determines the 'type' attribute's value to apply. HTML5 types are used whenever possible to take advantage of features provided by supporting browsers. They behave as type="text" in browsers that don't support the rendered HTML5 type:
+
+.NET Type						Input Type
+---------------						----------------
+bool						checkbox
+byte, short, int, long					number
+decimal, double, float				text
+string						text
+DateTime						datetime-local
+IFormFile						file
+
+-> Despite the fact that the input type is set to text for these data types, they will still be validated for numeric values.
+
+-> The IFormFile type is loacted in the Microsoft.AspNetCore.Http namespace. It is the .NET Core successor to the HttpPostedFile type.
+
+Type attribute based on data annotations:
+------------------------------------------------------------
+Data annotation attributes applied to properties are also a determining factor for the selection of the input tag helper's type attribute. Most types are specified by a DataType enumeration value provided to the DataType attribute. Some types have their own attribute.
+
+The following list provides the DataType enumeration values, with equivalent attributes where they exist:
+
+DataType Enumeration	Input Type
+---------------------------------	---------------
+EmailAddress		email
+PhoneNumber		tel
+Password			password
+Url			url
+Date			date
+Time			time
+DateTime			datetime-local
+HiddenInput		hidden
+
+-> All other DataType enumeration values (CreditCard, Currency, Html, ImageUrl, MultilineText, PostalCode and Upload) result in type="text" being applied.
+
+-> The HiddenInput attribute requires a reference to Microsoft.AspNetCore.Mvc. All other attributes reside in the System.ComponentModel.DataAnnotations namespace.
+
+Validation Support:
+---------------------------
+The input tag helpers also emits 'data' attributes that work with ASP.NET Core's Unobtrusive Client Validation framework (an extension to jQuery Validation). The validation rules are specified in data-val-* attributes and are calculated from the data types and any data annotation attributes that have been applied to model properties.
+
+The following attributes are designed for validation purposes and will result in appropriate data-val error messages and other attributes being generated:
+
+Required
+
+StringLength
+
+Compare
+
+Range
+
+MaxLength
+
+MinLength
+
+-> Non-nullable properties are treated as Required
+
+In addition, the following annotation attributes generate data-val attributes:
+
+	- EmailAdddress / DataType.EmailAddress
+
+	- Phone / DataType.PhoneNumber
+
+	- Url / DataType.Url
+
+The Label Tag Helper:
+-------------------------------
+The label tag helper generates appropriate 'for' attribute values and content based on the PageModel property that is assigned to it. It has just one attribute:
+
+for: An expression to be evaluated against the current page model
+
+Notes:
+--------
+The label tag helper is intended to work alongside the input tag helper. It takes a property of the PageModel as a parameter to the 'asp-for' attribute and renders the name of the property as a value for the label's 'for' attribute and as the content of the label tag.
+
+Assuming that the PageModel has a property named "Email":
+
+<label asp-for="Email"></label>
+
+This render as follows:
+
+<label for="Email">Email</label>
+
+Note that the closing tag is required. If you use a self-closing tag e.g. <label asp-for="Email" />, the content will not be rendered.
+
+You can override the value that is rendered in the label in two ways. The first option is to provide an alternative value as follows:
+
+<label asp-for="Email">Email Address</label>
+
+Alternatively, you can use the Data Annotations 'Display' attribute to change the content that is rendered as follows:
+
+In Page Model Class File:
+
+[Display(Name="Email Address")]
+public string Email { get; set; }
+
+In Razor Content Page:
+
+<label asp-for="Email"></label>
+
+This renders as follows:
+
+<label for="Email">Email Address</label>
+
+The TextArea Tag Helper:
+-----------------------------------
+The role of the textarea tag helper is to render an HTML textarea element for capturing multiline text.
+
+The textarea tag helper has one attribute:
+
+for: An expression to be evaluated against the current page model
+
+Notes:
+--------
+The textarea tag helper renders id and name attributes based on the name of the model property passed to the 'asp-for' attribute. It also renders any associated data attributes required for property validation.
+
+The 'Address' property below has a maximum length of 300 characters applied to it:
+
+[BindProperty, MaxLength(300)]
+public string Address {get;set;}
+
+This is passed to the value of the 'asp-for' attribute of the tag helper as follows:
+
+<textarea asp-for="Address"></textarea>
+
+The resulting HTML includes the validation atttributes for unobtrusive validation as wel as the appropriate name attribute value for model binding as follows:
+
+ <textarea data-val="true" data-val-maxlength="The field Address must be a string or array type with a maximum length of &#x27;300&#x27;." data-val-maxlength-max="300" id="Address" maxlength="300" name="Address">
+</textarea>
+
+The Select Tag Helper:
+-------------------------------
+The use of select tag helper is to render an HTML select element populated with options generated from a collection of SelectListItem objects, enumeration and/or options set via the option tag helper.
+
+The select tag helper has following two attributes:
+
+for: The property on the PageModel that represents the selected element(s)
+
+items: A collection of SelectListItem objects, a SelectList object or an enumeration that provide the options for the select list.
+
+Notes:
+---------
+The 'for' attribute value is a property on the PageModel. The select tag helper uses the name of the property to generate values for the name and id attributes on the rendered select element. The selected value(s) will be bound to the specified model's property if the property is model bound.  If the property is a collection, support for multiple selections will be enabled by the inclusion of the 'multiple' attribute in the rendered element.
+
+Options:
+-----------
+The items attribute value is a collection of SelectListItem or a SelectList that represents the options that appear in the select list, or it can be an expression that returns a collection of SelectListItem or a SelectList. 
+
+The following example shows a list of numbers being created and added to ViewData in the OnGet() handler and then being bound to the items attribute:
+
+In Page Model Class File:
+
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+public void OnGet()
+        {
+            List<SelectListItem> items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="One", Value="1"},
+                new SelectListItem(){Text="Two", Value="2"},
+                new SelectListItem(){Text="Three", Value="3"},
+                new SelectListItem(){Text="Four", Value="4"},
+                new SelectListItem(){Text="Five", Value="5"}
+            };
+
+            ViewData["Numbers"] = items;
+        }
+
+In Razor Content Page:
+
+<select asp-items="@((List<SelectListItem>)ViewData["Numbers"])">
+    <option value="0">Select</option>
+</select>
+
+The ViewData approach requires casting to the correct type, so the advice is to add the collection as a property of the PageModel as follows:
+
+In PageModel Class File:
+
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public List<SelectListItem> Numbers = new List<SelectListItem>()
+        {
+            new SelectListItem(){Text="One", Value="1"},
+            new SelectListItem(){Text="Two", Value="2"},
+            new SelectListItem(){Text="Three", Value="3"},
+            new SelectListItem(){Text="Four", Value="4"},
+            new SelectListItem(){Text="Five", Value="5"}
+        };
+
+        public void OnGet()
+        {
+            
+        }
+    }
+}
+
+In Razor Content Page:
+
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<select asp-items="@Model.Numbers">
+    <option value="0">Select</option>
+</select>
+
+Here's another approach that shows how to use a generic List as a source for a SelectList:
+
+Models Folder: Dept.cs:
+----------------------------------
+namespace ASP.NETCoreWebApp1.Models
+{
+    public class Dept
+    {
+        public int DeptId { get; set; }
+        public string DeptName { get; set; }
+    }
+}
+
+In Page Model Class File:
+-----------------------------------
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ASP.NETCoreWebApp1.Models;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public List<Dept> Depts { get; set; }
+        public void OnGet()
+        {
+            Depts = new List<Dept>
+            {
+                new Dept{DeptId = 1, DeptName = "IT"},
+                new Dept{DeptId = 2, DeptName = "HR"},
+                new Dept{DeptId = 3, DeptName = "Sales"}
+            };
+        }
+    }
+}
+
+In Razor Content Page:
+---------------------------------
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<select asp-items="@(new SelectList(Model.Depts,"DeptId","DeptName"))">
+    <option value="0">Select</option>
+</select>
+
+Setting Selected Item:
+-------------------------------
+The SelectListItem type has a boolean property named Selected. This can be used to set the selected item unless you specify a property for the asp-for attribute. If you do that, the value of the property will be set as selected, if it has one that matches the value of a SelectedListItem.
+
+In Page Model Class File:
+
+public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public int DeptId { get; set; } = 3;
+
+        public List<Dept> Depts { get; set; }
+        
+        public void OnGet()
+        {
+            Depts = new List<Dept>
+            {
+                new Dept{DeptId = 1, DeptName = "IT"},
+                new Dept{DeptId = 2, DeptName = "HR"},
+                new Dept{DeptId = 3, DeptName = "Sales"}
+            };
+        }
+    }
+
+In Razor Content Page:
+
+<select asp-for="DeptId" asp-items="@(new SelectList(Model.Depts,"DeptId","DeptName"))">
+    <option value="0">Select</option>
+</select>
+
+OR
+
+<select asp-items="@(new SelectList(Model.Depts,"DeptId","DeptName", Model.DeptId))">
+    <option value="0">Select</option>
+</select>
+
+Using SelectListItem:
+------------------------------
+In Page Model Class File:
+public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public int DeptId { get; set; } = 3;
+        public List<SelectListItem> Depts { get; set; }
+        
+        public void OnGet()
+        {
+            Depts = new List<SelectListItem>
+            {
+                new SelectListItem(){Text="IT", Value="1"},
+                new SelectListItem(){Text="HR", Value="2"},
+                new SelectListItem(){Text="Sales", Value="3"}
+            };
+        }
+    }
+
+In Razor Content Page:
+
+<select asp-for="DeptId" asp-items="@Model.Depts">
+    <option value="0">Select</option>
+</select>
+
+This Render HTML as follows:
+
+<select data-val="true" data-val-required="The DeptId field is required." id="DeptId" name="DeptId">
+ <option value="0">Select</option>
+<option value="1">IT</option>
+<option value="2">HR</option>
+<option selected="selected" value="3">Sales</option>
+</select>
+
+Enumerations:
+---------------------
+The Html.GetEnumSelectList() method makes it easy to use an enumeration as the data source for a select list.
+
+For Example: How to use System.DayOfWeek enumeration to present the days of week as option values.
+
+Assumes that the PageModel has a property of the correct type called DayOfWeek as follows:
+
+In Page Model Class File:
+
+public class ExampleModel : PageModel
+    {
+        public DayOfWeek DayOfWeek { get; set; }
+
+        public void OnGet()
+        {
+            
+        }
+    }
+
+In Razor Content Page:
+--------------------------------
+<select asp-for="DayOfWeek" asp-items="Html.GetEnumSelectList<DayOfWeek>()">
+    <option value="">Select</option>
+</select>
+
+This Render HTML as follows:
+
+<select data-val="true" data-val-required="The DayOfWeek field is required." id="DayOfWeek" name="DayOfWeek">
+ <option value="">Select</option>
+<option selected="selected" value="0">Sunday</option>
+<option value="1">Monday</option>
+<option value="2">Tuesday</option>
+<option value="3">Wednesday</option>
+<option value="4">Thursday</option>
+<option value="5">Friday</option>
+<option value="6">Saturday</option>
+</select>
+
+In the above example, this first option i.e. 'Sunday' is selected. This is because it matches the default value of DayOfWeek. If you do not want the default value to be pre-selected, you can make your model property nullable as follows:
+
+public DayOfWeek? DayOfWeek { get; set; }
+
+SelectList:
+---------------
+You can create a SelectList from any collection but you need to specify the DataTextField and DataValueField values for the select tag helper to bind the options correctly as follows:
+
+In Page Model Class File:
+
+public class ExampleModel : PageModel
+    {
+       public SelectList Options { get; set; }
+
+        public void OnGet()
+        {
+            List<Dept> depts = new List<Dept>()
+            {
+                new Dept(){DeptId=1, DeptName="IT"},
+                new Dept(){DeptId=2, DeptName="HR"},
+                new Dept(){DeptId=3, DeptName="Sales"}
+            };
+
+            Options = new SelectList(depts, "DeptId", "DeptName");
+        }
+    }
+
+In Razor Content Page:
+
+<select asp-items="@Model.Options">
+    <option value="">Select</option>
+</select>
+
+Working with Multiple Selection (ListBox):
+
+In Page Model Class File:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using ASP.NETCoreWebApp1.Models;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public SelectList Options { get; set; }
+
+        [BindProperty]
+        public string[] Depts { get; set; }
+
+        private void CreateItems()
+        {
+            List<Dept> depts = new List<Dept>()
+            {
+               new Dept(){DeptId=1, DeptName="IT"},
+               new Dept(){DeptId=2, DeptName="HR"},
+               new Dept(){DeptId=3, DeptName="Sales"},
+               new Dept(){DeptId=4, DeptName="Marketing"}
+            };
+
+            Options = new SelectList(depts, "DeptId", "DeptName");
+        }
+        public void OnGet()
+        {
+            CreateItems();
+        }
+
+        public void OnPost()
+        {
+            //Getting the Selected Dept Items
+            string[] selectedItems = Depts;
+
+            CreateItems();
+        }
+    }
+}
+
+In Razor Content Page:
+
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    <select asp-for="Depts" asp-items="Model.Options">
+    </select>
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+OptGroups:
+-----------------
+The SelectListGroup class represents an HTML optgroup element. If you want to use optgroups, you can create SelectListGroup instances as required, and then apply them to individual SelectListItems as follows:
+
+In Page Model Class File:
+
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+       public List<SelectListItem> Staff { get; set; }
+
+        public void OnGet()
+        {
+            SelectListGroup group1 = new SelectListGroup() { Name = "Sales" };
+            SelectListGroup group2 = new SelectListGroup() { Name = "HR" };
+            SelectListGroup group3 = new SelectListGroup() { Name = "IT" };
+
+            Staff = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Smith",Value="1", Group=group1},
+                new SelectListItem(){Text="Peter",Value="2", Group=group1},
+                new SelectListItem(){Text="David",Value="3", Group=group2},
+                new SelectListItem(){Text="Martina",Value="4", Group=group3},
+                new SelectListItem(){Text="Alina",Value="5", Group=group3}
+            };
+        }
+    }
+}
+
+In Razor Content Page:
+---------------------------------
+<select asp-items="@Model.Staff">
+    <option value="">Select Staff</option>
+</select>
+
+This renders HTML as follows:
+
+<select>
+<option value="">Select Staff</option>
+<optgroup label="Sales">
+	<option value="1">Smith</option>
+	<option value="2">Peter</option>
+</optgroup>
+<optgroup label="HR">
+	<option value="3">David</option>
+</optgroup>
+<optgroup label="IT">
+	<option value="4">Martina</option>
+	<option value="5">Alina</option>
+</optgroup>
+</select>
+
+If you are using a SelectList, you can specify the property to be used for grouping in the constructor:
+
+In PageModel Class File:
+
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    class Person
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Department { get; set; }
+    }
+
+    public class ExampleModel : PageModel
+    {
+       public SelectList Staff { get; set; }
+
+        public void OnGet()
+        {
+            List<Person> persons = new List<Person>()
+            {
+                new Person(){Id=101, Name="Smith", Department="IT"},
+                new Person(){Id=102, Name="John", Department="Sales"},
+                new Person(){Id=103, Name="Peter", Department="Sales"},
+                new Person(){Id=104, Name="David", Department="Account"},
+                new Person(){Id=105, Name="Fleming", Department="HR"}
+            };
+
+            Staff = new SelectList(persons, "Id", "Name", null, "Department");
+        }
+    }
+}
+
+In Razor Content Page:
+
+<select asp-items="@Model.Staff">
+    <option value="">Select Staff</option>
+</select>
+
+This renders the HTML as follows:
+
+<select>
+<option value="">Select Staff</option>
+<optgroup label="IT">
+	<option value="101">Smith</option>
+</optgroup>
+<optgroup label="Sales">
+	<option value="102">John</option>
+	<option value="103">Peter</option>
+</optgroup>
+<optgroup label="Account">
+	<option value="104">David</option>
+</optgroup>
+<optgroup label="HR">
+	<option value="105">Fleming</option>
+</optgroup>
+</select>
+
+The Option Tag Helper:
+---------------------------------
+The option tag helper is designed to work with the 'select tag helper'. It has no custom attributes. It has two main uses:
+
+	i) It enables you to manually add items to a list of options to be rendered such as default option.
+
+	ii) If any of the option values that you provide manually match the value of the select tag helper's for attribute, they will be set as selected item.
+
+The first example shows a default option manually added to the select tag helper. First, here is a simple PageModel with a property called Numbers which is a collection of SelectListItem to be bound to a select tag helper. The options are just the numbers 1 to 5. The PageModel also has a property named Number which represents the selected item as follows:
+
+In Page Model Class File:
+
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public int Number { get; set; }
+        public List<SelectListItem> Numbers { get; set; }
+
+        public void OnGet()
+        {
+            Numbers = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="One", Value="1"},
+                new SelectListItem(){Text="Two", Value="2"},
+                new SelectListItem(){Text="Three", Value="3"},
+            };
+        }
+    }
+}
+
+In Razor Content Page:
+
+<select asp-for="Number" asp-items="@Model.Numbers">
+    <option value="">Select Number</option>
+</select>
+
+This renders the HTML as follows:
+
+<select data-val="true" data-val-required="The Number field is required." id="Number" name="Number">
+ <option value="">Select Number</option>
+<option value="1">One</option>
+<option value="2">Two</option>
+<option value="3">Three</option>
+</select>
+
+The second example shows a number of options manually added to the select tag helper, one of which matches the value of the for attribute property. This is similar to PageModel in the first example, except that in this instance, the options are present and the Number property has a defualt value of 2 applied to it.
+
+ public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public int Number { get; set; } = 2;
+        
+        public void OnGet()
+        {
+            
+        }
+    }
+
+In Razor Content Page:
+
+<select asp-for="Number">
+<option value="">Select Number</option>
+<option value="1">One</option>
+<option value="2">Two</option>
+<option value="3">Three</option>
+</select>
+
+The rendered HTML shows that the option with a value of 2 has been set as selected.
+
+<select data-val="true" data-val-required="The Number field is required." id="Number" name="Number">
+    <option value="">Select Number</option>
+    <option value="1">One</option>
+    <option value="2" selected="selected">Two</option>
+    <option value="3">Three</option>
+</select>
+
+The Partial Tag Helper:
+---------------------------------
+The Partial tag helper is designed to replace the Html.Partial and Html.RenderPartial methods as the recommended mechanism for including partial pages in a Razor content page/layout page.
+
+The partial tag helper provides following atttributes:
+
+name: The name of the partial page/view file
+
+model: The model to be passed in to the partial page/view
+
+for: An expression to be evaluated against the current page model. It cannot be used in conjunction with model attribute
+
+view-data: A ViewData dictionary to be passed to the partial page/view
+
+Notes: 
+--------
+The name attribute will search all registered partial locations for a file with the supplied name (without the extension). The following example will search for _MyPartial.cshtml in Pages/Views, Pages/Shared and Views/Shared folder by defualt:
+
+<partial name="_MyPartial" ..... />
+
+You can provide a partial path, which will be appended to the search locations:
+
+<partial name="Folder1/_MyPartial" ..... />
+
+Now the framework will search for the following:
+
+	Pages/Folder1/_MyPartial.cshtml	[Razor Pages]
+	
+	Views/Folder1/_MyPartial.cshtml	[MVC]
+
+	Pages/Shared/Folder1/_MyPartial.cshtml	[Razor Pages]
+
+	Views/Shared/Folder1/_MyPartial.cshtml	[MVC]
+
+The 'model' attribute and the 'for' attribute both provide a means to pass data to the partial view. You can use one or the other but not both.. The example that follow illustrating the difference both assume that the current page model has a 'Contacts' property.
+
+<partial name="_MyPartial" model="Model.Contacts" />
+
+<partial name="_MyPartial" for="@Model.Contacts" />
+OR
+<partial name="_MyPartial" for="Contacts" />
+
+The last two examples are equivalent. The @model part of the expression is inferred in the second approach.
+
+The Validation Tag Helper:
+--------------------------------------
+The validation tag helper targets the HTML span element, and is used to render property-specific validation error messages.
+
+Attributes:
+
+validation-for: An expression to be evaluated against the current PageModel/ViewModel, usually a PageModel/ViewModel property name.
+
+Notes:
+--------
+Validation tag helpers display both client-side and serve-side validation error messages. They apply a CSS class named field-validation-valid to the span, which is changed to field-validation-error in the event that the form value is invalid. These styles are added to any others that you specify via class attribute.
+
+<span asp-validation-for="FirstName" class="validationError"></span>
+
+render as:
+
+<span class="validationError field-validation-valid" data-valmsg-for="FirstName" data-valmsg-replace="true"></span>
+
+The Validation Summary Tag Helper:
+----------------------------------------------------
+The validation summary tag helper targets the HTML div element, and is used to render a summary of form validation error messages.
+
+Attributes:
+
+validation-summary: A ValidationSummary enumeration that specifies what validation errors to display.
+
+Possible ValidationSummary enumeration values are:
+
+None: providing no validation summary (the default)
+
+ModelOnly: summarising only model validation errors
+
+All: summarising model and property validation errors
+
+Notes:
+---------
+The validation summary tag helper is normally placed at the top of the form. Individual items that form the summary are displayed in an unordered list:
+
+Example: 
+
+ <div asp-validation-summary="All" class="validationError">
+        
+ </div>
+
+This Renders as follows:
+
+    <div class="validationError validation-summary-valid" data-valmsg-summary="true">
+            <ul>
+	<li style="display:none"></li>
+           </ul>
+    </div>
+
+After Validation Errors Renders as follows:
+
+<div class="validationError validation-summary-errors" data-valmsg-summary="true">
+            <ul>
+	<li>The FirstName field is required.</li>
+	<li>The Email field is required.</li>
+          </ul>
+</div>
+
+You can include additional content to appear before the summary list by adding it to the content of the validation summary tag helper as follows:
+
+<div asp-validation-summary="All" class="validationError">
+        <span>Please correct the following errors:</span>
+</div>
+
+The additional content will be visible by default. If you don't want users to see the content unless the page is invalid, change the validation-summary-valid CSS class (which is injected into the div element by the tag helper when the page is valid) so that it hides the div or its content as follows:
+
+.validation-summary-valid {
+            display:none
+}
+
+Or, suitable for the example above where the additional content is in a span:
+
+.validation-summary-valid span{
+            display:none
+}
+
+If you specify None as the value for the validation-summary attribute, an empty div is rendered.

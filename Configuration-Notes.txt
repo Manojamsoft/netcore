@@ -1,0 +1,351 @@
+Configuration in Razor Pages:
+-------------------------------------------
+ASP.NET Core includes an API for managing configuration settings needed by the application which includes a number of providers for retrieving data in a variety of different formats.
+
+Configuration is set up as a part of the Host.CreateDefaultBuilder() method called in Program.cs, the entry point to the application. Various key/value stores are added to configuration by default:
+
+	- appsettings.josn (and another version named after the current environment e.g. appsettings.Development.json)
+
+	- User Secrets (if the environment is Development)
+
+	- Environment Variables
+
+	- Command Line Arguments
+
+You can add other stores such as XML files, .ini files and so on if required. Configuration is added to the Dependency Injection system and is accessible througout the application via an IConfiguration object.
+
+AppSettings.json:
+-------------------------
+The vast majority of applications are likely to only ever use an appsettings.josn file for their configuration needs. Each configuration settings is stored in own system. The default appsettings.json file includes a section that configures looging for the application as following:
+
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*"
+}
+
+The next example configures a connection string to a SQL Server Database as follows:
+
+{
+  .............
+  .............,
+  "ConnectionStrings": {
+    "conStr": "Data Source=RSN\\RAKESHSOFTNET;Database=DemoDB;User Id=sa;Password=123"
+  }
+}
+
+Working with Custom Settings:
+---------------------------------------------
+Custom settings provide the easiest way to extend the application configuration. The use of JSON as a storage format enables you to store complex information easily.
+
+You can provide any name you like to custom sections of the appsettings.json file. In the example below, some values are stored in a section which has been creatively named AppSettings as following:
+
+{
+ ............
+ ............,
+ "AppSettings": {
+    "FirstName": "John",
+    "LastName": "Smith",
+    "Contact": {
+      "Mobile": "8919136822",
+      "Email":  "info@rakeshsoftnet.com"
+    }
+  }
+}
+
+Accessing Configuration Settings Programmatically:
+----------------------------------------------------------------------------
+The IConfiguration object enables you to access configuration settings in a variety of ways once it has been injected into your PageModel's constructor. You need to add a 'using' directive for Microsoft.Extensions.Configuration to the PageModel class file. The first example illustrates how to refetence a value using a string-based approach. The section is specifies and subsequent properties are referenced by separating them with colons (:)
+
+Example.cshtml.cs: (PageModel Class File)
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
+
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        private readonly IConfiguration _configuration;
+
+        public ExampleModel(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+
+        public void OnGet()
+        {
+           // ViewData["Name"] = _configuration.GetSection("AppSettings")["FirstName"] + " " + _configuration.GetSection("AppSettings")["LastName"];
+
+
+            //OR
+
+            //IConfigurationSection configurationSection = _configuration.GetSection("AppSettings");
+            //ViewData["Name"] = configurationSection["FirstName"] +  " " + configurationSection["LastName"];
+
+            //Or
+
+            ViewData["Name"] = _configuration["AppSettings:FirstName"] + " " + _configuration["AppSettings:LastName"];
+
+            //Now Read the Contact Information
+
+            //ViewData["Email"] = _configuration.GetSection("AppSettings").GetSection("Contact")["Email"];
+            //ViewData["Mobile"] = _configuration.GetSection("AppSettings").GetSection("Contact")["Mobile"];
+
+            //OR
+
+            //IConfigurationSection contact = _configuration.GetSection("AppSettings").GetSection("Contact");
+            //ViewData["Email"] = contact["Email"];
+            //ViewData["Mobile"] = contact["Mobile"];
+
+            //OR
+
+            ViewData["Email"] = _configuration["AppSettings:Contact:Email"];
+            ViewData["Mobile"] = _configuration["AppSettings:Contact:Mobile"];
+
+        }
+    }
+}
+
+Example.cshtml (Razor Content Page):
+
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+@{
+}
+
+<h1>Name: @ViewData["Name"]</h1>
+<hr />
+<h1>Contact:</h1>
+<h2>Email: @ViewData["Email"]</h2>
+<h2>Mobile: @ViewData["Mobile"]</h2>
+
+This approach, as with all APIs that rely on strings is error-prone. You are a typing mistake away from a NullReferenceException at runtime.
+
+Connection Strings:
+-----------------------------
+The Configuration class includes a convenience method for retrieving connection strings such as 'GetConnectionString()'. You pass it the name of the connection that you want to retrieve as following:
+
+ViewData["conStr"] = _configuration.GetConnectionString("conStr");
+
+In the above code, GetConnectionString("conStr") to retrieve connection is a shorthand notation of GetSection("ConnectionStrings")["conStr"]
+
+Strongly Typed AppSettings:
+------------------------------------------
+A more robust approach can be achieved by using the Configuration system's built-in capability to bind settings to a C# object. The following code is a C# representation of the object represented in the JSON above:
+
+AppSettings.cs:(C# Class File Created in Application Root Level)
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASP.NETCoreWebApp1
+{
+    public class AppSettings
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+
+        public Contact Contact { get; set; }
+    }
+
+    public class Contact
+    {
+        public string Mobile { get; set; }
+        public string Email { get; set; }
+    }
+}
+
+And this is how you can use the IConfiguration.GetSection() method to bind the content of appsettings.json to and instance AppSettings as following:
+
+Exampl.cshtml.cs (Page Model Class File):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
+
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        private readonly IConfiguration _configuration;
+
+        public ExampleModel(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
+        public void OnGet()
+        {
+            AppSettings settings = _configuration.GetSection("AppSettings").Get<AppSettings>();
+
+            ViewData["Name"] = settings.FirstName + " " + settings.LastName;
+
+            ViewData["Email"] = settings.Contact.Email;
+
+            ViewData["Mobile"] = settings.Contact.Mobile;
+        }
+    }
+}
+
+Example.cshtml (Razor Content Page):
+
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+@{
+}
+
+<h1>Name: @ViewData["Name"]</h1>
+<hr />
+<h1>Contact:</h1>
+<h2>Email: @ViewData["Email"]</h2>
+<h2>Mobile: @ViewData["Mobile"]</h2>
+
+Using the Options Pattern:
+---------------------------------------
+The Options pattern works in a similar way to the previous approach in that it enables working with strongly typed configuration values and relies on the Configuration system's built-in capability to bind settings to C# object. The Options pattern is intended to be used to group related configuration values together in individual classes as follows:
+
+The following example shows a simple appsettings.json file:
+
+appsettings.json:
+-------------------------
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft": "Warning",
+      "Microsoft.Hosting.Lifetime": "Information"
+    }
+  },
+  "AllowedHosts": "*",
+  "Title": "ASP.NET Core Web Site",
+  "Developer": {
+    "FirstName": "John",
+    "LastName": "Miller"
+  },
+  "Email": "john.miller@gmail.com"
+}
+
+One set of related configuration settings are the Title, Developer and Email. These are represented in the form of class as follows:
+
+DeveloperOptions.cs:
+-------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASP.NETCoreWebApp1
+{
+    public class DeveloperOptions
+    {
+        public string Title { get; set; }
+        public Developer Developer { get; set; }
+        public string Email { get; set; }
+    }
+
+    public class Developer
+    {
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+    }
+}
+
+The following lines of code are all that is needed to bind values from appsettings.json to the configuration class and to make them available as a service.
+
+Startup.cs:
+
+public void ConfigureServices(IServiceCollection services)
+{
+	..................................
+	services.Configure<DeveloperOptions>(Configuration);
+	..................................
+}
+
+Now the configuration can be injected into PageModel constructor using the IOptions<TOptions> interface. You will need to add a using directive for importing a namespace i.e. Microsoft.Extensions.Options at the top of the PageModel class file:
+
+Example.cshtml.cs:
+---------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        private readonly DeveloperOptions _developerOptions;
+
+        public ExampleModel(IOptions<DeveloperOptions> developerOptions)
+        {
+            _developerOptions =  developerOptions.Value;
+        }
+
+        public string Title { get; set; }
+        public Developer Developer { get; set; }
+        public string Email { get; set; }
+
+        public void OnGet()
+        {
+            Title = _developerOptions.Title;
+            Developer = _developerOptions.Developer;
+            Email = _developerOptions.Email;
+        }
+    }
+}
+
+Note: In the above code, the Value property of IOptions<TOption> is accessed in the constructor to get the actual configuration values.
+
+Example.cshtml (Razor Content Page): Display the configuration values via PageModel properties:
+
+@page
+@model ExampleModel 
+
+<h1>Title: @Model.Title</h1>
+<hr />
+<h1>Developer:</h1>
+<h2>First Name: @Model.Developer.FirstName</h2>
+<h2>Last Name: @Model.Developer.LastName</h2>
+<h1>Email: @Model.Email</h1>
+
+If for example you wanted to use the configuration values in Razor Content Page directly which uses inline page model structure or layout page or partial page, you can use the @inject directive as follows:
+
+For Example: Razor Content Page (Page Inline-Code Model):
+
+Example.cshtml:
+
+@page
+@using Microsoft.Extensions.Options
+@inject IOptions<DeveloperOptions> developerOptions
+@{
+    var options = developerOptions.Value;
+}
+
+<h1>Title: @options.Title</h1>
+<hr />
+<h1>Developer:</h1>
+<h2>First Name: @options.Developer.FirstName</h2>
+<h2>Last Name: @options.Developer.LastName</h2>
+<h1>Email: @options.Email</h1>

@@ -1,0 +1,2882 @@
+Using Forms in Razor Pages/MVC:
+-------------------------------------------------
+Forms are used for transferring data from the browser to the web server for further processing, such as saving it to a database, constructing an email, or simply subjecting the data to some kind of algorithm and then displaying the result.
+
+The HTML form element:
+-----------------------------------
+The HTML <form> element is used to create a form on a web page. The form element has a number of attributes, the most commonly used of which are method and action. The method attribute determines the HTTP verb to use when the form is submitted. By default, the GET verb is used and the form values are appended to the receiving page's URL as query string values. If the action attribute is omitted, the form will be submitted to the current URL i.e. the page that the form is in.
+
+Usually, you submit forms using the POST verb which removes the form values from the URL and allows more data to be sent in the request as query strings are limited by most browsers. Therefore you should provide a method attribute with the value post as follows:
+
+<form method="post">
+	........................
+	........................
+</form>
+
+Capturing user input:
+-------------------------------
+The primary role of the form is to capture input provided by the user for transfer to the web server. A collection of form controls, represented by the input, select and textarea elements are designed to accept user input for submission.
+
+The input element's display and behaviour is controlled by its type parameter. If omitted, the type default to text and the control renders as a single line textbox.
+
+There are a a range of other input types whose behaviour and appearance differs based on the type value, and the browser:
+
+checkbox: It renders as a check box
+
+color: It renders as a color picker
+
+date: It renders as a date control
+
+datetime: Obsolete, replaced by datetime-local. 
+
+datetime-local: It creates a control that accepts the date & time displays it in the browser's local format.
+
+email: A text box that accepts valid email address only. Validation is performed by the browser.
+
+file: It renders a file selector.
+
+hidden: Noting is rendered. Used to pass form values that do not need to be displayed.
+
+image: It renders a submit button using the specified image.
+
+month: It renders a control designed to accept a month and year.
+
+number: Some browsers render a spinner control and refuse to accept non-numeric values.
+
+password: Values entered by the user are not visible into plain english form for security purpose.
+
+radio: It renders as a radio button.
+
+range: Browsers render a slider control.
+
+search:  A text box designed to accept search terms. Some browsers may provide additional features such as a content reset icon.
+
+submit: It renders a standard submit button with the text "Submit".
+
+tel: A textbox designed to accept telephone numbers. Browsers do not validate for any specific format.
+
+time: A control that accepts a time value in HH:mm format
+
+url: A text input that validates for a URL
+
+week: A input that accepts a week number and a year.
+
+The two other most commonly used elements for capturing user input are the 'textarea', rendering a multi-line textbox, and the 'select' element, which is used to encapsulate multiple 'option' elements, providing the user with a mechanism for choosing one or more of a fixed list of options.
+
+Accessing User Input:
+-------------------------------
+User input is only available to server-side code if the form control has a value applied to the name attribute. There are several ways to reference posted form values:
+
+-> Accessing the Request.Form collection via a string-based index, using the name attribute of the form control as the index value.
+
+-> Leveraging Model Binding to map form fields to handler/action method parameters.
+
+-> Leveraging Model Binding to map form fields to public properties on a PageModel/Controller class.
+
+Request.Form:
+---------------------
+This approach is not recommended, although it offers a level of familiarity to developers who are migrating from other frameworks (such as PHP, classic ASP or ASP.NET Web Forms) where Request.Form is the only native way to access posted form values.
+
+Items in the Request.Form collection are accessible via their string-based index. The value of the string maps to name attribute given to the relevant form field. The form below has one input that accepts values named emailId:
+
+<form method="post">
+    <b>Email Id: </b>
+    <input type="email" name="emailId"/> 
+    <input type="submit" value="Submit" />
+</form>
+
+> You can access the value in the OnPost handler method as follows:
+
+public void OnPost()
+ {
+            var emailId = Request.Form["emailId"];
+            //do something with emailId
+ }
+
+> You can access the value in the Action method as follows:
+
+public IActionResult Index()
+{
+            if (Request.HasFormContentType)
+            {
+                var emailId = Request.Form["emailId"];
+            }
+ 
+            return View();
+}
+
+The string index is case-insensitive, but it must match the name of the input. The value returned from the Request.Form collection is always a string.
+
+Leveraging Model Binding:
+--------------------------------------
+The recommended method for working with form values is to use model binding. Model binding is a process that maps form values to server-side code automatically, and converts the strings coming in from the Request.Form collection on the type represented by the server-side target. Targets can be handler/action method parameters or public properties on a PageModel/Controller class.
+
+Handler/Action Method Parameters:
+------------------------------------------
+The following example shows how to revise the OnPost handler method so that the emailId input value is bound to a handler method parameter:
+
+        public void OnPost(string emailId)
+        {
+            //do something with emailId
+        }
+
+        [HttpPost]
+        public IActionResult Index(string emailId)
+        {
+	//do something with emailId
+        }
+
+And here is how the handler code would be modified to work with a public property:
+
+[BindProperty]
+public string EmailId { get; set; }
+
+public void OnPost()
+{
+            //do something with EmailID
+}
+
+The property to be included in model binding must be decorated with BindProperty attribute.
+
+Tag Helpers:
+------------------
+The form, input, select and textarea elements are all targets of Tag Helpers, components that extend the HTML element to provide custom attributes which are used to control the HTML generation.
+
+The most important attribute is the asp-for attribute that takes the name of a PageModel property. This results in the correct name attribute being generated so that form values are bound correctly to the model when the form is posted back to the server.
+
+In the previous example, the EmailId property is passed to the input tag helper as follows:
+
+<input asp-for="EmailId" />
+
+The resulting HTML is as follows:
+
+<input type="text" id="EmailId" name="EmailId" value="" />
+
+Request Verification:
+------------------------------
+The Razor Pages/MVC framework includes security as a feature. When you add a <form> element with a method attribute set to post, an additional hidden form field generated for the purposes of validating that the form post originated from the same site. This process is known as Request Verification.
+
+Uploading Files in Razor Pages/MVC:
+---------------------------------------------------
+For the most part, you will use forms to capture data from the user as simple string, numeric, datetime or boolean values. Forms can also be used to upload files. Successful file uploading has three basic requirements as follows:
+
+1. The form must use the post method
+
+2. The form must have an enctype attribute set to 'multipart/form-data'
+
+3. The uploaded file must map to an IFormFile data type.
+
+Upload and Save to Folder:
+---------------------------------------
+The following code features a very simple page called Example.cshtml with a form for uploading a file:
+
+Example1:
+
+Example.cshtml:
+------------------------
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<h1>Welcome to Example Page</h1>
+
+<form method="post" enctype="multipart/form-data">
+    <b>Profile Photo: </b>
+    <input type="file" asp-for="ProfilePhoto" />
+    <input type="submit" value="Submit" />
+</form>
+
+The form has the correct enctype and the method is post, satisfying the first two requirements. The thrird requirement is satisfied in the page model class for the page as following:
+
+Example.cshtml.cs:
+----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.IO;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public IFormFile ProfilePhoto { get; set; }
+
+        public void OnGet()
+        {
+           
+        }
+
+        public async Task OnPostAsync()
+        {
+            var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads", ProfilePhoto.FileName);
+            using(var fileStream = new FileStream(path,FileMode.Create))
+            {
+                await ProfilePhoto.CopyToAsync(fileStream);
+            }
+        }
+    }
+}
+
+An IFormFile is added as a public property to the PageModel. It is decorated with BindProperty attribute, to ensure that it participates in model binding. The property is given the same name as the name attribute on the file input in the form - "ProfilePhoto" which ensures that model binding will copy the contents of the ProfilePhoto to the public property.
+
+OR
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.IO;
+using Microsoft.Extensions.Hosting;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        private IHostEnvironment _environment;
+
+        public ExampleModel(IHostEnvironment environment)
+        {
+            _environment = environment;
+        }
+
+        [BindProperty]
+        public IFormFile ProfilePhoto { get; set; }
+
+        public void OnGet()
+        {
+           
+        }
+
+        public async Task OnPostAsync()
+        {
+
+            var path = Path.Combine(_environment.ContentRootPath, "wwwroot", "Uploads", ProfilePhoto.FileName);
+            using(var fileStream = new FileStream(path,FileMode.Create))
+            {
+                await ProfilePhoto.CopyToAsync(fileStream);
+            }
+        }
+    }
+}
+
+IHostEnvironment is injected into the constructor of the PageModel class via Dependency Injection. It provides access to information about the current hosting environment, including the root folder for the site via its ContentRootPath property, which is used to construct a file path location for the uploaded file to be saved to in the OnPostAsync handler method.
+
+Example2:
+
+Example.cshtml:
+
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<h1>Welcome to Example Page</h1>
+
+<form method="post" enctype="multipart/form-data">
+    @if (ViewData["Error"] != null)
+    {
+        <div style="color:red">
+            <h3>@ViewData["Error"]</h3>
+        </div>
+    }
+    <b>Profile Photo: </b>
+    <input type="file" asp-for="ProfilePhoto" />
+    <input type="submit" value="Submit" />
+</form>
+
+<div style="color:green">
+    <h3>@ViewData["Result"]</h3>
+</div>
+
+Example.cshtml.cs:
+----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.IO;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+
+        [BindProperty]
+        public IFormFile ProfilePhoto { get; set; }
+
+        public void OnGet()
+        {
+           
+        }
+
+        public async Task OnPostAsync()
+        {
+            try
+            {
+                var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads");
+
+                if (!Directory.Exists(directoryPath))
+                    Directory.CreateDirectory(directoryPath);
+
+                var filePath = directoryPath + "\\" + ProfilePhoto.FileName;
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ProfilePhoto.CopyToAsync(fileStream);
+
+                    ViewData["Result"] = "File has been uploaded successfully !!!";
+                }
+            }
+            catch(Exception ex)
+            {
+                //ViewData["Error"] = ex.Message; //Pre-Defined Message
+
+                //OR
+
+                ViewData["Error"] = "File uploading has been failed. Please try again !!!";
+            }
+        }
+    }
+}
+
+Example3: Uploading File of Specific Type (e.g. Images Only) and Specific Size (e.g. Max 500KB)
+
+Example.cshtml:
+-----------------------
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<h1>Welcome to Example Page</h1>
+
+<form method="post" enctype="multipart/form-data">
+    @if (ViewData["Error"] != null)
+    {
+        <div style="color:red">
+            <h3>@ViewData["Error"]</h3>
+        </div>
+    }
+    <b>Profile Photo: </b>
+    <input type="file" asp-for="ProfilePhoto"  accept="image/*"/>
+    <input type="submit" value="Submit" />
+</form>
+
+<div style="color:green">
+    <h3>@ViewData["Result"]</h3>
+</div>
+
+Example.cshtml.cs
+----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.IO;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+
+        [BindProperty]
+        public IFormFile ProfilePhoto { get; set; }
+
+        public void OnGet()
+        {
+           
+        }
+
+        public async Task OnPostAsync()
+        {
+            try
+            {
+                var fileType = ProfilePhoto.ContentType;
+
+                if(fileType=="image/png" || fileType=="image/jpg" || fileType=="image/jpeg" || fileType=="image/gif" || fileType == "image/bmp")
+                {
+                    long fileSize = ProfilePhoto.Length;
+
+                    if(fileSize<= 512000) // Max Size 500KB in this case
+                    {
+                        var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads");
+
+                        if (!Directory.Exists(directoryPath))
+                            Directory.CreateDirectory(directoryPath);
+
+                        var filePath = directoryPath + "\\" + ProfilePhoto.FileName;
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await ProfilePhoto.CopyToAsync(fileStream);
+
+                            ViewData["Result"] = "File has been uploaded successfully !!!";
+                        }
+                    }
+                    else
+                    {
+                        ViewData["Error"] = "Please upload file with max size 500KB only";
+                    }
+                }
+                else
+                {
+                    ViewData["Error"] = "Please upload image file only (Ex: jpg/jpeg/gif/png/bmp)";
+                }
+            }
+            catch(Exception ex)
+            {
+                //ViewData["Error"] = ex.Message; //Pre-Defined Message
+
+                //OR
+
+                ViewData["Error"] = "File uploading has been failed. Please try again !!!";
+            }
+        }
+    }
+}
+
+Example4:
+
+Example.cshtml:
+-----------------------
+@page 
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<h1>Welcome to Example Page</h1>
+
+<form method="post" enctype="multipart/form-data">
+    @if (ViewData["Error"] != null)
+    {
+        <div style="color:red">
+            <h3>@ViewData["Error"]</h3>
+        </div>
+    }
+    <b>Profile Photo: </b>
+    <input type="file" asp-for="ProfilePhoto" accept="image/*" />
+    <input type="submit" value="Submit" />
+</form>
+
+<div style="color:green">
+    <h3>@ViewData["Result"]</h3>
+</div>
+
+@if (!string.IsNullOrEmpty(Model.FileName))
+{
+    <br />
+    <img src="~/Uploads/@Model.FileName" />
+}
+
+Example.cshtml.cs:
+---------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.IO;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+
+        [BindProperty]
+        public IFormFile ProfilePhoto { get; set; }
+
+        public string FileName { get; set; }
+        public void OnGet()
+        {
+           
+        }
+
+        public async Task OnPostAsync()
+        {
+            try
+            {
+                var fileType = ProfilePhoto.ContentType;
+
+                if(fileType=="image/png" || fileType=="image/jpg" || fileType=="image/jpeg" || fileType=="image/gif" || fileType == "image/bmp")
+                {
+                    long fileSize = ProfilePhoto.Length;
+
+                    if(fileSize<= 512000) // Max Size 500KB in this case
+                    {
+                        var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads");
+
+                        if (!Directory.Exists(directoryPath))
+                            Directory.CreateDirectory(directoryPath);
+
+                        var filePath = directoryPath + "\\" + ProfilePhoto.FileName;
+
+                        using (var fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            await ProfilePhoto.CopyToAsync(fileStream);
+
+                            FileName = ProfilePhoto.FileName;
+
+                            ViewData["Result"] = "File has been uploaded successfully !!!";
+                        }
+                    }
+                    else
+                    {
+                        ViewData["Error"] = "Please upload file with max size 500KB only";
+                    }
+                }
+                else
+                {
+                    ViewData["Error"] = "Please upload image file only (Ex: jpg/jpeg/gif/png/bmp)";
+                }
+            }
+            catch(Exception ex)
+            {
+                //ViewData["Error"] = ex.Message; //Pre-Defined Message
+
+                //OR
+
+                ViewData["Error"] = "File uploading has been failed. Please try again !!!";
+            }
+        }
+    }
+}
+
+Example5: Working with Multiple Files Upload:
+
+Example.cshtml:
+-----------------------
+@page
+
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<h1>Welcome to Example Page</h1>
+<b>Upload Images: </b>
+<form method="post" enctype="multipart/form-data">
+    <b>File1: </b>
+    <input type="file" asp-for="Files" accept="image/*" />
+    <hr />
+    <b>File2: </b>
+    <input type="file" asp-for="Files" accept="image/*" />
+    <hr />
+    <b>File3: </b>
+    <input type="file" asp-for="Files" accept="image/*" />
+    <hr />
+    <button type="submit">Upload</button>
+</form>
+<br />
+@if (ViewData["Error"] != null)
+{
+    <p style="color:red;margin:0px">@ViewData["Error"]</p>
+}
+@if (ViewData["Result"] != null)
+{
+    <p style="margin:0px;color:green">@ViewData["Result"]</p>
+    <div style="margin:0px">
+        The Files are:
+        <br />
+        <ul>
+            @foreach (string fileName in Model.FileNames)
+            {
+                <li>@fileName</li>
+            }
+        </ul>
+    </div>
+}
+
+Example.cshtml.cs:
+----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.IO;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public IFormFile[] Files { get; set; }
+
+        public string[] FileNames { get; set; }
+
+        public void OnGet()
+        {
+
+        }
+
+        public void OnPost()
+        {
+            try
+            {
+                var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads");
+
+                if (!Directory.Exists(directoryPath))
+                    Directory.CreateDirectory(directoryPath);
+
+                foreach(IFormFile file in Files)
+                {
+                    var filePath = directoryPath + "\\" + file.FileName;
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                }
+
+                FileNames = Files.Select(f => f.FileName).ToArray();
+
+                if(FileNames.Length==1)
+                {
+                    ViewData["Result"] = "1 File has been uploaded successfully !!!";
+                }
+                else if(FileNames.Length>1)
+                {
+                    ViewData["Result"] = FileNames.Length + " Files have been uploaded successfully !!!";
+                }
+                else
+                {
+                    ViewData["Error"] = "Please select files to upload !!!";
+                }
+            }
+            catch(Exception)
+            {
+                ViewData["Error"] = "Files uploading have been failed. Please try again !!!";
+            }
+        }
+    }
+}
+
+Example6: Working with Multiple Files Upload of Specific Type (e.g. Images Only) and Specific Size (e.g. Max 500KB)
+
+Example.cshtml:
+-----------------------
+@page
+
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<h1>Welcome to Example Page</h1>
+<b>Upload Images: </b>
+<form method="post" enctype="multipart/form-data">
+    <b>File1: </b>
+    <input type="file" asp-for="Files" accept="image/*" />
+    <hr />
+    <b>File2: </b>
+    <input type="file" asp-for="Files" accept="image/*" />
+    <hr />
+    <b>File3: </b>
+    <input type="file" asp-for="Files" accept="image/*" />
+    <hr />
+    <button type="submit">Upload</button>
+</form>
+<br />
+@if (ViewData["Error"] != null)
+{
+    <p style="color:red;margin:0px">@ViewData["Error"]</p>
+}
+@if (ViewData["Result"] != null)
+{
+    <p style="margin:0px;color:green">@ViewData["Result"]</p>
+    <div style="margin:0px">
+        The Files are:
+        <br />
+        <ul>
+            @foreach (string fileName in Model.FileNames)
+            {
+                <li>@fileName</li>
+            }
+        </ul>
+    </div>
+}
+
+Example.cshtml.cs:
+---------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.IO;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public IFormFile[] Files { get; set; }
+
+        public string[] FileNames { get; set; }
+
+        public void OnGet()
+        {
+
+        }
+
+        public void OnPost()
+        {
+            try
+            {
+                var directoryPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Uploads");
+
+                if (!Directory.Exists(directoryPath))
+                    Directory.CreateDirectory(directoryPath);
+
+                foreach(IFormFile file in Files)
+                {
+                    string fileType = file.ContentType;
+
+                    if (fileType != "image/png" && fileType != "image/jpg" && fileType != "image/jpeg" && fileType != "image/gif" && fileType != "image/bmp")
+                    {
+                        ViewData["Error"] = "Please upload all image files only. (Ex: jpg/jpeg/gif/png/bmp)";
+                        return;
+                    }
+                }
+
+                foreach (IFormFile file in Files)
+                {
+                    long fileSize = file.Length;
+
+                    if (fileSize>512000)
+                    {
+                        ViewData["Error"] = "Please upload each file with max size 500KB only";
+                        return;
+                    }
+                }
+
+                foreach (IFormFile file in Files)
+                {
+                    var filePath = directoryPath + "\\" + file.FileName;
+
+                    using (var fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        file.CopyTo(fileStream);
+                    }
+                }
+
+                FileNames = Files.Select(f => f.FileName).ToArray();
+
+                if(FileNames.Length==1)
+                {
+                    ViewData["Result"] = "1 File has been uploaded successfully !!!";
+                }
+                else if(FileNames.Length>1)
+                {
+                    ViewData["Result"] = FileNames.Length + " Files have been uploaded successfully !!!";
+                }
+                else
+                {
+                    ViewData["Error"] = "Please select files to upload !!!";
+                }
+            }
+            catch(Exception)
+            {
+                ViewData["Error"] = "Files uploading have been failed. Please try again !!!";
+            }
+        }
+    }
+}
+
+Working with Checkboxes in a Razor Pages/MVC View Form:
+----------------------------------------------------------------------------------------
+Checkboxes are used in a Razor Pages/MVC View form to enable users to select zero or more predefined options. Checkboxes are a type of input element, and some aspects of their behaviour is unique and needs to be understood when deciding whether, and how to use them.
+
+Checkbox Basics:
+--------------------------
+Checkboxes are rendered in HTML by setting the type attribute in an input element to checkbox:
+
+<input type="checkbox" />
+
+This appears in most browsers as a small box. When it is selected, the box acquires a tick mark. This state is indicated in HTML by the presence of a checked attribute on the element:
+
+<input type="checkbox" checked />
+
+You can also provide a value to the checked attribute. Any of the following are considered valid values according to the HTML 5 specification:
+
+<input type="checkbox" checked="" />
+<hr />
+<input type="checkbox" checked="checked" />
+<hr />
+<input type="checkbox" checked="CHECKED" />
+
+Most browsers will interpret any value as indicating true, so even the following will result in the checkbox being checked:
+
+<input type="checkbox" checked="false" />
+
+Note: If you pass a Razor expression to the checked attribute that evaluates to anything other than true, the checked attribute will not be rendered at all. So the following will result in the checked attribute being omitted from the generated HTML.
+
+<input type="checkbox" checked="@(5==1)" />
+
+As with any form field, the checkbox needs a name attribute specified so that its a value can be submitted.
+
+<input type="checkbox" name="checkBox1" />
+
+The value will only be submitted if the checkbox is checked. If nothing is specified for the value attribute, on will be submitted for a checkbox value.
+
+Razor Checkboxes:
+----------------------------
+Razor offers two ways to generate checkboxes. The recommended approach is to use input tag helper. Any boolean property of the PageModel will render a checkbox if it is passed to the asp-for attribute, so as long as the property is not nullable.
+
+For Example:
+
+Example.cshtml.cs:
+------------------------------
+
+ public class ExampleModel : PageModel
+ {
+        public bool IsMarried { get; set; }
+
+        ....................
+}
+
+Example.cshtml:
+-----------------------
+<input asp-for="IsMarried"  />
+
+You can also use a string property, so as long as the value of the string can be parsed as a boolean value (true or false).
+
+The property name passed to the asp-for attribute is used for the values of both the id and name attributes. The rendered HTML will also includes two fields for the IsMarried property:
+
+<input type="checkbox" data-val="true" data-val-required="The IsMarried field is required." id="IsMarried" name="IsMarried" value="true" />
+<input name="IsMarried" type="hidden" value="false" />
+
+The second field is a hidden field. It will be submitted regardless whether the checkbox is checked or not. If the checkbox is checked, the posted value will be true, false. The model binder will correctly extract true from the value. Otherwise it will be false. This behaviour is really a feature of MVC, where selection of which particular action to execute on a controller can come down to parameters that the action method takes. The hidden field will ensure that the checkbox will correspond to a bool parameter of an action method, or a Razor Pages handler method.
+
+If you don't want a hidden field to be rendered, need not to use the tag helper to render your checkbox.
+
+The second mechanism for generating checkboxes is the CheckBox (and CheckBoxFor) Html helper method, which is again feature of MVC.
+
+The Html.CheckBox helper method takes a string that is used to render the name and id attributes of the input element as follows:
+
+@Html.CheckBox("IsMarried")
+
+There are overloads that enable you to set the checkbox as checked, and to provide additional arbitary attributes as follows:
+
+@Html.CheckBox("IsMarried",new { @class = "form-control" })
+
+The Html.CheckBoxFor helper method is similar to tag helper in that it takes an expression to evaluated against the current model as follows:
+
+@Html.CheckBoxFor(model=>model.IsMarried)
+
+Consequently, it supports working in a strongly typed manner where only properties of the current model will be made available by intellisense.
+
+Both of the Html helper methods result in a hidden field being generated along with the checkbox.
+
+Binding to Collections:
+---------------------------------
+All of the above examples illustrates rendering a single checkbox to capture a single choice. Checkboxes can also be used to manage multiple selections. Checkboxes can be used with simple collections, such as those that permit the user to select one or more options from a prepared list, or they can be used in conjunction with a collection of complex objects.
+
+Simple Collections:
+----------------------------
+The following Razor code illustrates generating 5 checkboxes, all with the same value for the name attribute, but each with a different value attribute:
+
+<form method="post">
+    @for(int i =1; i <= 5; i++)
+    {
+        <input type="checkbox" name="items" value="@i" /> @i <br />
+    }
+    <br />
+    <button type="submit">Submit</button>
+</form>
+
+When you select multiple checkboxes and submit the form, the values are included in the request headers like this:
+
+items: 1
+items: 2
+items: 3
+....
+
+Collection of Complex Objects:
+---------------------------------------------
+The checkbox is used to represent a boolean property of a complex type.
+
+For Example:
+
+Models -> Order.cs (Complex Type) 
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace ASP.NETCoreWebApp1.Models
+{
+    public class Order
+    {
+        public int Id { get; set; }
+        public string Customer { get; set; }
+        public DateTime Date { get; set; }
+        public bool Dispatched { get; set; }
+    }
+}
+
+The Dispatched property of an Order entity is bool type. You have a list of orders. You have added a property to the PageModel to represent the data and ensured that posted values will be bound to it:
+
+Example.cshtml.cs:
+---------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.IO;
+using ASP.NETCoreWebApp1.Models;
+
+namespace ASP.NETCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public List<Order> Orders { get; set; }
+
+        public void OnGet()
+        {
+            Orders =  new List<Order>()
+            {
+                new Order()
+                {
+                    Id = 101,
+                    Customer = "Smith",
+                    Date = new DateTime(2021,01,28),
+                    Dispatched = true
+                },
+                new Order()
+                {
+                    Id = 102,
+                    Customer = "David",
+                    Date = new DateTime(2021,01,9),
+                    Dispatched = true
+                },
+                new Order()
+                {
+                    Id = 103,
+                    Customer = "Fleming",
+                    Date = new DateTime(2021,02,2),
+                    Dispatched = false
+                },
+                new Order()
+                {
+                    Id = 104,
+                    Customer = "Alina",
+                    Date = new DateTime(2021,02,4),
+                    Dispatched = false
+                },
+                new Order()
+                {
+                    Id = 105,
+                    Customer = "Ronald",
+                    Date = new DateTime(2021,02,1),
+                    Dispatched = true
+                }
+            };
+        }
+    }
+}
+
+You want to display the orders on screen together with an updatable checkbox to indicate whether the order has been dispatched. Therefor the task is to get the model binder to accessible each checkbox with a specific order.
+
+Example.cshtml:
+
+@page
+
+@model ASP.NETCoreWebApp1.Pages.ExampleModel
+
+<h1>Welcome to Example Page</h1>
+
+<form method="post">
+    <table class="table table-dark">
+        <thead class="thead-light">
+            <tr>
+                <th>Order ID</th>
+                <th>Customer</th>
+                <th>Date</th>
+                <th>Dispatched</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var order in Model.Orders)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.Customer</td>
+                    <td>@order.Date.ToString("dd-MM-yyyy")</td>
+                    <td><input asp-for="@order.Dispatched" /></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+    <button type="submit">Update</button>
+</form>
+
+Select Lists in a Razor Pages/MVC Form:
+-----------------------------------------------------------
+Select lists or DropDown lists are used in a Razor Pages/MVC form to enable users to select zero or more predefined options. They are rendered in HTML as a select element, which acts as a container for a number of option elements, each representing an available choice.
+
+Select List Basics:
+--------------------------
+The following example is used to illustrates the main features of these two HTML elements:
+
+<form method="post">
+<select name="number">
+        <option value="">Select Number</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+</select>
+<br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+The select element has a name attribute. This is used as the key for any selected value(s) when a form is submitted. You can access the value by passing the key as an indexer to Request.Form collection:
+
+ public void OnPost()
+ {
+           var number = Request.Form["number"];
+ }
+
+The recommended approach, however is to add a suitable property to the PageModel and to allow model binding to apply the posted value to the property:
+
+Example.cshtml:
+
+<form method="post">
+    <select asp-for="Number">
+        <option value="">Select Number</option>
+        <option value="1">One</option>
+        <option value="2">Two</option>
+        <option value="3">Three</option>
+    </select>
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Example.cshtml.cs:
+
+public class ExampleModel : PageModel
+{
+        [BindProperty]
+        public int Number { get; set; }
+
+        public void OnGet()
+        {
+            
+        }
+
+        public void OnPost()
+        {
+            // Posted value is assigned to the Number property automatically
+            var number = Number;
+        }
+}
+
+Razor Select List:
+-------------------------
+Razor offers two ways to generate select lists: the select tag helper and the DropDownList (and DropDownListFor) Html Helpers.
+
+The select tag helper has two attributes: for and items. The for attribute takes the name of the PageModel/ViewModel property that represents the selected value, or values. If the PageModel/ViewModel property passed to the for attribute is some kind of collection, the tag helper assumes that you want to allow the user to make multiple selections and will add the multiple attribute to the rendered select element.
+
+The items attribute expects a collection of SelectListItem objects, a SelectList object or an enumeration that provide the options for the select list. It will generate option elements for each item.
+
+Creating Options:
+-------------------------
+
+	- Using SelectListItem:
+
+The SelectListItem class has Text, Value and Selected properties. The first two (Text & Value) of these are strings, and the Selected property is a boolean.
+
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+public class ExampleModel : PageModel
+{
+	public List<SelectListItem> Options { get; set; }
+
+        	public void OnGet()
+        	{
+            		Options = new List<SelectListItem>()
+            		{
+                			new SelectListItem(){Text="Option1", Value="1"},
+		                 new SelectListItem(){Text="Option2", Value="2"},
+                			new SelectListItem(){Text="Option3", Value="3"},
+                			new SelectListItem(){Text="Option4", Value="4"},
+                			new SelectListItem(){Text="Option5", Value="5"}
+            		};
+        	}
+}
+
+This property is then available to be assigned to the items attribute in the select tag helper as follows:
+
+Example.cshtml:
+
+<select name="OptionValue" asp-items="Model.Options">
+        <option value="">Select Option</option>
+</select>
+
+Creating A SelectList:
+-------------------------------
+You can create a SelectList from any collection but you need to specify the DataTextField and DataValueField values for the select tag helper to bind the options correctly:
+
+Example1:
+
+Example.cshtml.cs:
+---------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ASPNetCoreWebApp1.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public SelectList Options { get; set; }
+
+        public void OnGet()
+        {
+            IEnumerable<string> items = new List<string>()
+            {
+                "Option1","Option2","Option3","Option4","Option5"
+            };
+
+            Options = new SelectList(items);
+        }
+    }
+}
+
+
+Example.cshtml:
+-----------------------
+<form method="post">
+    <select name="OptionValue" asp-items="Model.Options">
+        <option value="">Select Option</option>
+    </select>
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output of select tag:
+----------------------------------------
+ <select name="OptionValue">
+        	<option value="">Select Option</option>
+	<option>Option1</option>
+	<option>Option2</option>
+	<option>Option3</option>
+	<option>Option4</option>
+	<option>Option5</option>
+</select>
+
+Example2: (With DataTextField & DataValueField)
+
+Example.cshtml.cs:
+-----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ASPNetCoreWebApp1.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public SelectList Options { get; set; }
+
+        public void OnGet()
+        {
+            IDictionary<string, int> items = new Dictionary<string, int>()
+            {
+                {"Option1", 1 },
+                {"Option2", 2 },
+                {"Option3", 3 },
+                {"Option4", 4 },
+                {"Option5", 5 }
+            };
+
+            Options = new SelectList(items,"Value","Key");
+        }
+    }
+}
+
+Example.cshtml:
+------------------------
+<form method="post">
+    <select name="OptionValue" asp-items="Model.Options">
+        <option value="">Select Option</option>
+    </select>
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output of select tag:
+----------------------------------------
+ <select name="OptionValue">
+	<option value="">Select Option</option>
+	<option value="1">Option1</option>
+	<option value="2">Option2</option>
+	<option value="3">Option3</option>
+	<option value="4">Option4</option>
+	<option value="5">Option5</option>
+</select>
+
+Using An Enumeration:
+---------------------------------
+The Html.GetEnumSelectList method makes it easy to use an enumeration as the data source for a select list.
+
+This following example shows how to use the System.DayOfWeek enumeration to present the days of week as option values, and assumes that the PageModel has a property of the correct type called DayOfWeek:
+
+Example.cshtml.cs:
+----------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ASPNetCoreWebApp1.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public DayOfWeek DayOfWeek { get; set; }
+
+        public void OnGet()
+        {
+            
+        }
+    }
+}
+
+Example.cshtml:
+------------------------
+<form method="post">
+    <select asp-for="DayOfWeek" asp-items="Html.GetEnumSelectList<DayOfWeek>()">
+        <option value="">Select A Day</option>
+    </select>
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output of select tag:
+------------------------------------------
+ <select id="DayOfWeek" name="DayOfWeek">
+	<option value="">Select A Day</option>
+	<option value="0" selected="selected">Sunday</option>
+	<option value="1">Monday</option>
+	<option value="2">Tuesday</option>
+	<option value="3">Wednesday</option>
+	<option value="4">Thursday</option>
+	<option value="5">Friday</option>
+	<option value="6">Saturday</option>
+</select>
+
+In the above example, the first option is selected. This is because it matches the default value of DayOfWeek. If you do not want the default value to be pre-selected, you can make your model property nullable as follows:
+
+public DayOfWeek? DayOfWeek { get; set; }
+
+Model Binding:
+---------------------
+Selected values will automatically be bound to the property passed into the asp-for attribute, so as long as the property is a suitable type for capturing the selected value(s) - an int, string, or enum. Or, if you permit multiple selections, a collection of any of these. The property must be declared as public and be decorated with the BindProperty attribute.
+
+The name of the property is used to generate the values for name and id attributes in the rendered HTML, although it is important to remember that only the name attribute is used in model binding.
+
+Enabling Multiple Selections:
+-----------------------------------------
+To enable multiple selections, you can either add the multiple attribute to the select element, or you can pass a collection type to the asp-for attribute, which will result in the multiple attribute being rendered. Suitable types for capturing multiple values are collections of int, string, or enumerations, if that is what was used to construct the options.
+
+In the following example, two properties are added to the PageModel, the first is a simple array of integers, which will be used to capture the selected values. The second property, Items, is instantiated within the OnGet handler method:
+
+Example.cshtml.cs:
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ASPNetCoreWebApp1.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public int[] SelectedItems { get; set; }
+
+        public List<SelectListItem> Items { get; set; }
+
+        public void OnGet()
+        {
+            Items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Item1",Value="1"},
+                new SelectListItem(){Text="Item2", Value="2"},
+                new SelectListItem(){Text="Item3",Value="3"},
+                new SelectListItem(){Text="Item4",Value="4"},
+                new SelectListItem(){Text="Item5",Value="5"}
+            };
+        }
+    }
+}
+
+The SelectedItems array is assigned to the asp-for attribute in the select tag helper:
+
+Example.cshtml:
+
+<form method="post">
+    <select asp-items="Model.Items" asp-for="SelectedItems"></select>
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+This results in a "ListBox" being rendered rather than a DropDownList.
+
+The generated HTML includes the multiple attribute, which is what triggers this changes in a appearance:
+
+<select id="SelectedItems" multiple="multiple" name="SelectedItems">
+<option value="1">Item1</option>
+<option value="2">Item2</option>
+<option value="3">Item3</option>
+<option value="4">Item4</option>
+<option value="5">Item5</option>
+</select>
+
+The multiple attribute has the value "multiple" assigned to it, but any value will achieve the same result. All of the following are valid ways to enable multiple selection in non-XHTML doctypes:
+
+multiple
+multiple=""
+multiple="true"
+multiple="false"
+multiple="Pune"
+
+The mere presence of the multiple attribute is the important thing.
+
+Note: You can alse render a list box using the size attribute. However, users might find the confusing if multiple selection is not enabled too.
+
+Setting Selected Items:
+---------------------------------
+The simplest way to set a particular value (or values) as selected is to assign that value to the property passed in to the asp-for attribute.
+
+Example1:
+
+Example.cshtml.cs: (PageModel Class)
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ASPNetCoreWebApp1.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public int SelectedItem { get; set; }
+
+        public List<SelectListItem> Items { get; set; }
+
+        public void OnGet()
+        {
+            Items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Item1",Value="1"},
+                new SelectListItem(){Text="Item2", Value="2"},
+                new SelectListItem(){Text="Item3",Value="3"},
+                new SelectListItem(){Text="Item4",Value="4"},
+                new SelectListItem(){Text="Item5",Value="5"}
+            };
+
+            SelectedItem = 3;
+        }
+    }
+}
+
+Example.cshtml:
+
+<form method="post">
+    <select asp-items="Model.Items" asp-for="SelectedItem"></select>
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Now the generated HTML shows that the item with a value of "3" has been selected:
+
+<select data-val="true" data-val-required="The SelectedItem field is required." id="SelectedItem" name="SelectedItem">
+<option value="1">Item1</option>
+<option value="2">Item2</option>
+<option selected="selected" value="3">Item3</option>
+<option value="4">Item4</option>
+<option value="5">Item5</option>
+</select>
+
+Note: The SelectedItem property is not nullable. When the Page is executed, it will acquire the default value for its type, in this case 0. Therefore if you have an item in the list of options with this value, it will be selected by default. That might not be what you intended. If there is a possibility of an item existing in the options with that value, you may want to consider making the property nullable instead. You will certainly want to make it nullable if the value is not required.
+
+Option Labels:
+---------------------
+If you are showing a form to the user for the first time, you often want to display a default empty item, also known as an option label. The simplest way to do this with the select tag helper is to include an empty option element:
+
+    <select asp-items="Model.Items" asp-for="SelectedItem">
+        <option value="">Select Item</option>
+    </select>
+
+The options represented by Model.Items will be appended to any options already provded.
+
+Example2: (Multiple Selection)
+
+Example.cshtml.cs (PageModel Class)
+-------------------------------------------------------
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ASPNetCoreWebApp1.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public int[] SelectedItems { get; set; }
+
+        public List<SelectListItem> Items { get; set; }
+
+        public void OnGet()
+        {
+            Items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Item1",Value="1"},
+                new SelectListItem(){Text="Item2", Value="2"},
+                new SelectListItem(){Text="Item3",Value="3"},
+                new SelectListItem(){Text="Item4",Value="4"},
+                new SelectListItem(){Text="Item5",Value="5"}
+            };
+
+            SelectedItems = new int[] {2,3,4};
+        }
+    }
+}
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    <select asp-items="Model.Items" asp-for="SelectedItems">
+    </select>
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Option Groups:
+----------------------
+The SelectListGroup class represents an HTML optgroup element. If you want to use optgroup, you can create SelectListGroup instances as required, and then apply them to individual SelectListItem.
+
+Example.cshtml.cs: (PageModel Class)
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using ASPNetCoreWebApp1.Models;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public int[] SelectedItems { get; set; }
+
+        public List<SelectListItem> Items { get; set; }
+
+        public void OnGet()
+        {
+            var group1 = new SelectListGroup { Name = "Group1" };
+            var group2 = new SelectListGroup { Name = "Group2" };
+            var group3 = new SelectListGroup { Name = "Group3" };
+
+            Items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Item1",Value="1", Group=group1},
+                new SelectListItem(){Text="Item2", Value="2", Group=group2},
+                new SelectListItem(){Text="Item3",Value="3", Group=group2},
+                new SelectListItem(){Text="Item4",Value="4", Group=group3},
+                new SelectListItem(){Text="Item5",Value="5", Group=group1}
+            };
+
+            SelectedItems = new int[] {2,3,4};
+        }
+    }
+}
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    <select asp-items="Model.Items" asp-for="SelectedItems">
+    </select>
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+The following shows the rendered HTML of select tag:
+
+<select id="SelectedItems" multiple="multiple" name="SelectedItems">
+ <optgroup label="Group1">
+<option value="1">Item1</option>
+<option value="5">Item5</option>
+</optgroup>
+<optgroup label="Group2">
+<option selected="selected" value="2">Item2</option>
+<option selected="selected" value="3">Item3</option>
+</optgroup>
+<optgroup label="Group3">
+<option selected="selected" value="4">Item4</option>
+</optgroup>
+</select>
+
+If you are using a SelectList, you can specify the property to be used for grouping in the constructor as following:
+
+Example.cshtml.cs: (PageModel Class)
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public SelectList Staffs { get; set; }
+
+        [BindProperty]
+        public int[] SelectedStaffIds { get; set; }
+
+        public void OnGet()
+        {
+            List<Person> persons = new List<Person>()
+            {
+                new Person(){Id=101, Name="Smith", Department="HR"},
+                new Person(){Id=102, Name="David", Department="IT"},
+                new Person(){Id=103, Name="Fleming", Department="Sales"},
+                new Person(){Id=104, Name="Alina", Department="IT"},
+                new Person(){Id=105, Name="Peter", Department="HR"}
+            };
+
+            Staffs = new SelectList(persons, "Id", "Name", null, "Department");
+
+            SelectedStaffIds = new int[] {103, 105 };
+        }
+    }
+}
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    <select asp-items="Model.Staffs" asp-for="SelectedStaffIds" size="10">
+    </select>
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+The following shows the rendered HTML of select tag:
+
+<select size="10" id="SelectedStaffIds" multiple="multiple" name="SelectedStaffIds">
+<optgroup label="HR">
+<option value="101">Smith</option>
+<option selected="selected" value="105">Peter</option>
+</optgroup>
+<optgroup label="IT">
+<option value="102">David</option>
+<option value="104">Alina</option>
+</optgroup>
+<optgroup label="Sales">
+<option selected="selected" value="103">Fleming</option>
+</optgroup>
+</select>
+
+Working with single-selection HTML <select> element using Html.DropDownList helper method:
+-------------------------------------------------------------------------------------------------------------------------------------------
+1. Html.DropDownList(string expression)
+
+Example.cshtml.cs (PageModel Class):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public void OnGet()
+        {
+            List<SelectListItem> Items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Option1", Value="1"},
+                new SelectListItem(){Text="Option2", Value="2"},
+                new SelectListItem(){Text="Option3", Value="3"},
+                new SelectListItem(){Text="Option4", Value="4"},
+                new SelectListItem(){Text="Option5", Value="5"}
+            };
+
+            ViewData["ddlItems"] = Items;
+        }
+    }
+}
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.DropDownList("ddlItems")
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output of DropDownList Helper Method:
+----------------------------------------------------------------------
+ <select id="ddlItems" name="ddlItems">
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+2. Html.DropDownList(string expression, string optionLabel)
+
+Example.cshtml.cs: (PageModel Class)
+
+Same as previous example.
+
+Example.cshtml:
+
+<form method="post">
+    @Html.DropDownList("ddlItems","Select Option")
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output of DropDownList Helper Method:
+
+ <select id="ddlItems" name="ddlItems">
+<option value="">Select Option</option>
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+3. DropDownList(string expression, IEnumerable<SelectListItem> selectList)
+
+Example.cshtml.cs (PageModel Class):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public List<SelectListItem> Items { get; set; }
+
+        public void OnGet()
+        {
+            Items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Option1", Value="1"},
+                new SelectListItem(){Text="Option2", Value="2"},
+                new SelectListItem(){Text="Option3", Value="3"},
+                new SelectListItem(){Text="Option4", Value="4"},
+                new SelectListItem(){Text="Option5", Value="5"}
+            };
+        }
+    }
+}
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.DropDownList("ddl1",Model.Items)
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output of DropDownList Helper Method:
+
+<select id="ddl1" name="ddl1">
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+4. DropDownList(string expression, IEnumerable<SelectListItem> selectList, string optionLabel)
+
+Example.cshtml.cs (PageModel Class):
+
+Same as pervious example.
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.DropDownList("ddl1",Model.Items,"Select Option")
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output of DropDownList Helper Method:
+
+<select id="ddl1" name="ddl1">
+<option value="">Select Option</option>
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+5. DropDownList(string expression, IEnumerable<SelectListItem> selectList, TModel htmlAttribute)
+
+Example.cshtml.cs (Page Model Class):
+
+Same as previous example.
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.DropDownList("ddlOption",Model.Items,new { id = "ddl1" })
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output of DropDownList Helper Method:
+
+<select id="ddl1" name="ddlOption">
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+6. DropDownList(string expression, IEnumerable<SelectListItem> selectList, string optionLabel, TModel htmlAttribute)
+
+Example.cshtml.cs (Page Model Class):
+
+Same as previous example.
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.DropDownList("ddlOption",Model.Items,"Select Option",new { id = "ddl1" })
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output of DropDownList Helper Method:
+
+<select id="ddl1" name="ddlOption">
+<option value="">Select Option</option>
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+Example of DropDownList Helper Method with Selected Option Value:
+-----------------------------------------------------------------------------------------------------
+
+Example.cshtml.cs (PageModel Class)
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public List<SelectListItem> Items { get; set; }
+
+        [BindProperty]
+        public string ddlOption { get; set; }
+
+        public void OnGet()
+        {
+            Items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Option1", Value="1"},
+                new SelectListItem(){Text="Option2", Value="2"},
+                new SelectListItem(){Text="Option3", Value="3"},
+                new SelectListItem(){Text="Option4", Value="4"},
+                new SelectListItem(){Text="Option5", Value="5"}
+            };
+
+            ddlOption = "4";
+        }
+
+        public void OnPost()
+        {
+            var value = ddlOption;
+        }
+    }
+}
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.DropDownList("ddlOption",Model.Items, new { id = "ddl1" })
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Using Html.DropDownListFor helper method: (Strongly Typed Html Helper Method)
+-------------------------------------------------------------------------------------------------------------------------
+The strongly typed HTML helpers work on lambda expression. The model object is passed as a value to lambda expression, and you can select the field or property from model object to be used to set the id, name and value attributes of the HTML helper.
+
+The strongly-typed HTML helpers enables better compile-time checking of your Page/View (allowing you to find errors at build-time instead of at runtime), and also supports richer intellisense when editing your View/Page templates within Visual Studio.
+
+1. DropDownListFor(expression, IEnumerable<SelectListItem> selectList, string optionLabel, TModel htmlAttribute)
+
+Example.cshtml.cs: (PageModel Class)
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public List<SelectListItem> Items { get; set; }
+
+        [BindProperty]
+        public string ddlOption { get; set; }
+
+        public void OnGet()
+        {
+            Items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Option1", Value="1"},
+                new SelectListItem(){Text="Option2", Value="2"},
+                new SelectListItem(){Text="Option3", Value="3"},
+                new SelectListItem(){Text="Option4", Value="4"},
+                new SelectListItem(){Text="Option5", Value="5"}
+            };
+        }
+
+        public void OnPost()
+        {
+            var value = ddlOption;
+        }
+    }
+}
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.DropDownListFor(model=>model.ddlOption,Model.Items,"Select Option",new { id = "ddl1" })
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output of DropDownListFor Helper Method:
+
+<select id="ddl1" name="ddlOption">
+<option value="">Select Option</option>
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+2. DropDownListFor(expression, IEnumerable<SelectListItem> selectList)
+
+Example.cshtml.cs (PageModel Class)
+
+Same as previous example.
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.DropDownListFor(model=>model.ddlOption,Model.Items)
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output:
+
+<select id="ddlOption" name="ddlOption">
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+3. DropDownListFor(expression, IEnumerable<SelectListItem> selectList, string optionLabel)
+
+Example.cshtml.cs (PageModel Class)
+
+Same as previous example.
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.DropDownListFor(model=>model.ddlOption,Model.Items,"Select Option")
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output:
+
+<select id="ddlOption" name="ddlOption">
+<option value="">Select Option</option>
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+4. DropDownListFor(expression, IEnumerable<SelectListItem> selectList, TModel htmlAttribute)
+
+Example.cshtml.cs (PageModel Class)
+
+Same as previous example.
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.DropDownListFor(model=>model.ddlOption,Model.Items,new {id="ddl1"})
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Render Output:
+
+<select id="ddl1" name="ddlOption">
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+Render Output:
+
+<select id="ddlOption" name="ddlOption">
+<option value="">Select Option</option>
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+Note: The expression parameter of any of the overload method must be a lambda expression.
+
+Working with multi-selection HTML <select> element using Html.ListBox helper method:
+--------------------------------------------------------------------------------------------------------------------------------
+
+1. Html.ListBox(string expression):
+
+Example.cshtml.cs (PageModel Class):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public List<SelectListItem> Items { get; set; }
+
+        public void OnGet()
+        {
+            Items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Option1", Value="1"},
+                new SelectListItem(){Text="Option2", Value="2"},
+                new SelectListItem(){Text="Option3", Value="3"},
+                new SelectListItem(){Text="Option4", Value="4"},
+                new SelectListItem(){Text="Option5", Value="5"}
+            };
+
+            ViewData["listBoxItems"] = Items;
+        }
+    }
+}
+
+Example.cshtml:
+
+<form method="post">
+    @Html.ListBox("listBoxItems")
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Rendered Output of ListBox() helper method:
+-----------------------------------------------------------------
+<select id="listBoxItems" multiple="multiple" name="listBoxItems">
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+2. Html.ListBox(string expression, IEnumerable<SelectListItem> selectList):
+
+Example.cshtml.cs (PageModel Class):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public List<SelectListItem> Items { get; set; }
+
+        public void OnGet()
+        {
+            Items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Option1", Value="1"},
+                new SelectListItem(){Text="Option2", Value="2"},
+                new SelectListItem(){Text="Option3", Value="3"},
+                new SelectListItem(){Text="Option4", Value="4"},
+                new SelectListItem(){Text="Option5", Value="5"}
+            };
+        }
+    }
+}
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.ListBox("listBox1",Model.Items)
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Rendered Output of ListBox() helper method:
+------------------------------------------------------------------
+<select id="listBox1" multiple="multiple" name="listBox1">
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+3. Html.ListBox(string expression, IEnumerable<SelectListItem> selectList, TModel htmlAttributes):
+
+Example.cshtml.cs (PageModel Class):
+
+Same as previous example.
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.ListBox("listBox1",Model.Items, new { size = 10 })
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Rendered Output of ListBox() helper method:
+
+<select id="listBox1" multiple="multiple" name="listBox1" size="10">
+<option value="1">Option1</option>
+<option value="2">Option2</option>
+<option value="3">Option3</option>
+<option value="4">Option4</option>
+<option value="5">Option5</option>
+</select>
+
+Example of ListBox() Helper Method with Selected Options Value:
+----------------------------------------------------------------------------------------------
+
+Example.cshtml.cs (PageModel Class):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public List<SelectListItem> Items { get; set; }
+
+        [BindProperty]
+        public string[] SelectedOptions { get; set; }
+
+        public void OnGet()
+        {
+            Items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Option1", Value="1"},
+                new SelectListItem(){Text="Option2", Value="2"},
+                new SelectListItem(){Text="Option3", Value="3"},
+                new SelectListItem(){Text="Option4", Value="4"},
+                new SelectListItem(){Text="Option5", Value="5"}
+            };
+
+            SelectedOptions = new string[] { "2", "4", "5" };
+        }
+
+        public void OnPost()
+        {
+            var values = SelectedOptions;
+        }
+    }
+}
+
+Eample.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.ListBox("SelectedOptions", Model.Items, new { size = 5 })
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Rendered Output of ListBox() helper method:
+-----------------------------------------------------------------
+<select id="SelectedOptions" multiple="multiple" name="SelectedOptions" size="5">
+<option value="1">Option1</option>
+<option selected="selected" value="2">Option2</option>
+<option value="3">Option3</option>
+<option selected="selected" value="4">Option4</option>
+<option selected="selected" value="5">Option5</option>
+</select>
+
+Using Html.ListBoxFor helper method: (Strongly Typed Html Helper Method)
+-------------------------------------------------------------------------------------------------------------------------
+The strongly typed HTML helpers work on lambda expression. The model object is passed as a value to lambda expression, and you can select the field or property from model object to be used to set the id, name and value attributes of the HTML helper.
+
+The strongly-typed HTML helpers enables better compile-time checking of your Page/View (allowing you to find errors at build-time instead of at runtime), and also supports richer intellisense when editing your View/Page templates within Visual Studio.
+
+1. Html.ListBoxFor(expression, IEnumerable<SelectListItem> selectList, TModel htmlAttributes)
+
+Example.cshtml.cs (PageModel Class):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using ASPNetCoreWebApp1.Models;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        public List<SelectListItem> Items { get; set; }
+
+        [BindProperty]
+        public string[] SelectedOptions { get; set; }
+
+        public void OnGet()
+        {
+            Items = new List<SelectListItem>()
+            {
+                new SelectListItem(){Text="Option1", Value="1"},
+                new SelectListItem(){Text="Option2", Value="2"},
+                new SelectListItem(){Text="Option3", Value="3"},
+                new SelectListItem(){Text="Option4", Value="4"},
+                new SelectListItem(){Text="Option5", Value="5"}
+            };
+
+            SelectedOptions = new string[] { "2", "4", "5" };
+        }
+
+        public void OnPost()
+        {
+            var values = SelectedOptions;
+        }
+    }
+}
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.ListBoxFor(model=>model.SelectedOptions, Model.Items,new { id = "listBox1", size = 5 })
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Rendered Output of ListBoxFor() helper method:
+
+<select id="listBox1" multiple="multiple" name="SelectedOptions" size="5">
+<option value="1">Option1</option>
+<option selected="selected" value="2">Option2</option>
+<option value="3">Option3</option>
+<option selected="selected" value="4">Option4</option>
+<option selected="selected" value="5">Option5</option>
+</select>
+
+2. Html.ListBoxFor(expression, IEnumerable<SelectListItem> selectList)
+
+Example.cshtml.cs (PageModel Class):
+
+Same as previous example.
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    @Html.ListBoxFor(model=>model.SelectedOptions, Model.Items)
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Rendered Output of ListBoxFor() helper method:
+----------------------------------------------------------------------
+<select id="SelectedOptions" multiple="multiple" name="SelectedOptions">
+<option value="1">Option1</option>
+<option selected="selected" value="2">Option2</option>
+<option value="3">Option3</option>
+<option selected="selected" value="4">Option4</option>
+<option selected="selected" value="5">Option5</option>
+</select>
+
+Working with Radio Buttons in ASP.NET Core Razor Pages/MVC:
+--------------------------------------------------------------------------------------------
+The radio button control is designed to support the selection of only one of a mutually exclusive set of predefined options.
+
+Radio Basics:
+-------------------
+The radio control is rendered in HTML by setting the type attribute in an <input> element to radio:
+
+<input type="radio" />
+
+This appears in most browser as small disc or circle. When it is selected, the disc acquires a dot. This state is indicated in HTML by the presence of a checked attribute on the element as follows:
+
+<input type="radio" checked />
+
+You can also provide a value to the checked attribute. Any of the following are considered valid values according to the HTML 5 specification:
+
+<input type="radio" checked="" />
+<input type="radio" checked="checked" />
+<input type="radio" checked="CHECKED" />
+
+Most browsers will set the state of the radio to selected based solely on the presence of the checked attribute, regardless of the value passed to it, so even the following will result in the radio being selected:
+
+<input type="radio" checked="false" />
+
+However, this will fail HTML5 validation testing.
+
+Note: If you pass a Razor expression to the checked attribute that evaluates to anything other than true, the checked attribute will not be rendered at all.
+
+Radio button options are grouped together and become mutually exclusive when the same value is assigned to the name attribute to multiple controls as follows:
+
+<input type="radio" name="gender" value="Male" />
+<input type="radio" name="gender" value="Female" />
+
+Only one can be selected at any one time.
+
+The only way to deselect a particular value is to select an alternative value within the same group.
+
+Razor Radio Buttons:
+------------------------------
+Razor offers two ways to generate radio buttons. The recommended approach is to use the input tag helper. When creating a radio button, you must provide the value of one of the predefined options to the value attribute.
+
+Example.cshtml.cs (PageModel Class):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public string Gender { get; set; }
+
+        public string[] Genders = new string[] { "Male", "Female" };
+
+        public void OnGet()
+        {
+
+        }
+    }
+}
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    <b>Gender: </b>
+    @foreach(string gender in Model.Genders)
+    {
+        <input type="radio" asp-for="Gender" value="@gender" />@gender
+        <span>&nbsp;</span>
+    }
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Note: The property name passed to the asp-for attribute is used for the values of both the id and name attributes.
+
+Using the pattern above will result in multiple elements with the same id property value as follows:
+
+<input type="radio" value="Male" id="Gender" name="Gender" />Male<span>&nbsp;</span>
+<input type="radio" value="Female" id="Gender" name="Gender" />Female <span>&nbsp;</span>
+
+You can override this behaviour by supplying your own unique id value for each element as follows:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    <b>Gender: </b>
+    @foreach(string gender in Model.Genders)
+    {
+        <input type="radio" asp-for="Gender" value="@gender" id="@gender" />
+        <label for="@gender">@gender</label>
+        <span>&nbsp;</span>
+    }
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Rendered Output:
+
+<input type="radio" value="Male" id="Male" name="Gender" />
+<label for="Male">Male</label>
+<span>&nbsp;</span>
+<input type="radio" value="Female" id="Female" name="Gender" />
+<label for="Female">Female</label>
+<span>&nbsp;</span>
+
+The alternative way to generate radio buttons is to use the PageModel's Html property, which has two helper methods related to radio button generation - Html.RadioButton and its strongly typed method i.e. Html.RadioButtonFor:
+
+Example.cshtml.cs (PageModel Class):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+/
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        public string Gender { get; set; }
+
+        public string[] Genders = new string[] { "Male", "Female" };
+
+        public void OnGet()
+        {
+
+        }
+    }
+}
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    <b>Gender: </b>
+    @foreach (string gender in Model.Genders)
+    {
+        @Html.RadioButton("Gender", gender, new { id = @gender })
+        @Html.Label(@gender)
+        <span>&nbsp;</span>
+    }
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Using Html.RadioButtonFor():
+-------------------------------------------
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+<form method="post">
+    <b>Gender: </b>
+    @foreach (string gender in Model.Genders)
+    {
+        @Html.RadioButtonFor(model=>Model.Gender, gender, new { id = @gender })
+        @Html.Label(@gender)
+        <span>&nbsp;</span>
+    }
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+These methods are primarily added to enable easier migration from traditional MVC to ASP.NET Core.
+
+Default Values and Required Fields:
+---------------------------------------------------
+You can specify that the property that the selected value should be bound to is Required:
+
+For Example:
+
+Example.cshtml.cs (PageModel Class):
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
+using System.ComponentModel.DataAnnotations;
+
+namespace ASPNetCoreWebApp1.Pages
+{
+    public class ExampleModel : PageModel
+    {
+        [BindProperty]
+        [Required(ErrorMessage ="Please Select Gender")]
+        public string Gender { get; set; }
+
+        public string[] Genders = new string[] { "Male", "Female" };
+
+        public void OnGet()
+        {
+
+        }
+    }
+}
+
+This will prevent the form being submitted if you are using unobtrusive validation.
+
+Example.cshtml:
+
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+@section Scripts{ 
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<form method="post">
+    <b>Gender: </b>
+    @foreach (string gender in Model.Genders)
+    {
+        @Html.RadioButtonFor(model=>Model.Gender, gender, new { id = @gender })
+        @Html.Label(@gender)
+        <span>&nbsp;</span>
+    }
+    @Html.ValidationMessageFor(model=>Model.Gender,null,new { style="color:red"})
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+Using Tag Helper:
+-------------------------
+@page
+@model ASPNetCoreWebApp1.Pages.ExampleModel
+
+@section Scripts{ 
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<form method="post">
+    <b>Gender: </b>
+    @foreach (string gender in Model.Genders)
+    {
+        <input type="radio" asp-for="Gender" value="@gender" id="@gender" />
+        <label for="@gender">@gender</label>
+        <span>&nbsp;</span>
+    }
+    <span asp-validation-for="Gender" style="color:red"></span>
+    <br /><br />
+    <button type="submit">Submit</button>
+</form>
+
+You can also force a value to be selected by setting a default value for the property:
+
+[BindProperty]
+[Required(ErrorMessage = "Please Select Gender")]
+public string Gender { get; set; } = "Male";
+
+Date and Time in a Razor Pages/MVC Form:
+-------------------------------------------------------
+When working with dates and times in a Razor Pages/MVC form, you need to render a suitable control based in the task requirement. a variety of native browser options exist, although they enjoy varied support across modern browsers. These include options for managing the date and time, just the date or time, and for working with the month or week of the year.
+
+DateTime Inputs:
+------------------------
+In Razor Pages/MVC, the input tag helper renders an appropriate value for the type attribute based on the data type of the model property specified via the asp-for attribute.
+
+Example.cshtml.cs:
+----------------------------
+[BindProperty]
+public DateTime DOB {get;set;} = DateTime.Now;
+
+Example.cshtml:
+-----------------------
+Date of Birth: <input asp-for="DOB" class="form-control" />
+
+The default input type generated in Razor Pages/MVC for DateTime model property is datetime-local. In Chrome, Edge and Opera, datetime-local renders a control that enables the user to select a date and time. The formatting of appearance of the date and time in the control is decided by the local settings of the underlying operating system, and the value itself is assumed to represent a local date and time as opposed to a universal time.
+
+If you are using another old browser, the control renders a plain input that behaves like a text input.
+
+When examining the rendered markup, you see that the value has been formatted by the input tag helper to a representation based on the ISO 8601 Standard:
+
+<input class="form-control" type="datetime-local" data-val="true" data-val-required="The DOB field is required." id="DOB" name="DOB" value="2021-03-06T09:56:00.944" />
+
+This is the format that the HTML5 control requires .
+
+By default, the formatted string includes the time down to the millisecond, so the time picker part of UI providers options to set hours, minutes, seconds and milliseconds.
+
+More often, you will only want to enable the user to specify the time to the minute. You control this through the formatting of the time portion of the value passed to the control. You can do this in one of the two ways. You can use the 'DisplayFormat' data annotation attribute on the model property to specify the format and ensure that the format also applies when the value is in "edit mode" (a form control):
+
+using System.ComponentModel.DataAnnotations;
+
+[BindProperty]
+[DisplayFormat(DataFormatString ="{0:yyyy-MM-ddTHH:mm}", ApplyFormatInEditMode =true)]
+public DateTime DOB { get; set; } = DateTime.Now;
+
+Alternatively, you can use the asp-format attribute on the input tag helper itself:
+
+Date of Birth: <input asp-for="DOB" asp-format="{0:yyyy-MM-ddTHH:mm}" class="form-control" />
+
+The default value for a DateTime in .NET is DateTime.MinValue, represented as 0001-01-01T00:00:00:00.000 in the control. If you don't want any value to appear initially, you can make the bound property nullable:
+
+[BindProperty]
+public DateTime? DOB { get; set; }
+
+Then the control will display its default settings:
+
+Date of Birth: dd-mm-yyyy --:--
+
+Date and Time Inputs:
+--------------------------------
+To support a wider range of browsers using native controls as opposed to third party libraries, you can use separate date and time controls. A liitle more configuration is required in order to get the input tag helper to render the correct controls:
+
+[BindProperty]
+[DataType(DataType.Date)]
+public DateTime? DOB { get; set; }
+
+[BindProperty]
+[DataType(DataType.Time)]
+public DateTime? DOB { get; set; }
+
+Both properties are DateTime types, but the DataType attribute is applied to them to set the correct type in rendered input. The input tag helper supports both the DataType.Date and DataType.Time options and will render accordingly
+
+Date of Birth: <input class="form-control" type="date" id="DOB" name="DOB" value="" />
+
+Date of Birth: <input class="form-control" type="time" id="DOB" name="DOB" value="" />
+
+Once again, you can format the time by applying a format string to either a DisplayFormat attribute on the model property or via the asp-format attribute on the tag helper. When the values are posted, the model binder successfully constructs DateTime types with the time portion set to midnight in the case of the date input's value, and the date portion set to today in the case of the time input's value.
+
+Month and Week Inputs:
+-----------------------------------
+Month and week input types are implemented currently by Edge, Chrome and Opera. Where is it supported, the month type provides a means for the user to select a specific month and year.
+
+The input tag helper will render a control with type="month" with a little configuration. This is achieved by using the DataType attribute overload that takes a string parameter representing a custom data type:
+
+        [BindProperty]
+        [DataType("month")]
+        public DateTime DOB { get; set; }
+
+The format of the input month's value is yyyy-MM. The input tag helper generates a suitable value successfully from a DateTime type. So you don't need to supply any format strings in order to get the month selector to render correctly:
+
+ Date of Birth: <input asp-for="DOB" class="form-control" />
+
+When values are posted back, the default DateTime Model Binder will bind this value to a DateTime with the correct month and year, and the day set to 1.
+
+The week input type will also render successfully just through setting a custom data type on a DateTime property as following:
+
+[BindProperty]
+[DataType("week")]
+public DateTime DOB { get; set; }
+
+The valid format for the value is yyyy-Www, where the capital W is a literal "W" and ww represents the ISO 8601 week of the selected year. There is no format string in .NET for the week part of a DateTime, but the tag helper generates the correctly formatted value from a DateTime type successfully:
+
+<input class="form-control" type="week" data-val="true" data-val-required="The DOB field is required." id="DOB" name="DOB" value="1995-W30" />
+
+However, the default DateTime Model Binder is unable to bind that value back to a DateTime. You have a number of options. The most valuable option is to access the value directly from the Request.Form collection, parse it as a string and generate a DateTime yourself as following:
+
+using System.Globalization;
+
+public void OnPost()
+{
+            var week = Request.Form["DOB"].First().Split("-W");
+            DOB = ISOWeek.ToDateTime(Convert.ToInt32(week[0]), Convert.ToInt32(week[1]), DayOfWeek.Sunday);
+}
+
+This example uses the ISOWeek utility class that was added in .NET Core 3.0. If you are working on a NET Core 2.x project/app, you can use the Calendar.GetWeekOfYear() method, but be aware that in some edge cases, it doesn't return the ISO  8601 week of the year.
+
+You could also bind to a string instead of a DateTime. You would have to generate a property formatted value as well as parse the result as following:
+
+[BindProperty]
+[DataType("week")]
+public string DOB { get; set; }
+
+public void OnGet()
+{
+            DOB = $"{1995}-W{ISOWeek.GetWeekOfYear(new DateTime(1995, 7, 25))}";
+}
+
+Request Verification:
+=================
+Request Verification in ASP.NET Core Razor Pages is a mechanism designed to prevent possible 'Cross Site Request Forgery' attacks, also referred to by the acronyms XSRF and CSRF. During a CSRF attack, a malicious users will use the credentials of an authenticated user to perform some action on a website to their benefit.
+
+The canonical example used to illustrate this type of attack involves online banking. When you log into your back account online, your browser receives an authentication cookie which is then passed back to the banking site each time you make a request, keeping you logged in. The authentication cookie will have a predetermined life. It may be session-based, which means it could be valid for a period of time after you have closed the online banking's browser tab without using the banking application's log out feature and not having closed your browser.
+
+While this cookie is still valid, you find yourself on another site that initiates a form post to your banking site that makes a transfer from your account to another. This form post is authenticated by your cookie and the banking site honours the transaction because it failed to verify where the request came from.
+
+The prevention mechanism provided by the ASP.NET Core framework for this type of attack involves verifying that any POST request made to a Razor Page originates from a form on the same site.
+
+This is achieved by injecting a hidden form field named __RequestVerificationToken at the end of every form with an encrypted value, and passing the same value to a cookie which is sent with the form request. The presence of both of these items and their values are validated when ASP.NET Core processes a POST request. If verification fails, the framework returns an HTTP status code of 400, signifying a Bad request.
+
+Opting Out:
+----------------
+This behaviour is backed into the Razor Pages framework. However, it is possible to turn off antiforgery token validation. This can be done globally in ConfigureServices() method in Startup class as follows:
+
+using Microsoft.AspNetCore.Mvc;
+
+public void ConfigureServices(IServiceCollection services)
+{
+            services.AddRazorPages().AddRazorPagesOptions(options =>
+            {
+                options.Conventions.ConfigureFilter(new IgnoreAntiforgeryTokenAttribute());
+            });
+}
+
+This inserts an IgnoreAntiforgeryTokenAttribute into our request pipeline, which skips the validation of the token for every request (note that the token will still be generated in our forms, just not validated on the server side).
+
+You can also opt-out on individual pages, by using the same attribute as follows:
+
+Adding the IgnoreAntiforgeryToken attribute to the relevant Page Model Class (not a handler method):
+
+[IgnoreAntiforgeryToken(Order = 1001)]
+public class ExampleModel : PageModel
+{
+        public void OnGet()
+        {
+        }
+
+        public void OnPost()
+        {
+        }
+}
+
+Note: The Order property needs to be >1000 in order to skip the normal anti-forgery token validation.
+
+If you first disable the anti-forgery validation site-wide, you can re-enable it on certain pages by using [ValidateAntiForgeryToken] attribute as follows:
+
+[ValidateAntiForgeryToken]
+public class ExampleModel : PageModel
+{
+        public void OnGet()
+        {
+        }
+
+        public void OnPost()
+        {
+        }
+}
+
+- The ValidateAntiForgeryToken attribute has an uppercase "F" in its name, whereas the IgnoreAntiforgeryToken has a lower case "f". This is by design.
+
+If you would also like the form to not render the hidden anti-forgery token field, you can disable that in the form tag helper as follows:
+
+<form method="post" asp-antiforgery="false">
+	<button>Submit</button>
+</form>
+
+In this way, we can have fine-grained control over which pages use anti-forgery validation, and which do not.
+
+Configuration:
+---------------------
+Various options relating to the AntiForgery feature are configurable via the AntiforgeryOptions class:
+
+Cookie: Provides access to configuring aspects of the cookie -> If a value for cookie is not specified, a unique value will be generated prefixed with .AspNetCore.Antiforgery.
+
+FormFieldName: The name used for the hidden form field -> Default value of this hidden form field name is _RequestVerificationTeken
+
+HeaderName: The name used for the request header: Default value of the HeaderName is RequestVerificationToken
+
+For example:
+
+public void ConfigureServices(IServiceCollection services)
+{
+	..............................
+	services.AddAntiforgery(options => options.FormFieldName = "_MyRequestVerificationToken");
+	..............................
+}
+
+if you want to merely generate an anti-forgery token somewhere on the page, you can either generate a new form with the method set to POST.
+
+<form method="post"></form>
+
+Or use the HTML Helper method as follows:
+
+@Html.AntiForgeryToken()
+
+Both of these approaches will result in the _RequestVerificationToken hidden field being added to the page. But what if you don't want to have unnecessary elements on your page? In this case, you can inject IAntiforgery interface to the page and use the method GetAndStoreTokens() to generate the token as follows:
+
+@page
+@model ASPNETCoreWebApp1.Pages.ExampleModel
+@using Microsoft.AspNetCore.Antiforgery
+@inject IAntiforgery antiforgery
+@{
+    var token = antiforgery.GetAndStoreTokens(HttpContext).RequestToken;
+}
